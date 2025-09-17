@@ -4,7 +4,7 @@ import ifc
 
 
 @asynccontextmanager
-async def lifespan(_app: FastAPI):
+async def lifespan(_: FastAPI):
     with open("ifc.txt") as f:
         ifc_path = f.readline().strip()
         ifc.load(ifc_path)
@@ -20,6 +20,6 @@ def get_hierarchy():
     return ifc.hierarchy
 
 
-@app.get("/geometry")
-def get_geometry():
-    return ifc.geometry
+@app.get("/geometries")
+def get_geometries():
+    return ifc.geometries

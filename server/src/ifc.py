@@ -4,6 +4,7 @@ from multiprocessing import cpu_count
 
 
 def _extract_hierarchy():
+    print("    Extracting hierarchy...")
     global hierarchy
 
     def collect(entity: entity_instance):
@@ -16,6 +17,13 @@ def _extract_hierarchy():
             for child in rel.RelatedObjects:
                 children.append(collect(child))
         
+        for rel in file.by_type("IfcRelContainedInSpatialStructure"):
+            if rel.RelatingStructure != entity:
+                continue
+            
+            for child in rel.RelatedElements:
+                children.append(collect(child))
+        
         return {
             "id": entity.id(),
             "type": entity.is_a(),
@@ -25,14 +33,13 @@ def _extract_hierarchy():
 
 
     project_entity = file.by_type("IfcProject")[0]
-        # As per the standard, there should only be one `IfcProject` entity
-
     hierarchy = collect(project_entity)
 
 
-def _build_geometry():
-    global geometry
-    geometry = []
+def _build_geometries():
+    print("    Building geometries...")
+    global geometries
+    geometries = {}
     
     settings = ifc_geom.settings()
     iterator = ifc_geom.iterator(settings, file, cpu_count())
@@ -47,10 +54,14 @@ def _build_geometry():
 
         for i in shape.geometry.faces:
             positions.append(shape.geometry.verts[i])
-
-        geometry.append({
-            "id": shape.id,
-            "type": shape.type,
+        
+        if not shape.id in geometries:
+            geometries[shape.id] = {
+                "type": shape.type,
+                "shapes": [],
+            }
+        
+        geometries[shape.id]["shapes"].append({
             "transform": shape.transformation.matrix,
             "positions": positions,
         })
@@ -64,5 +75,5 @@ def load(path: str):
     print(f"Loading IFC from `{path}`...")
     file = ifc_open(path)
     _extract_hierarchy()
-    _build_geometry()
+    _build_geometries()
     print("IFC loaded!")
