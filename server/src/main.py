@@ -1,15 +1,25 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import ifc
 
 
-with open("ifc.txt") as f:
-    ifc_path = f.readline().strip()
-    ifc.load(ifc_path)
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    with open("ifc.txt") as f:
+        ifc_path = f.readline().strip()
+        ifc.load(ifc_path)
+    
+    yield
 
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 
-@app.get("/")
-def get_root():
-    return f"IFC schema is: {ifc.file.schema}"
+@app.get("/hierarchy")
+def get_hierarchy():
+    return ifc.hierarchy
+
+
+@app.get("/geometry")
+def get_geometry():
+    return ifc.geometry
