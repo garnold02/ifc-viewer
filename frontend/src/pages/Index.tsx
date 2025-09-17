@@ -1,3 +1,25 @@
+import { Box, styled } from "@mui/material";
+import { Outliner } from "../components/outliner/Outliner";
+import { OutlinerProvider } from "../components/outliner/OutlinerProvider";
+import { Viewport } from "../components/viewport/Viewport";
+
 export const Index = () => {
-  return <h1>Hello, World!</h1>;
+  return (
+    <OutlinerProvider>
+      <Layout>
+        <Viewport />
+        <Outliner />
+      </Layout>
+    </OutlinerProvider>
+  );
 };
+
+const Layout = styled(Box)`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 500px;
+`;

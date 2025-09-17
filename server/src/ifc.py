@@ -1,6 +1,9 @@
 from ifcopenshell import entity_instance, open as ifc_open
 from ifcopenshell import geom as ifc_geom
+from math import isnan
 from multiprocessing import cpu_count
+import numpy as np
+from time import time
 
 
 def _extract_hierarchy():
@@ -39,7 +42,7 @@ def _extract_hierarchy():
 def _build_geometries():
     print("    Building geometries...")
     global geometries
-    geometries = {}
+    geometries = []
     
     settings = ifc_geom.settings()
     iterator = ifc_geom.iterator(settings, file, cpu_count())
@@ -51,19 +54,66 @@ def _build_geometries():
     while True:
         shape = iterator.get()
         positions = []
+        normals = []
+        colors = []
 
-        for i in shape.geometry.faces:
-            positions.append(shape.geometry.verts[i])
+        for face_index in range(0, len(shape.geometry.faces) // 3):
+            material = shape.geometry.materials[
+                shape.geometry.material_ids[
+                    face_index
+                ]
+            ]
+
+            transparency = material.transparency
+            if isnan(transparency):
+                transparency = 1.0
+            
+            opacity = 1.0 - transparency
+
+            color = [
+                material.diffuse.r(),
+                material.diffuse.g(),
+                material.diffuse.b(),
+                opacity,
+            ]
+
+            vertex_indices = [
+                shape.geometry.faces[face_index * 3],
+                shape.geometry.faces[face_index * 3 + 1],
+                shape.geometry.faces[face_index * 3 + 2],
+            ]
+
+            vertices = [
+                [
+                    shape.geometry.verts[i * 3],
+                    shape.geometry.verts[i * 3 + 1],
+                    shape.geometry.verts[i * 3 + 2],
+                ]
+                for i in vertex_indices
+            ]
+
+            edge0 = np.subtract(vertices[1], vertices[0])
+            edge1 = np.subtract(vertices[2],vertices[0])
+            cprod = np.cross(edge1, edge0)
+            normal = np.divide(cprod, np.sqrt(np.sum(cprod ** 2)))
+
+            for vertex in vertices:
+                for position in vertex:
+                    positions.append(position)
+                
+                for coord in normal:
+                    normals.append(coord)
+                
+                for channel in color:
+                    colors.append(channel)
         
-        if not shape.id in geometries:
-            geometries[shape.id] = {
-                "type": shape.type,
-                "shapes": [],
-            }
-        
-        geometries[shape.id]["shapes"].append({
+        geometries.append({
+            "id": shape.id,
+            "type": shape.type,
             "transform": shape.transformation.matrix,
             "positions": positions,
+            "normals": normals,
+            "colors": colors,
         })
 
         if not iterator.next():
@@ -73,7 +123,9 @@ def _build_geometries():
 def load(path: str):
     global file
     print(f"Loading IFC from `{path}`...")
+    start = time()
     file = ifc_open(path)
     _extract_hierarchy()
     _build_geometries()
-    print("IFC loaded!")
+    end = time()
+    print(f"IFC loaded! Took {round(end - start, 2)} seconds")

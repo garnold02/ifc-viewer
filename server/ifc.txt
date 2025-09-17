@@ -1,1 +1,1 @@
-samples/Ifc4_SampleHouse.ifc
+samples/Ifc2x3_SampleCastle.ifc
