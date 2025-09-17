@@ -1,6 +1,5 @@
 import {
   Checkbox,
-  Chip,
   IconButton,
   Stack,
   Tooltip,
