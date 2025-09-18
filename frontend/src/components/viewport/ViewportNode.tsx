@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import type { TreeNode } from "../../api/queries/tree/types";
 import { ViewportNodeGeometry } from "./ViewportNodeGeometry";
 import { useOutlinerStore } from "../outliner/store";
+import { defaultOutlinerNodeState } from "../../utils/outliner";
 
 type Props = {
   node: TreeNode;
@@ -27,13 +28,9 @@ export const ViewportNode = ({ node }: Props) => {
   const nodeStates = useOutlinerStore((state) => state.nodeStates);
   const nodeState = useMemo(
     () =>
-      nodeStates.find((ns) => ns.id === node.id) ?? {
-        id: node.id,
-        expanded: false,
-        showSelf: true,
-        showChildren: true,
-      },
-    [nodeStates]
+      nodeStates.find((ns) => ns.id === node.id) ??
+      defaultOutlinerNodeState(node.id, node.type),
+    [node.id, node.type, nodeStates]
   );
 
   return (

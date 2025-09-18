@@ -5,6 +5,7 @@ import type { TreeNode } from "../../api/queries/tree/types";
 import { useOutlinerStore } from "./store";
 import { useCallback, useMemo } from "react";
 import { produce } from "immer";
+import { defaultOutlinerNodeState } from "../../utils/outliner";
 
 type Props = {
   node: TreeNode;
@@ -16,43 +17,39 @@ export const OutlinerNode = ({ node }: Props) => {
 
   const nodeState = useMemo(
     () =>
-      nodeStates.find((ns) => ns.id === node.id) ?? {
-        id: node.id,
-        expanded: false,
-        showSelf: true,
-        showChildren: true,
-      },
-    [nodeStates]
+      nodeStates.find((ns) => ns.id === node.id) ??
+      defaultOutlinerNodeState(node.id, node.type),
+    [node.id, node.type, nodeStates]
   );
 
   const onExpandClick = useCallback(
     () =>
-      setNodeState(node.id, (prev) =>
+      setNodeState(node.id, node.type, (prev) =>
         produce(prev, (draft) => {
           draft.expanded = !nodeState.expanded;
         })
       ),
-    [nodeState.expanded, setNodeState]
+    [node.id, node.type, nodeState.expanded, setNodeState]
   );
 
   const onSelfVisClick = useCallback(
     () =>
-      setNodeState(node.id, (prev) =>
+      setNodeState(node.id, node.type, (prev) =>
         produce(prev, (draft) => {
           draft.showSelf = !nodeState.showSelf;
         })
       ),
-    [nodeState.showSelf, setNodeState]
+    [node.id, node.type, nodeState.showSelf, setNodeState]
   );
 
   const onChildrenVisClick = useCallback(
     () =>
-      setNodeState(node.id, (prev) =>
+      setNodeState(node.id, node.type, (prev) =>
         produce(prev, (draft) => {
           draft.showChildren = !nodeState.showChildren;
         })
       ),
-    [nodeState.showChildren, setNodeState]
+    [node.id, node.type, nodeState.showChildren, setNodeState]
   );
 
   const childComponents = useMemo(
@@ -82,7 +79,7 @@ export const OutlinerNode = ({ node }: Props) => {
         <OutlinerVisibilityButton
           value={nodeState.showSelf}
           onClick={onSelfVisClick}
-          disabled={false}
+          disabled={node.geometry === null}
         />
         <OutlinerVisibilityButton
           value={nodeState.showChildren}
