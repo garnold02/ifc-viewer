@@ -77,7 +77,7 @@ def _build_geometries():
             color_a = 1.0 - transparency
 
             if color_a < 1.0:
-                transparent = False
+                transparent = True
 
             f_i = face_index * 3
             vertex_index_0 = faces[f_i]
