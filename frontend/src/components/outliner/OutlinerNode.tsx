@@ -70,10 +70,10 @@ export const OutlinerNode = ({ node }: Props) => {
         />
         {node.name !== null && node.name.length > 0 ? (
           <Tooltip title={node.name}>
-            <Typography>{node.type}</Typography>
+            <Typography noWrap>{node.type}</Typography>
           </Tooltip>
         ) : (
-          <Typography>{node.type}</Typography>
+          <Typography noWrap>{node.type}</Typography>
         )}
         <Box marginLeft="auto" />
         <OutlinerVisibilityButton
