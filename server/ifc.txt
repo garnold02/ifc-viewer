@@ -1,1 +1,0 @@
-samples/Ifc4_SampleHouse.ifc
