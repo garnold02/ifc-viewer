@@ -56,59 +56,91 @@ def _build_geometries():
         positions = []
         normals = []
         colors = []
+        transparent = False
+
+        materials = shape.geometry.materials
+        material_ids = shape.geometry.material_ids
+        faces = shape.geometry.faces
+        verts = shape.geometry.verts
 
         for face_index in range(0, len(shape.geometry.faces) // 3):
-            material = shape.geometry.materials[
-                shape.geometry.material_ids[
-                    face_index
-                ]
-            ]
-
+            material = materials[material_ids[face_index]]
             transparency = material.transparency
+
             if isnan(transparency):
                 transparency = 1.0
             
-            opacity = 1.0 - transparency
+            diffuse = material.diffuse
+            color_r = diffuse.r()
+            color_g = diffuse.g()
+            color_b = diffuse.b()
+            color_a = 1.0 - transparency
 
-            color = [
-                material.diffuse.r(),
-                material.diffuse.g(),
-                material.diffuse.b(),
-                opacity,
-            ]
+            if color_a < 1.0:
+                transparent = False
 
-            vertex_indices = [
-                shape.geometry.faces[face_index * 3],
-                shape.geometry.faces[face_index * 3 + 1],
-                shape.geometry.faces[face_index * 3 + 2],
-            ]
+            f_i = face_index * 3
+            vertex_index_0 = faces[f_i]
+            vertex_index_1 = faces[f_i + 1]
+            vertex_index_2 = faces[f_i + 2]
 
-            vertices = [
-                [
-                    shape.geometry.verts[i * 3],
-                    shape.geometry.verts[i * 3 + 1],
-                    shape.geometry.verts[i * 3 + 2],
-                ]
-                for i in vertex_indices
-            ]
+            v_i_0 = vertex_index_0 * 3
+            vertex_0_0 = verts[v_i_0]
+            vertex_0_1 = verts[v_i_0 + 1]
+            vertex_0_2 = verts[v_i_0 + 2]
+            v_i_1 = vertex_index_1 * 3
+            vertex_1_0 = verts[v_i_1]
+            vertex_1_1 = verts[v_i_1 + 1]
+            vertex_1_2 = verts[v_i_1 + 2]
+            v_i_2 = vertex_index_2 * 3
+            vertex_2_0 = verts[v_i_2]
+            vertex_2_1 = verts[v_i_2 + 1]
+            vertex_2_2 = verts[v_i_2 + 2]
 
-            edge0 = np.subtract(vertices[1], vertices[0])
-            edge1 = np.subtract(vertices[2],vertices[0])
+            vertex_0 = np.array([vertex_0_0, vertex_0_1, vertex_0_2])
+            vertex_1 = np.array([vertex_1_0, vertex_1_1, vertex_1_2])
+            vertex_2 = np.array([vertex_2_0, vertex_2_1, vertex_2_2])
+            
+            edge0 = np.subtract(vertex_1, vertex_0)
+            edge1 = np.subtract(vertex_2, vertex_0)
             cprod = np.cross(edge1, edge0)
             normal = np.divide(cprod, np.sqrt(np.sum(cprod ** 2)))
 
-            for vertex in vertices:
-                for position in vertex:
-                    positions.append(position)
-                
-                for coord in normal:
-                    normals.append(coord)
-                
-                for channel in color:
-                    colors.append(channel)
-        
-        # Only enable transparency if there actually are transparent faces
-        transparent = any(a < 1.0 for a in colors[3::4])
+            positions.append(vertex_0_0)
+            positions.append(vertex_0_1)
+            positions.append(vertex_0_2)
+            positions.append(vertex_1_0)
+            positions.append(vertex_1_1)
+            positions.append(vertex_1_2)
+            positions.append(vertex_2_0)
+            positions.append(vertex_2_1)
+            positions.append(vertex_2_2)
+
+            normal_0 = normal[0]
+            normal_1 = normal[1]
+            normal_2 = normal[2]
+            normals.append(normal_0)
+            normals.append(normal_1)
+            normals.append(normal_2)
+            normals.append(normal_0)
+            normals.append(normal_1)
+            normals.append(normal_2)
+            normals.append(normal_0)
+            normals.append(normal_1)
+            normals.append(normal_2)
+
+            colors.append(color_r)
+            colors.append(color_g)
+            colors.append(color_b)
+            colors.append(color_a)
+            colors.append(color_r)
+            colors.append(color_g)
+            colors.append(color_b)
+            colors.append(color_a)
+            colors.append(color_r)
+            colors.append(color_g)
+            colors.append(color_b)
+            colors.append(color_a)
         
         geometries.append({
             "id": shape.id,
