@@ -107,6 +107,9 @@ def _build_geometries():
                 for channel in color:
                     colors.append(channel)
         
+        # Only enable transparency if there actually are transparent faces
+        transparent = any(a < 1.0 for a in colors[3::4])
+        
         geometries.append({
             "id": shape.id,
             "type": shape.type,
@@ -114,6 +117,7 @@ def _build_geometries():
             "positions": positions,
             "normals": normals,
             "colors": colors,
+            "transparent": transparent,
         })
 
         if not iterator.next():

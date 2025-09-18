@@ -23,6 +23,7 @@ const getGeometries = async () => {
       positions: new Float32Array(geometry.positions),
       normals: new Float32Array(geometry.normals),
       colors: new Float32Array(geometry.colors),
+      transparent: geometry.transparent,
     };
 
     return result;

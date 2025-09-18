@@ -12,6 +12,7 @@ export type IfcEntityGeometry = {
   positions: Float32Array;
   normals: Float32Array;
   colors: Float32Array;
+  transparent: boolean;
 };
 
 export type IfcGeometryTransform = [

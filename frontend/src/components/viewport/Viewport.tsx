@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { CameraControls } from "@react-three/drei";
+import { FlyControls } from "@react-three/drei";
 import { useGetGeometries } from "../../api/queries/useGetGeometries";
 import type { IfcEntityGeometry, IfcGeometryTransform } from "../../types/ifc";
 import { useMemo } from "react";
@@ -19,7 +19,13 @@ export const Viewport = () => {
       {geometries !== undefined ? <Scene geometries={geometries} /> : null}
       <ambientLight color={[1, 1, 1]} intensity={0.25} />
       <directionalLight position={[1, 2, 3]} color={[1, 1, 1]} />
-      <CameraControls />
+      <FlyControls
+        autoForward={false}
+        dragToLook={true}
+        movementSpeed={3}
+        rollSpeed={1}
+        makeDefault
+      />
     </Canvas>
   );
 };
@@ -90,7 +96,7 @@ const Geometry = ({ geometry }: GeometryProps) => {
           args={[geometry.colors, 4, false]}
         />
       </bufferGeometry>
-      <meshPhongMaterial vertexColors transparent />
+      <meshPhongMaterial vertexColors transparent={geometry.transparent} />
     </mesh>
   );
 };
