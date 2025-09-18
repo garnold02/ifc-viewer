@@ -1,13 +1,15 @@
 import { Canvas } from "@react-three/fiber";
 import { FlyControls } from "@react-three/drei";
-import { useGetGeometries } from "../../api/queries/useGetGeometries";
-import type { IfcEntityGeometry, IfcGeometryTransform } from "../../types/ifc";
 import { useMemo } from "react";
 import { defaultVisibilityOf } from "../../utils/ifc";
 import { useOutlinerStore } from "../outliner/store";
+import { useGetGeometryList } from "../../api/queries/geometry/useGetGeometryList";
+import type { EntityTransform } from "../../api/queries/geometry/types";
+import { useGetGeometryNode } from "../../api/queries/geometry/useGetGeometryNode";
+import { useGetOutlinerNodeInfo } from "../../api/queries/outliner/useGetOutlinerNodeInfo";
 
 export const Viewport = () => {
-  const { data: geometries } = useGetGeometries();
+  const { data: geometryIds } = useGetGeometryList();
 
   return (
     <Canvas
@@ -16,7 +18,7 @@ export const Viewport = () => {
           "linear-gradient(0, rgba(0, 0, 0, 1) 0%, rgba(71, 163, 255, 1) 100%)",
       }}
     >
-      {geometries !== undefined ? <Scene geometries={geometries} /> : null}
+      {geometryIds !== undefined ? <Scene ids={geometryIds} /> : null}
       <ambientLight color={[1, 1, 1]} intensity={0.25} />
       <directionalLight position={[1, 2, 3]} color={[1, 1, 1]} />
       <FlyControls
@@ -31,43 +33,69 @@ export const Viewport = () => {
 };
 
 type SceneProps = {
-  geometries: IfcEntityGeometry[];
+  ids: number[];
 };
 
-const Scene = ({ geometries }: SceneProps) => {
+const Scene = ({ ids }: SceneProps) => {
   const matrix = useMemo(
-    () =>
-      [1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1] as IfcGeometryTransform,
+    () => [1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1] as EntityTransform,
     []
   );
 
   return (
     <group matrix={matrix} matrixAutoUpdate={false}>
-      {geometries.map((geometry) => (
-        <Geometry key={geometry.id} geometry={geometry} />
+      {ids.map((id) => (
+        <Geometry key={id} id={id} />
       ))}
     </group>
   );
 };
 
-type GeometryProps = { geometry: IfcEntityGeometry };
+type GeometryProps = { id: number };
 
-const Geometry = ({ geometry }: GeometryProps) => {
+const Geometry = ({ id }: GeometryProps) => {
+  const { data: geometry } = useGetGeometryNode(id);
+  const { data: info } = useGetOutlinerNodeInfo(id);
+
   const defaultVisibility = useMemo(
-    () => defaultVisibilityOf(geometry.type),
-    [geometry.type]
+    () => (info !== undefined ? defaultVisibilityOf(info.type) : false),
+    [info]
   );
 
   const visibilityStates = useOutlinerStore((state) => state.visibilityStates);
 
   const isVisible = useMemo(
     () =>
-      visibilityStates.find((vs) => vs.id === geometry.id)?.visible ??
-      defaultVisibility,
-    [defaultVisibility, geometry.id, visibilityStates]
+      visibilityStates.find((vs) => vs.id === id)?.visible ?? defaultVisibility,
+    [defaultVisibility, id, visibilityStates]
+  );
+
+  const positions = useMemo(
+    () =>
+      geometry !== undefined ? new Float32Array(geometry.positions) : null,
+    [geometry]
+  );
+
+  const normals = useMemo(
+    () => (geometry !== undefined ? new Float32Array(geometry.normals) : null),
+    [geometry]
+  );
+
+  const colors = useMemo(
+    () => (geometry !== undefined ? new Float32Array(geometry.colors) : null),
+    [geometry]
   );
 
   if (!isVisible) {
+    return null;
+  }
+
+  if (
+    geometry?.transform === undefined ||
+    positions === null ||
+    normals === null ||
+    colors === null
+  ) {
     return null;
   }
 
@@ -76,24 +104,24 @@ const Geometry = ({ geometry }: GeometryProps) => {
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          array={geometry.positions}
-          count={geometry.positions.length / 3}
+          array={positions}
+          count={positions.length / 3}
           itemSize={3}
-          args={[geometry.positions, 3, false]}
+          args={[positions, 3, false]}
         />
         <bufferAttribute
           attach="attributes-normal"
-          array={geometry.normals}
-          count={geometry.normals.length / 3}
+          array={normals}
+          count={normals.length / 3}
           itemSize={3}
-          args={[geometry.normals, 3, false]}
+          args={[normals, 3, false]}
         />
         <bufferAttribute
           attach="attributes-color"
-          array={geometry.colors}
-          count={geometry.colors.length / 4}
+          array={colors}
+          count={colors.length / 4}
           itemSize={4}
-          args={[geometry.colors, 4, false]}
+          args={[colors, 4, false]}
         />
       </bufferGeometry>
       <meshPhongMaterial vertexColors transparent={geometry.transparent} />

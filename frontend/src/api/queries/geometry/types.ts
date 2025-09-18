@@ -1,21 +1,12 @@
-export type IfcHierarchyNode = {
-  id: number;
-  type: string;
-  name: string | null;
-  children: IfcHierarchyNode[];
-};
-
-export type IfcEntityGeometry = {
-  id: number;
-  type: string;
-  transform: IfcGeometryTransform;
+export type EntityGeometry = {
+  transform: EntityTransform;
   positions: Float32Array;
   normals: Float32Array;
   colors: Float32Array;
   transparent: boolean;
 };
 
-export type IfcGeometryTransform = [
+export type EntityTransform = [
   n11: number,
   n12: number,
   n13: number,

@@ -1,11 +1,11 @@
 import { Box, CircularProgress, Stack } from "@mui/material";
-import { useGetHierarchy } from "../../api/queries/useGetHierarchy";
 import { OutlinerNode } from "./OutlinerNode";
+import { useGetOutlinerRoot } from "../../api/queries/outliner/useGetOutlinerRoot";
 
 export const Outliner = () => {
-  const { data: rootNode } = useGetHierarchy();
+  const { data: rootId } = useGetOutlinerRoot();
 
-  if (rootNode == undefined) {
+  if (rootId == undefined) {
     return (
       <Stack justifyContent="center" alignItems="center">
         <CircularProgress />
@@ -15,7 +15,7 @@ export const Outliner = () => {
 
   return (
     <Box overflow="scroll" padding={1}>
-      <OutlinerNode data={rootNode} />
+      <OutlinerNode id={rootId} />
     </Box>
   );
 };

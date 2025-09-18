@@ -24,11 +24,57 @@ app.add_middleware(
 )
 
 
-@app.get("/hierarchy")
-def get_hierarchy():
-    return ifc.hierarchy
+@app.get("/outliner/root")
+def get_outliner_root():
+    project_entity = ifc.file.by_type("IfcProject")[0]
+    return project_entity.id()
 
 
-@app.get("/geometries")
-def get_geometries():
-    return ifc.geometries
+@app.get("/outliner/node/{id}/info")
+def get_outliner_node_info(id: int):
+    try:
+        entity = ifc.file.by_id(id)
+        return {
+            "type": entity.is_a(),
+            "name": entity.Name,
+        }
+    except:
+        return None
+
+
+@app.get("/outliner/node/{id}/children")
+def get_outliner_node_children(id: int):
+    try:
+        entity = ifc.file.by_id(id)
+        children = []
+
+        for rel in ifc.file.by_type("IfcRelAggregates"):
+            if rel.RelatingObject != entity:
+                continue
+            
+            for child in rel.RelatedObjects:
+                children.append(child.id())
+        
+        for rel in ifc.file.by_type("IfcRelContainedInSpatialStructure"):
+            if rel.RelatingStructure != entity:
+                continue
+            
+            for child in rel.RelatedElements:
+                children.append(child.id())
+        
+        return children
+    except:
+        return None
+
+
+@app.get("/geometry/list")
+def get_geometry_list():
+    return list(ifc.geometry.keys())
+
+
+@app.get("/geometry/node/{id}")
+def get_geometry_node(id: int):
+    if id in ifc.geometry:
+        return ifc.geometry[id]
+    else:
+        return None

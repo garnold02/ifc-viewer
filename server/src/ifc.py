@@ -1,4 +1,4 @@
-from ifcopenshell import entity_instance, open as ifc_open
+from ifcopenshell import open as ifc_open
 from ifcopenshell import geom as ifc_geom
 from math import isnan
 from multiprocessing import cpu_count
@@ -6,43 +6,10 @@ import numpy as np
 from time import time
 
 
-def _extract_hierarchy():
-    print("    Extracting hierarchy...")
-    global hierarchy
-
-    def collect(entity: entity_instance):
-        children = []
-
-        for rel in file.by_type("IfcRelAggregates"):
-            if rel.RelatingObject != entity:
-                continue
-            
-            for child in rel.RelatedObjects:
-                children.append(collect(child))
-        
-        for rel in file.by_type("IfcRelContainedInSpatialStructure"):
-            if rel.RelatingStructure != entity:
-                continue
-            
-            for child in rel.RelatedElements:
-                children.append(collect(child))
-        
-        return {
-            "id": entity.id(),
-            "type": entity.is_a(),
-            "name": entity.Name,
-            "children": children
-        }
-
-
-    project_entity = file.by_type("IfcProject")[0]
-    hierarchy = collect(project_entity)
-
-
-def _build_geometries():
-    print("    Building geometries...")
-    global geometries
-    geometries = []
+def _build_geometry():
+    print("    Building geometry...")
+    global geometry
+    geometry = {}
     
     settings = ifc_geom.settings()
     iterator = ifc_geom.iterator(settings, file, cpu_count())
@@ -56,7 +23,6 @@ def _build_geometries():
         positions = []
         normals = []
         colors = []
-        has_transparency = True
         transparent = False
 
         materials = shape.geometry.materials
@@ -69,16 +35,13 @@ def _build_geometries():
             transparency = material.transparency
 
             if isnan(transparency):
-                has_transparency = False
+                transparency = 0.0
             
             diffuse = material.diffuse
             color_r = diffuse.r()
             color_g = diffuse.g()
             color_b = diffuse.b()
-            color_a = 1.0
-
-            if has_transparency:
-                color_a = 1.0 - transparency
+            color_a = 1.0 - transparency
 
             if color_a < 1.0:
                 transparent = True
@@ -146,26 +109,27 @@ def _build_geometries():
             colors.append(color_b)
             colors.append(color_a)
         
-        geometries.append({
-            "id": shape.id,
-            "type": shape.type,
+        geometry[shape.id] = {
             "transform": shape.transformation.matrix,
             "positions": positions,
             "normals": normals,
             "colors": colors,
-            "transparent": has_transparency and transparent,
-        })
+            "transparent": transparent,
+        }
 
         if not iterator.next():
             break
+    
+    print("        DONE")
 
 
 def load(path: str):
     global file
     print(f"Loading IFC from `{path}`...")
     start = time()
+    print("    Opening file...")
     file = ifc_open(path)
-    _extract_hierarchy()
-    _build_geometries()
+    print("        DONE")
+    _build_geometry()
     end = time()
     print(f"IFC loaded! Took {round(end - start, 2)} seconds")
