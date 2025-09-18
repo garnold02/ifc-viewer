@@ -1,19 +1,11 @@
-import {
-  Checkbox,
-  CircularProgress,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { useOutlinerStore } from "./store";
-import { useCallback, useMemo } from "react";
-import { defaultVisibilityOf } from "../../utils/ifc";
-import { useGetGeometryList } from "../../api/queries/geometry/useGetGeometryList";
+import { Box, Stack, Tooltip, Typography } from "@mui/material";
 import { useGetOutlinerNodeInfo } from "../../api/queries/outliner/useGetOutlinerNodeInfo";
+import { OutlinerExpandButton } from "./OutlinerExpandButton";
+import { useCallback, useMemo } from "react";
+import { useOutlinerStore } from "./store";
 import { useGetOutlinerNodeChildren } from "../../api/queries/outliner/useGetOutlinerNodeChildren";
+import { OutlinerVisibilityButton } from "./OutlinerVisibilityButton";
+import { defaultVisibilityOf } from "../../utils/ifc";
 
 type Props = {
   id: number;
@@ -21,93 +13,68 @@ type Props = {
 
 export const OutlinerNode = ({ id }: Props) => {
   const expandedIds = useOutlinerStore((state) => state.expandedIds);
+  const visibilityStates = useOutlinerStore((state) => state.visibilityStates);
   const expand = useOutlinerStore((state) => state.expand);
   const collapse = useOutlinerStore((state) => state.collapse);
-  const isExpanded = useMemo(() => expandedIds.includes(id), [expandedIds, id]);
-
-  const onArrowClick = useCallback(() => {
-    if (isExpanded) {
-      collapse(id);
-    } else {
-      expand(id);
-    }
-  }, [collapse, expand, id, isExpanded]);
-
-  const { data: geometryIds } = useGetGeometryList();
-  const hasGeometry = useMemo(
-    () =>
-      geometryIds !== undefined
-        ? geometryIds.some((geometryId) => geometryId === id)
-        : false,
-    [geometryIds, id]
-  );
-
-  const { data: info } = useGetOutlinerNodeInfo(id);
-  const defaultVisibility = useMemo(() => {
-    if (info === undefined) {
-      return false;
-    }
-    if (hasGeometry) {
-      return defaultVisibilityOf(info.type);
-    }
-    return true;
-  }, [hasGeometry, info]);
-
-  const visibilityStates = useOutlinerStore((state) => state.visibilityStates);
   const show = useOutlinerStore((state) => state.show);
   const hide = useOutlinerStore((state) => state.hide);
 
-  const isVisible = useMemo(
+  const isExpanded = useMemo(() => expandedIds.includes(id), [expandedIds, id]);
+  const { data: info } = useGetOutlinerNodeInfo(id);
+  const { data: childIds } = useGetOutlinerNodeChildren(isExpanded ? id : null);
+
+  const expandState = useMemo(
     () =>
-      visibilityStates.find((vs) => vs.id === id)?.visible ?? defaultVisibility,
-    [defaultVisibility, id, visibilityStates]
+      isExpanded
+        ? childIds !== undefined
+          ? "expanded"
+          : "loading"
+        : "collapsed",
+    [childIds, isExpanded]
   );
 
-  const onCheckboxClick = useCallback(() => {
-    if (isVisible) {
-      hide(id);
-    } else {
-      show(id);
-    }
-  }, [hide, id, isVisible, show]);
+  const onExpandClick = useCallback(
+    () => (isExpanded ? collapse(id) : expand(id)),
+    [collapse, expand, id, isExpanded]
+  );
 
-  const { data: children } = useGetOutlinerNodeChildren(isExpanded ? id : null);
+  const visible = useMemo(
+    () =>
+      visibilityStates.find((vs) => vs.id === id)?.visible ??
+      (info !== undefined ? defaultVisibilityOf(info.type) : false),
+    [info, visibilityStates]
+  );
+
+  const onVisibilityClick = useCallback(
+    () => (visible ? hide(id) : show(id)),
+    [hide, id, show, visible]
+  );
+
+  if (info === undefined) {
+    return null;
+  }
 
   return (
-    <Stack>
+    <Stack direction="column">
       <Stack direction="row" alignItems="center">
-        <IconButton size="small" onClick={onArrowClick}>
-          {isExpanded ? (
-            children !== undefined ? (
-              <KeyboardArrowDownIcon fontSize="small" />
-            ) : (
-              <CircularProgress size="small" />
-            )
-          ) : (
-            <KeyboardArrowRightIcon fontSize="small" />
-          )}
-        </IconButton>
-        <Checkbox
-          size="small"
-          checked={hasGeometry ? isVisible : true}
-          onClick={onCheckboxClick}
-          disabled={!hasGeometry}
+        <OutlinerExpandButton
+          state={expandState}
+          onClick={onExpandClick}
+          disabled={!info.has_children}
         />
-        {info !== undefined ? (
-          <Tooltip
-            title={
-              info.name !== null && info.name.length > 0 ? info.name : "Unnamed"
-            }
-          >
+        {info.name !== null && info.name.length > 0 ? (
+          <Tooltip title={info.name}>
             <Typography>{info.type}</Typography>
           </Tooltip>
         ) : (
-          <CircularProgress />
+          <Typography>{info.type}</Typography>
         )}
+        <Box marginLeft="auto" />
+        <OutlinerVisibilityButton value={visible} onClick={onVisibilityClick} />
       </Stack>
-      {isExpanded && children !== undefined && children !== null ? (
-        <Stack paddingLeft={1}>
-          {children.map((childId) => (
+      {childIds !== undefined && childIds !== null ? (
+        <Stack direction="column" paddingLeft={1}>
+          {childIds.map((childId) => (
             <OutlinerNode key={childId} id={childId} />
           ))}
         </Stack>

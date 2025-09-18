@@ -1,4 +1,5 @@
 export type EntityGeometry = {
+  type: string;
   transform: EntityTransform;
   positions: Float32Array;
   normals: Float32Array;

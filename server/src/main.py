@@ -34,9 +34,12 @@ def get_outliner_root():
 def get_outliner_node_info(id: int):
     try:
         entity = ifc.file.by_id(id)
+        children = get_outliner_node_children(id)
+        
         return {
             "type": entity.is_a(),
             "name": entity.Name,
+            "has_children": children != None and len(children) > 0,
         }
     except:
         return None

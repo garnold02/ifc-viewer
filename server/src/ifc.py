@@ -110,6 +110,7 @@ def _build_geometry():
             colors.append(color_a)
         
         geometry[shape.id] = {
+            "type": shape.type,
             "transform": shape.transformation.matrix,
             "positions": positions,
             "normals": normals,

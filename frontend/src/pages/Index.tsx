@@ -21,5 +21,5 @@ const Layout = styled(Box)`
   width: 100vw;
   height: 100vh;
   display: grid;
-  grid-template-columns: 1fr 500px;
+  grid-template-columns: 1fr 300px;
 `;

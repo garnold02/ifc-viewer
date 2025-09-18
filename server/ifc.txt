@@ -1,1 +1,1 @@
-samples/Ifc2x3_SampleCastle.ifc
+samples/Ifc4_Revit_MEP.ifc
