@@ -1,7 +1,7 @@
 import { Box, styled } from "@mui/material";
-import { Outliner } from "../components/outliner/Outliner";
 import { OutlinerProvider } from "../components/outliner/OutlinerProvider";
 import { Viewport } from "../components/viewport/Viewport";
+import { Outliner } from "../components/outliner/Outliner";
 
 export const Index = () => {
   return (

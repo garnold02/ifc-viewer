@@ -1,65 +1,40 @@
 import { Canvas } from "@react-three/fiber";
 import { FlyControls } from "@react-three/drei";
-import { useGetGeometryList } from "../../api/queries/geometry/useGetGeometryList";
-import { ViewportScene } from "./ViewportScene";
-import { LinearProgress, Stack } from "@mui/material";
-import { useGetGeometryNodes } from "../../api/queries/geometry/useGetGeometryNode";
 import { useMemo } from "react";
+import type { TreeNodeGeometryTransform } from "../../api/queries/tree/types";
+import { useGetTree } from "../../api/queries/tree/useGetTree";
+import { ViewportNode } from "./ViewportNode";
 
 export const Viewport = () => {
-  const { data: geometryIds } = useGetGeometryList();
-  const results = useGetGeometryNodes(geometryIds ?? []);
-
-  const progressVariant = useMemo(
-    () => (geometryIds === undefined ? "query" : "determinate"),
-    [geometryIds]
-  );
-
-  const progressValue = useMemo(
+  // Rotate +90° around X axis
+  const matrix = useMemo(
     () =>
-      (results.reduce(
-        (a, result) => a + (result.data !== undefined ? 1 : 0),
-        0
-      ) *
-        100) /
-      results.length,
-    [results]
+      [
+        1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1,
+      ] as TreeNodeGeometryTransform,
+    []
   );
 
-  const values = useMemo(() => {
-    if (
-      geometryIds === undefined ||
-      results.some((result) => result.data === undefined)
-    ) {
-      return null;
-    }
-    return results.map((result, i) => ({
-      id: geometryIds[i],
-      node: result.data!,
-    }));
-  }, [geometryIds, results]);
+  const { data: rootNode } = useGetTree();
 
   return (
-    <Stack>
-      {values === null ? (
-        <LinearProgress variant={progressVariant} value={progressValue} />
-      ) : null}
-      <Canvas
-        style={{
-          background: BACKGROUND,
-        }}
-      >
-        {values !== null ? <ViewportScene values={values} /> : null}
-        <FlyControls
-          autoForward={false}
-          dragToLook={true}
-          movementSpeed={3}
-          rollSpeed={1}
-          makeDefault
-        />
-      </Canvas>
-    </Stack>
+    <Canvas
+      style={{
+        background: "linear-gradient(0, rgba(0, 0, 0, 1) 0%, #1b3196 100%)",
+      }}
+    >
+      <group matrix={matrix} matrixAutoUpdate={false}>
+        {rootNode !== undefined ? <ViewportNode node={rootNode} /> : null}
+        <ambientLight color={[1, 1, 1]} intensity={0.25} />
+        <directionalLight position={[1, 2, 3]} color={[1, 1, 1]} />
+      </group>
+      <FlyControls
+        autoForward={false}
+        dragToLook={true}
+        movementSpeed={3}
+        rollSpeed={1}
+        makeDefault
+      />
+    </Canvas>
   );
 };
-
-const BACKGROUND = "linear-gradient(0, rgba(0, 0, 0, 1) 0%, #1b3196 100%)";

@@ -1,82 +1,98 @@
 import { Box, Stack, Tooltip, Typography } from "@mui/material";
-import { useGetOutlinerNodeInfo } from "../../api/queries/outliner/useGetOutlinerNodeInfo";
 import { OutlinerExpandButton } from "./OutlinerExpandButton";
-import { useCallback, useMemo } from "react";
-import { useOutlinerStore } from "./store";
-import { useGetOutlinerNodeChildren } from "../../api/queries/outliner/useGetOutlinerNodeChildren";
 import { OutlinerVisibilityButton } from "./OutlinerVisibilityButton";
-import { defaultVisibilityOf } from "../../utils/ifc";
+import type { TreeNode } from "../../api/queries/tree/types";
+import { useOutlinerStore } from "./store";
+import { useCallback, useMemo } from "react";
+import { produce } from "immer";
 
 type Props = {
-  id: number;
+  node: TreeNode;
 };
 
-export const OutlinerNode = ({ id }: Props) => {
-  const expandedIds = useOutlinerStore((state) => state.expandedIds);
-  const visibilityStates = useOutlinerStore((state) => state.visibilityStates);
-  const expand = useOutlinerStore((state) => state.expand);
-  const collapse = useOutlinerStore((state) => state.collapse);
-  const show = useOutlinerStore((state) => state.show);
-  const hide = useOutlinerStore((state) => state.hide);
+export const OutlinerNode = ({ node }: Props) => {
+  const nodeStates = useOutlinerStore((state) => state.nodeStates);
+  const setNodeState = useOutlinerStore((state) => state.setNodeState);
 
-  const isExpanded = useMemo(() => expandedIds.includes(id), [expandedIds, id]);
-  const { data: info } = useGetOutlinerNodeInfo(id);
-  const { data: childIds } = useGetOutlinerNodeChildren(isExpanded ? id : null);
-
-  const expandState = useMemo(
+  const nodeState = useMemo(
     () =>
-      isExpanded
-        ? childIds !== undefined
-          ? "expanded"
-          : "loading"
-        : "collapsed",
-    [childIds, isExpanded]
+      nodeStates.find((ns) => ns.id === node.id) ?? {
+        id: node.id,
+        expanded: false,
+        showSelf: true,
+        showChildren: true,
+      },
+    [nodeStates]
   );
 
   const onExpandClick = useCallback(
-    () => (isExpanded ? collapse(id) : expand(id)),
-    [collapse, expand, id, isExpanded]
-  );
-
-  const visible = useMemo(
     () =>
-      visibilityStates.find((vs) => vs.id === id)?.visible ??
-      (info !== undefined ? defaultVisibilityOf(info.type) : false),
-    [info, visibilityStates]
+      setNodeState(node.id, (prev) =>
+        produce(prev, (draft) => {
+          draft.expanded = !nodeState.expanded;
+        })
+      ),
+    [nodeState.expanded, setNodeState]
   );
 
-  const onVisibilityClick = useCallback(
-    () => (visible ? hide(id) : show(id)),
-    [hide, id, show, visible]
+  const onSelfVisClick = useCallback(
+    () =>
+      setNodeState(node.id, (prev) =>
+        produce(prev, (draft) => {
+          draft.showSelf = !nodeState.showSelf;
+        })
+      ),
+    [nodeState.showSelf, setNodeState]
   );
 
-  if (info === undefined) {
-    return null;
-  }
+  const onChildrenVisClick = useCallback(
+    () =>
+      setNodeState(node.id, (prev) =>
+        produce(prev, (draft) => {
+          draft.showChildren = !nodeState.showChildren;
+        })
+      ),
+    [nodeState.showChildren, setNodeState]
+  );
+
+  const childComponents = useMemo(
+    () =>
+      node.children.map((child) => (
+        <OutlinerNode key={child.id} node={child} />
+      )),
+    [node.children]
+  );
 
   return (
     <Stack direction="column">
       <Stack direction="row" alignItems="center">
         <OutlinerExpandButton
-          state={expandState}
+          value={nodeState.expanded}
           onClick={onExpandClick}
-          disabled={!info.has_children}
+          disabled={node.children.length === 0}
         />
-        {info.name !== null && info.name.length > 0 ? (
-          <Tooltip title={info.name}>
-            <Typography>{info.type}</Typography>
+        {node.name !== null && node.name.length > 0 ? (
+          <Tooltip title={node.name}>
+            <Typography>{node.type}</Typography>
           </Tooltip>
         ) : (
-          <Typography>{info.type}</Typography>
+          <Typography>{node.type}</Typography>
         )}
         <Box marginLeft="auto" />
-        <OutlinerVisibilityButton value={visible} onClick={onVisibilityClick} />
+        <OutlinerVisibilityButton
+          value={nodeState.showSelf}
+          onClick={onSelfVisClick}
+          disabled={false}
+        />
+        <OutlinerVisibilityButton
+          value={nodeState.showChildren}
+          onClick={onChildrenVisClick}
+          disabled={node.children.length === 0}
+        />
       </Stack>
-      {childIds !== undefined && childIds !== null ? (
+      {nodeState.expanded ? (
         <Stack direction="column" paddingLeft={1}>
-          {childIds.map((childId) => (
-            <OutlinerNode key={childId} id={childId} />
-          ))}
+          {childComponents}
         </Stack>
       ) : null}
     </Stack>

@@ -81,3 +81,8 @@ def get_geometry_node(id: int):
         return ifc.geometry[id]
     else:
         return None
+
+
+@app.get("/tree")
+def get_tree():
+    return ifc.hierarchy

@@ -110,7 +110,6 @@ def _build_geometry():
             colors.append(color_a)
         
         geometry[shape.id] = {
-            "type": shape.type,
             "transform": shape.transformation.matrix,
             "positions": positions,
             "normals": normals,
@@ -124,6 +123,44 @@ def _build_geometry():
     print("        DONE")
 
 
+def _build_hierarchy():
+    print("    Building hierarchy...")
+    global hierarchy
+
+    def collect(e):
+        geom = None
+        if e.id() in geometry:
+            geom = geometry[e.id()]
+
+        children = []
+
+        for rel in file.by_type("IfcRelAggregates"):
+            if rel.RelatingObject != e:
+                continue
+            
+            for child in rel.RelatedObjects:
+                children.append(collect(child))
+        
+        for rel in file.by_type("IfcRelContainedInSpatialStructure"):
+            if rel.RelatingStructure != e:
+                continue
+            
+            for child in rel.RelatedElements:
+                children.append(collect(child))
+        
+        return {
+            "id": e.id(),
+            "type": e.is_a(),
+            "name": e.Name,
+            "geometry": geom,
+            "children": children,
+        }
+
+    project = file.by_type("IfcProject")[0]
+    hierarchy = collect(project)
+    print("        DONE")
+
+
 def load(path: str):
     global file
     print(f"Loading IFC from `{path}`...")
@@ -132,5 +169,6 @@ def load(path: str):
     file = ifc_open(path)
     print("        DONE")
     _build_geometry()
+    _build_hierarchy()
     end = time()
     print(f"IFC loaded! Took {round(end - start, 2)} seconds")
