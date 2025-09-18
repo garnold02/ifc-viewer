@@ -56,6 +56,7 @@ def _build_geometries():
         positions = []
         normals = []
         colors = []
+        has_transparency = True
         transparent = False
 
         materials = shape.geometry.materials
@@ -63,18 +64,21 @@ def _build_geometries():
         faces = shape.geometry.faces
         verts = shape.geometry.verts
 
-        for face_index in range(0, len(shape.geometry.faces) // 3):
+        for face_index in range(0, len(faces) // 3):
             material = materials[material_ids[face_index]]
             transparency = material.transparency
 
             if isnan(transparency):
-                transparency = 1.0
+                has_transparency = False
             
             diffuse = material.diffuse
             color_r = diffuse.r()
             color_g = diffuse.g()
             color_b = diffuse.b()
-            color_a = 1.0 - transparency
+            color_a = 1.0
+
+            if has_transparency:
+                color_a = 1.0 - transparency
 
             if color_a < 1.0:
                 transparent = True
@@ -149,7 +153,7 @@ def _build_geometries():
             "positions": positions,
             "normals": normals,
             "colors": colors,
-            "transparent": transparent,
+            "transparent": has_transparency and transparent,
         })
 
         if not iterator.next():
