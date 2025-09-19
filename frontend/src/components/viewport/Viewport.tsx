@@ -30,6 +30,8 @@ export const Viewport = () => {
   return (
     <Canvas
       style={{
+        width: "100%",
+        height: "100%",
         background: "linear-gradient(0, rgba(0, 0, 0, 1) 0%, #1b3196 100%)",
       }}
       onClickCapture={onCanvasClick}
