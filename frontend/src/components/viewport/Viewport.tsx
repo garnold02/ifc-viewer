@@ -1,12 +1,21 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import type { TreeNodeGeometryTransform } from "../../api/queries/tree/types";
 import { useGetTree } from "../../api/queries/tree/useGetTree";
 import { ViewportNode } from "./ViewportNode";
 import { type DirectionalLight } from "three";
+import { useOutlinerStore } from "../outliner/store";
 
 export const Viewport = () => {
+  const setSelectedNodeId = useOutlinerStore(
+    (state) => state.setSelectedNodeId
+  );
+
+  const onCanvasClick = useCallback(() => {
+    setSelectedNodeId(null);
+  }, [setSelectedNodeId]);
+
   // Rotate +90° around X axis
   const matrix = useMemo(
     () =>
@@ -23,6 +32,7 @@ export const Viewport = () => {
       style={{
         background: "linear-gradient(0, rgba(0, 0, 0, 1) 0%, #1b3196 100%)",
       }}
+      onClickCapture={onCanvasClick}
     >
       <group matrix={matrix} matrixAutoUpdate={false}>
         {rootNode !== undefined ? (
