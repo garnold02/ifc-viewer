@@ -1,6 +1,6 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import type { TreeNode } from "../../api/queries/tree/types";
-import { Tooltip, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useOutlinerStore } from "./store";
 
 type Props = {
@@ -17,24 +17,15 @@ export const OutlinerLabel = ({ node }: Props) => {
     setSelectedNodeId(selectedNodeId === node.id ? null : node.id);
   }, [node.id, selectedNodeId, setSelectedNodeId]);
 
-  const typography = useMemo(
-    () => (
-      <Typography
-        color={selectedNodeId === node.id ? "primary" : "textPrimary"}
-        fontWeight={selectedNodeId === node.id ? "bold" : "normal"}
-        sx={{ userSelect: "none" }}
-        onClick={onTypographyClick}
-        noWrap
-      >
-        {node.type}
-      </Typography>
-    ),
-    [node.id, node.type, onTypographyClick, selectedNodeId]
+  return (
+    <Typography
+      color={selectedNodeId === node.id ? "primary" : "textPrimary"}
+      fontWeight={selectedNodeId === node.id ? "bold" : "normal"}
+      sx={{ userSelect: "none" }}
+      onClick={onTypographyClick}
+      noWrap
+    >
+      {node.type}
+    </Typography>
   );
-
-  if (node.name !== null && node.name.length > 0) {
-    return <Tooltip title={node.name}>{typography}</Tooltip>;
-  }
-
-  return typography;
 };

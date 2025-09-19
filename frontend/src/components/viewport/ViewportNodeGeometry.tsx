@@ -1,13 +1,12 @@
 import { useMemo } from "react";
 import type { TreeNodeGeometry } from "../../api/queries/tree/types";
-import { useOutlinerStore } from "../outliner/store";
 
 type Props = {
-  id: number;
   geometry: TreeNodeGeometry;
+  highlight: boolean;
 };
 
-export const ViewportNodeGeometry = ({ id, geometry }: Props) => {
+export const ViewportNodeGeometry = ({ geometry, highlight }: Props) => {
   const positions = useMemo(
     () => new Float32Array(geometry.positions),
     [geometry.positions]
@@ -23,10 +22,9 @@ export const ViewportNodeGeometry = ({ id, geometry }: Props) => {
     [geometry.colors]
   );
 
-  const selectedNodeId = useOutlinerStore((state) => state.selectedNodeId);
   const color = useMemo<[number, number, number]>(
-    () => (selectedNodeId === id ? [0.5, 1, 4] : [1, 1, 1]),
-    [id, selectedNodeId]
+    () => (highlight ? [0.5, 1, 4] : [1, 1, 1]),
+    [highlight]
   );
 
   return (

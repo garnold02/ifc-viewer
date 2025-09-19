@@ -6,23 +6,37 @@ import { defaultOutlinerNodeState } from "../../utils/outliner";
 
 type Props = {
   node: TreeNode;
+  highlight: boolean;
 };
 
-export const ViewportNode = ({ node }: Props) => {
+export const ViewportNode = ({ node, highlight }: Props) => {
+  const selectedNodeId = useOutlinerStore((state) => state.selectedNodeId);
+  const selected = useMemo(
+    () => selectedNodeId === node.id,
+    [node.id, selectedNodeId]
+  );
+
   const geometryComponent = useMemo(
     () =>
       node.geometry !== null ? (
-        <ViewportNodeGeometry id={node.id} geometry={node.geometry} />
+        <ViewportNodeGeometry
+          geometry={node.geometry}
+          highlight={highlight || selected}
+        />
       ) : null,
-    [node.geometry]
+    [highlight, node.geometry, selected]
   );
 
   const childComponents = useMemo(
     () =>
       node.children.map((child) => (
-        <ViewportNode key={child.id} node={child} />
+        <ViewportNode
+          key={child.id}
+          node={child}
+          highlight={highlight || selected}
+        />
       )),
-    [node.children]
+    [highlight, node.children, selected]
   );
 
   const nodeStates = useOutlinerStore((state) => state.nodeStates);
