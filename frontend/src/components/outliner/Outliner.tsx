@@ -10,7 +10,7 @@ export const Outliner = () => {
       <Tabs value="spatial-structure">
         <Tab label="Spatial Structure" value="spatial-structure" />
       </Tabs>
-      <Box flexGrow={1} overflow="scroll" padding={1}>
+      <Box flexGrow={1} padding={1} sx={{ overflowY: "scroll" }}>
         {rootNode !== undefined ? (
           <OutlinerNode node={rootNode} />
         ) : (
