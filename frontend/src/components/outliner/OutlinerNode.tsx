@@ -1,4 +1,4 @@
-import { Box, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { OutlinerExpandButton } from "./OutlinerExpandButton";
 import { OutlinerVisibilityButton } from "./OutlinerVisibilityButton";
 import type { TreeNode } from "../../api/queries/tree/types";
@@ -6,6 +6,7 @@ import { useOutlinerStore } from "./store";
 import { useCallback, useMemo } from "react";
 import { produce } from "immer";
 import { defaultOutlinerNodeState } from "../../utils/outliner";
+import { OutlinerLabel } from "./OutlinerLabel";
 
 type Props = {
   node: TreeNode;
@@ -68,17 +69,7 @@ export const OutlinerNode = ({ node }: Props) => {
           onClick={onExpandClick}
           disabled={node.children.length === 0}
         />
-        {node.name !== null && node.name.length > 0 ? (
-          <Tooltip title={node.name}>
-            <Typography sx={{ userSelect: "none" }} noWrap>
-              {node.type}
-            </Typography>
-          </Tooltip>
-        ) : (
-          <Typography sx={{ userSelect: "none" }} noWrap>
-            {node.type}
-          </Typography>
-        )}
+        <OutlinerLabel node={node} />
         <Box marginLeft="auto" />
         <OutlinerVisibilityButton
           value={nodeState.showSelf}

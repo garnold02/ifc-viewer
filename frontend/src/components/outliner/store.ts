@@ -10,6 +10,8 @@ export type OutlinerState = {
     type: string,
     prod: (prev: OutlinerNodeState) => OutlinerNodeState
   ) => void;
+  selectedNodeId: number | null;
+  setSelectedNodeId: (value: number | null) => void;
 };
 
 export type OutlinerNodeState = {
@@ -33,6 +35,13 @@ export const createOutlinerStore = () =>
           }
           const after = prod(before);
           draft.nodeStates.push(after);
+        })
+      ),
+    selectedNodeId: null,
+    setSelectedNodeId: (value) =>
+      set((prev) =>
+        produce(prev, (draft) => {
+          draft.selectedNodeId = value;
         })
       ),
   }));
