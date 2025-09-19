@@ -20,6 +20,7 @@ export const ViewportNode = ({ node, highlight }: Props) => {
     () =>
       node.geometry !== null ? (
         <ViewportNodeGeometry
+          id={node.id}
           geometry={node.geometry}
           highlight={highlight || selected}
         />

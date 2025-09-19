@@ -1,12 +1,15 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import type { TreeNodeGeometry } from "../../api/queries/tree/types";
+import { useOutlinerStore } from "../outliner/store";
+import type { ThreeEvent } from "@react-three/fiber";
 
 type Props = {
+  id: number;
   geometry: TreeNodeGeometry;
   highlight: boolean;
 };
 
-export const ViewportNodeGeometry = ({ geometry, highlight }: Props) => {
+export const ViewportNodeGeometry = ({ id, geometry, highlight }: Props) => {
   const positions = useMemo(
     () => new Float32Array(geometry.positions),
     [geometry.positions]
@@ -27,8 +30,25 @@ export const ViewportNodeGeometry = ({ geometry, highlight }: Props) => {
     [highlight]
   );
 
+  const selectedNodeId = useOutlinerStore((state) => state.selectedNodeId);
+  const setSelectedNodeId = useOutlinerStore(
+    (state) => state.setSelectedNodeId
+  );
+
+  const onMeshClick = useCallback(
+    (event: ThreeEvent<MouseEvent>) => {
+      setSelectedNodeId(selectedNodeId === id ? null : id);
+      event.stopPropagation();
+    },
+    [id, selectedNodeId, setSelectedNodeId]
+  );
+
   return (
-    <mesh matrixAutoUpdate={false} matrix={geometry.transform}>
+    <mesh
+      matrixAutoUpdate={false}
+      matrix={geometry.transform}
+      onClick={onMeshClick}
+    >
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
