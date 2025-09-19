@@ -18,7 +18,7 @@ export const Inspector = () => {
         <Tab label="Attributes" value="attributes" />
         <Tab label="Property Sets" value="property-sets" />
       </Tabs>
-      <Box flexGrow={1} overflow="scroll">
+      <Box flexGrow={1} overflow="scroll" padding={1}>
         {currentTab === "attributes" ? <InspectorAttributes /> : null}
         {currentTab === "property-sets" ? <InspectorPropertySets /> : null}
       </Box>
