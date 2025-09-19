@@ -12,7 +12,7 @@ export const ViewportNode = ({ node }: Props) => {
   const geometryComponent = useMemo(
     () =>
       node.geometry !== null ? (
-        <ViewportNodeGeometry geometry={node.geometry} />
+        <ViewportNodeGeometry id={node.id} geometry={node.geometry} />
       ) : null,
     [node.geometry]
   );

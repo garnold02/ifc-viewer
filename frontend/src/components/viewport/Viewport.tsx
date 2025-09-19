@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { FlyControls } from "@react-three/drei";
+import { FlyControls, OrbitControls } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 import type { TreeNodeGeometryTransform } from "../../api/queries/tree/types";
 import { useGetTree } from "../../api/queries/tree/useGetTree";
@@ -29,13 +29,14 @@ export const Viewport = () => {
         <ambientLight color={[1, 1, 1]} intensity={0.5} />
       </group>
       <CameraDirectionLight />
-      <FlyControls
+      <OrbitControls makeDefault />
+      {/* <FlyControls
         autoForward={false}
         dragToLook={true}
         movementSpeed={3}
         rollSpeed={1}
         makeDefault
-      />
+      /> */}
     </Canvas>
   );
 };

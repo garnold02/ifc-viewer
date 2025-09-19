@@ -1,11 +1,13 @@
 import { useMemo } from "react";
 import type { TreeNodeGeometry } from "../../api/queries/tree/types";
+import { useOutlinerStore } from "../outliner/store";
 
 type Props = {
+  id: number;
   geometry: TreeNodeGeometry;
 };
 
-export const ViewportNodeGeometry = ({ geometry }: Props) => {
+export const ViewportNodeGeometry = ({ id, geometry }: Props) => {
   const positions = useMemo(
     () => new Float32Array(geometry.positions),
     [geometry.positions]
@@ -19,6 +21,12 @@ export const ViewportNodeGeometry = ({ geometry }: Props) => {
   const colors = useMemo(
     () => new Float32Array(geometry.colors),
     [geometry.colors]
+  );
+
+  const selectedNodeId = useOutlinerStore((state) => state.selectedNodeId);
+  const color = useMemo<[number, number, number]>(
+    () => (selectedNodeId === id ? [0.5, 1, 4] : [1, 1, 1]),
+    [id, selectedNodeId]
   );
 
   return (
@@ -46,7 +54,11 @@ export const ViewportNodeGeometry = ({ geometry }: Props) => {
           args={[colors, 4, false]}
         />
       </bufferGeometry>
-      <meshLambertMaterial vertexColors transparent={geometry.transparent} />
+      <meshLambertMaterial
+        vertexColors
+        transparent={geometry.transparent}
+        color={color}
+      />
     </mesh>
   );
 };
