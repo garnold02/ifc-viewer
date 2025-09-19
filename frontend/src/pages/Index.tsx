@@ -1,8 +1,9 @@
-import { styled } from "@mui/material";
+import { Divider, styled } from "@mui/material";
 import { OutlinerProvider } from "../components/outliner/OutlinerProvider";
 import { Viewport } from "../components/viewport/Viewport";
 import { Outliner } from "../components/outliner/Outliner";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { Inspector } from "../components/inspector/Inspector";
 
 export const Index = () => {
   return (
@@ -11,14 +12,20 @@ export const Index = () => {
         <Panel>
           <Viewport />
         </Panel>
-        <PanelResizeHandle />
+        <PanelResizeHandle>
+          <Divider orientation="vertical" />
+        </PanelResizeHandle>
         <Panel defaultSize={20} minSize={15} maxSize={30}>
           <PanelGroup direction="vertical">
-            <Panel style={{ overflowY: "scroll" }}>
+            <Panel>
               <Outliner />
             </Panel>
-            <PanelResizeHandle />
-            <Panel defaultSize={20} minSize={10} maxSize={40}></Panel>
+            <PanelResizeHandle>
+              <Divider orientation="horizontal" />
+            </PanelResizeHandle>
+            <Panel defaultSize={20} minSize={10} maxSize={40}>
+              <Inspector />
+            </Panel>
           </PanelGroup>
         </Panel>
       </Layout>
