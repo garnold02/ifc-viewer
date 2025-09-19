@@ -25,8 +25,8 @@ export const ViewportNodeGeometry = ({ id, geometry, highlight }: Props) => {
     [geometry.colors]
   );
 
-  const color = useMemo<[number, number, number]>(
-    () => (highlight ? [0.5, 1, 4] : [1, 1, 1]),
+  const emissive = useMemo<[number, number, number]>(
+    () => (highlight ? [0, 0.125, 0.5] : [0, 0, 0]),
     [highlight]
   );
 
@@ -75,7 +75,7 @@ export const ViewportNodeGeometry = ({ id, geometry, highlight }: Props) => {
       <meshLambertMaterial
         vertexColors
         transparent={geometry.transparent}
-        color={color}
+        emissive={emissive}
       />
     </mesh>
   );
