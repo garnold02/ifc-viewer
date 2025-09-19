@@ -46,7 +46,7 @@ export const ViewportNodeGeometry = ({ geometry }: Props) => {
           args={[colors, 4, false]}
         />
       </bufferGeometry>
-      <meshPhongMaterial vertexColors transparent={geometry.transparent} />
+      <meshLambertMaterial vertexColors transparent={geometry.transparent} />
     </mesh>
   );
 };
