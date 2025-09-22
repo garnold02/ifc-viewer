@@ -2,7 +2,6 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import ifc
-import util
 
 
 @asynccontextmanager
@@ -47,13 +46,10 @@ def get_attributes(id: int):
                 continue
 
             attributes.append({
-                "name": util.pascal_case_to_words(key),
+                "name": key,
                 "value": value,
             })
         
-        return sorted(
-            attributes,
-            key=lambda x: x["name"],
-        )
+        return attributes
     except:
         return None

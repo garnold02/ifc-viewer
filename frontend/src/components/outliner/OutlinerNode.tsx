@@ -6,7 +6,8 @@ import { useOutlinerStore } from "./store";
 import { useCallback, useMemo } from "react";
 import { produce } from "immer";
 import { defaultOutlinerNodeState } from "../../utils/outliner";
-import { OutlinerLabel } from "./OutlinerLabel";
+import { OutlinerNodeTypeLabel } from "./OutlinerNodeTypeLabel";
+import { OutlinerNodeNameLabel } from "./OutlinerNodeNameLabel";
 
 type Props = {
   node: TreeNode;
@@ -69,8 +70,9 @@ export const OutlinerNode = ({ node }: Props) => {
           onClick={onExpandClick}
           disabled={node.children.length === 0}
         />
-        <OutlinerLabel node={node} />
+        <OutlinerNodeTypeLabel node={node} />
         <Box marginLeft="auto" />
+        <OutlinerNodeNameLabel node={node} />
         <OutlinerVisibilityButton
           value={nodeState.showSelf}
           onClick={onSelfVisClick}

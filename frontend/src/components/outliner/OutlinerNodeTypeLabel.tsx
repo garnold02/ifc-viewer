@@ -2,12 +2,13 @@ import { useCallback } from "react";
 import type { TreeNode } from "../../api/queries/tree/types";
 import { Typography } from "@mui/material";
 import { useOutlinerStore } from "./store";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   node: TreeNode;
 };
 
-export const OutlinerLabel = ({ node }: Props) => {
+export const OutlinerNodeTypeLabel = ({ node }: Props) => {
   const selectedNodeId = useOutlinerStore((state) => state.selectedNodeId);
   const setSelectedNodeId = useOutlinerStore(
     (state) => state.setSelectedNodeId
@@ -17,6 +18,8 @@ export const OutlinerLabel = ({ node }: Props) => {
     setSelectedNodeId(selectedNodeId === node.id ? null : node.id);
   }, [node.id, selectedNodeId, setSelectedNodeId]);
 
+  const { t } = useTranslation();
+
   return (
     <Typography
       color={selectedNodeId === node.id ? "primary" : "textPrimary"}
@@ -25,7 +28,9 @@ export const OutlinerLabel = ({ node }: Props) => {
       onClick={onTypographyClick}
       noWrap
     >
-      {node.type}
+      {t(`ifc.type.${node.type}`, {
+        defaultValue: node.type,
+      })}
     </Typography>
   );
 };

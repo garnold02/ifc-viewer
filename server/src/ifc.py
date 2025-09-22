@@ -4,7 +4,6 @@ from math import isnan
 from multiprocessing import cpu_count
 import numpy as np
 from time import time
-import util
 
 
 def _build_geometry():
@@ -148,10 +147,10 @@ def _build_hierarchy():
             
             for child in rel.RelatedElements:
                 children.append(collect(child))
-        
+
         return {
             "id": e.id(),
-            "type": util.pascal_case_to_words(e.is_a()).replace("Ifc", ""),
+            "type": e.is_a(),
             "name": e.Name,
             "geometry": geom,
             "children": children,
