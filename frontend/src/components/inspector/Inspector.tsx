@@ -27,7 +27,7 @@ export const Inspector = () => {
           value="property-sets"
         />
       </Tabs>
-      <Box flexGrow={1} padding={1} sx={{ overflowY: "scroll" }}>
+      <Box flexGrow={1} paddingLeft={1} paddingRight={1} overflow="hidden">
         {currentTab === "attributes" ? <InspectorAttributes /> : null}
         {currentTab === "property-sets" ? <InspectorPropertySets /> : null}
       </Box>

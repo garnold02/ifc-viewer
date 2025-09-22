@@ -27,3 +27,20 @@ app.add_middleware(
 @app.get("/tree")
 def get_tree():
     return ifc.hierarchy
+
+
+@app.get("/attributes/{id}")
+def get_attributes(id: int):
+    try:
+        entity = ifc.file.by_id(id)
+        info = entity.get_info_2(recursive=True)
+        attributes = []
+
+        for key in info:
+            value = info[key]
+            if not isinstance(value, dict) and not isinstance(value, tuple):
+                attributes.append({ "name": key, "value": value })
+        
+        return attributes
+    except:
+        return None
