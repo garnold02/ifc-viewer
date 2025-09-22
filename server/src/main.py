@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import ifc
+import util
 
 
 @asynccontextmanager
@@ -36,10 +37,7 @@ def get_attributes(id: int):
         info = entity.get_info_2(recursive=True)
         attributes = []
 
-        for key in info:
-            if key == "id":
-                continue
-            
+        for key in info:            
             value = info[key]
 
             if isinstance(value, dict):
@@ -48,12 +46,8 @@ def get_attributes(id: int):
             if isinstance(value, tuple):
                 continue
 
-            name = key
-            if name == "type":
-                name = "Type"
-
             attributes.append({
-                "name": name,
+                "name": util.pascal_case_to_words(key),
                 "value": value,
             })
         

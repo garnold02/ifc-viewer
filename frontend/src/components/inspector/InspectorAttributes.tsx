@@ -36,7 +36,7 @@ export const InspectorAttributes = () => {
         alignItems="center"
         sx={{ width: "100%", height: "100%" }}
       >
-        <Typography fontStyle="italic">
+        <Typography fontStyle="italic" color="textDisabled">
           {t("component.inspector.attributes.none_selected")}
         </Typography>
       </Stack>
@@ -48,9 +48,27 @@ export const InspectorAttributes = () => {
       <Table>
         <TableBody>
           {attributes.map((attribute) => (
-            <TableRow>
-              <TableCell>{attribute.name}</TableCell>
-              <TableCell>{String(attribute.value)}</TableCell>
+            <TableRow key={attribute.name}>
+              <TableCell>
+                <Typography fontSize="0.875rem" fontWeight="bold">
+                  {attribute.name}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                {attribute.value === null ? (
+                  <Typography
+                    fontSize="0.875rem"
+                    fontStyle="italic"
+                    color="textDisabled"
+                  >
+                    {t("component.inspector.attributes.no_value")}
+                  </Typography>
+                ) : (
+                  <Typography fontSize="0.875rem">
+                    {String(attribute.value)}
+                  </Typography>
+                )}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

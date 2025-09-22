@@ -3,7 +3,8 @@
     "inspector": {
       "attributes": {
         "title": "Attributes",
-        "none_selected": "No element selected"
+        "none_selected": "No element selected",
+        "no_value": "N/A"
       },
       "property_sets": {
         "title": "Property sets"

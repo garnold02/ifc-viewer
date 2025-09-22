@@ -3,7 +3,8 @@
     "inspector": {
       "attributes": {
         "title": "Attribútumok",
-        "none_selected": "Nincs kiválasztott elem"
+        "none_selected": "Nincs kiválasztott elem",
+        "no_value": "N/A"
       },
       "property_sets": {
         "title": "Jellemző halmazok"
