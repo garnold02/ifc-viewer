@@ -12,7 +12,11 @@
     },
     "outliner": {
       "spatial_structure": {
-        "title": "Spatial structure"
+        "title": "Spatial structure",
+        "show_self": "Show self",
+        "hide_self": "Hide self",
+        "show_children": "Show children",
+        "hide_children": "Hide children"
       }
     },
     "toolbar": {

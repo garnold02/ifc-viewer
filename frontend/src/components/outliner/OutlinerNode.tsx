@@ -74,11 +74,13 @@ export const OutlinerNode = ({ node }: Props) => {
         <Box marginLeft="auto" />
         <OutlinerNodeNameLabel node={node} />
         <OutlinerVisibilityButton
+          variant="self"
           value={nodeState.showSelf}
           onClick={onSelfVisClick}
           disabled={node.geometry === null}
         />
         <OutlinerVisibilityButton
+          variant="children"
           value={nodeState.showChildren}
           onClick={onChildrenVisClick}
           disabled={node.children.length === 0}
