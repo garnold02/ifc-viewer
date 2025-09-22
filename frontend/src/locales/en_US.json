@@ -1,10 +1,7 @@
 {
   "component": {
     "toolbar": {
-      "select": {
-        "enable": "Enable selection",
-        "disable": "Disable selection"
-      }
+      "select": "Toggle selection in viewport"
     }
   }
 }

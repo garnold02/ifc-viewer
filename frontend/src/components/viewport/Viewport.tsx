@@ -6,15 +6,20 @@ import { useGetTree } from "../../api/queries/tree/useGetTree";
 import { ViewportNode } from "./ViewportNode";
 import { type DirectionalLight } from "three";
 import { useOutlinerStore } from "../outliner/store";
+import { useToolbarStore } from "../toolbar/store";
 
 export const Viewport = () => {
   const setSelectedNodeId = useOutlinerStore(
     (state) => state.setSelectedNodeId
   );
 
+  const selectedTool = useToolbarStore((state) => state.selectedTool);
+
   const onCanvasClick = useCallback(() => {
-    setSelectedNodeId(null);
-  }, [setSelectedNodeId]);
+    if (selectedTool === "select") {
+      setSelectedNodeId(null);
+    }
+  }, [selectedTool, setSelectedNodeId]);
 
   // Rotate +90° around X axis
   const matrix = useMemo(
