@@ -16,7 +16,7 @@ export const Index = () => {
       <PanelResizeHandle>
         <Divider orientation="vertical" />
       </PanelResizeHandle>
-      <Panel defaultSize={20} minSize={15} maxSize={30}>
+      <Panel defaultSize={25} minSize={20} maxSize={30}>
         <PanelGroup direction="vertical">
           <Panel>
             <Outliner />
@@ -24,7 +24,7 @@ export const Index = () => {
           <PanelResizeHandle>
             <Divider orientation="horizontal" />
           </PanelResizeHandle>
-          <Panel defaultSize={20} minSize={10} maxSize={40}>
+          <Panel defaultSize={30} minSize={20} maxSize={60}>
             <Inspector />
           </Panel>
         </PanelGroup>
