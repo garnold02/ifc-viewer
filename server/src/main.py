@@ -53,3 +53,20 @@ def get_attributes(id: int):
         return attributes
     except:
         return None
+
+
+@app.get("/psets/{id}")
+def get_psets(id: int):
+    try:
+        entity = ifc.file.by_id(id)
+        psets = []
+
+        for rel in ifc.file.by_type("IfcRelDefinesByProperties"):
+            if entity in rel.RelatedObjects:
+                pset = rel.RelatingPropertyDefinition
+                psets.append(pset.get_info_2(recursive=True))
+        
+        return psets
+
+    except:
+        return None
