@@ -1,25 +1,12 @@
-import { StrictMode } from "react";
+import "./lib/i18next";
+import { queryClient } from "./lib/reactQuery";
+import { router } from "./lib/reactRouter";
+
 import { createRoot } from "react-dom/client";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
-import { routeTree } from "./routeTree.gen";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { StrictMode } from "react";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "@tanstack/react-router";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: Infinity,
-    },
-  },
-});
-
-const router = createRouter({ routeTree });
-
-declare module "@tanstack/react-router" {
-  interface Register {
-    router: typeof router;
-  }
-}
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

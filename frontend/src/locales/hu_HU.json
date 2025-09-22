@@ -1,0 +1,10 @@
+{
+  "component": {
+    "toolbar": {
+      "select": {
+        "enable": "Enable selection",
+        "disable": "Disable selection"
+      }
+    }
+  }
+}

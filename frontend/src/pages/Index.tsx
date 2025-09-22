@@ -4,12 +4,15 @@ import { Viewport } from "../components/viewport/Viewport";
 import { Outliner } from "../components/outliner/Outliner";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Inspector } from "../components/inspector/Inspector";
+import { Toolbar } from "../components/toolbar/Toolbar";
 
 export const Index = () => {
   return (
     <OutlinerProvider>
       <Layout direction="horizontal">
         <Panel>
+          <Toolbar />
+          <Divider orientation="horizontal" />
           <Viewport />
         </Panel>
         <PanelResizeHandle>
