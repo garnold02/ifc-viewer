@@ -2,7 +2,8 @@
   "component": {
     "inspector": {
       "attributes": {
-        "title": "Attributes"
+        "title": "Attributes",
+        "none_selected": "No element selected"
       },
       "property_sets": {
         "title": "Property sets"

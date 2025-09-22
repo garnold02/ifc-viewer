@@ -1,10 +1,10 @@
 import {
   CircularProgress,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
   Typography,
 } from "@mui/material";
@@ -18,11 +18,29 @@ export const InspectorAttributes = () => {
   const { data: attributes } = useGetAttributes(selectedNodeId);
 
   if (attributes === undefined) {
-    return <CircularProgress />;
+    return (
+      <Stack
+        justifyContent="center"
+        alignItems="center"
+        sx={{ width: "100%", height: "100%" }}
+      >
+        <CircularProgress />
+      </Stack>
+    );
   }
 
   if (attributes === null) {
-    return <Typography>SORRY NOTHING</Typography>;
+    return (
+      <Stack
+        justifyContent="center"
+        alignItems="center"
+        sx={{ width: "100%", height: "100%" }}
+      >
+        <Typography fontStyle="italic">
+          {t("component.inspector.attributes.none_selected")}
+        </Typography>
+      </Stack>
+    );
   }
 
   return (

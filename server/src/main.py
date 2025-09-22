@@ -37,10 +37,29 @@ def get_attributes(id: int):
         attributes = []
 
         for key in info:
+            if key == "id":
+                continue
+            
             value = info[key]
-            if not isinstance(value, dict) and not isinstance(value, tuple):
-                attributes.append({ "name": key, "value": value })
+
+            if isinstance(value, dict):
+                continue
+            
+            if isinstance(value, tuple):
+                continue
+
+            name = key
+            if name == "type":
+                name = "Type"
+
+            attributes.append({
+                "name": name,
+                "value": value,
+            })
         
-        return attributes
+        return sorted(
+            attributes,
+            key=lambda x: x["name"],
+        )
     except:
         return None

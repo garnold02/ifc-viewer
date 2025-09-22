@@ -2,7 +2,8 @@
   "component": {
     "inspector": {
       "attributes": {
-        "title": "Attribútumok"
+        "title": "Attribútumok",
+        "none_selected": "Nincs kiválasztott elem"
       },
       "property_sets": {
         "title": "Jellemző halmazok"
