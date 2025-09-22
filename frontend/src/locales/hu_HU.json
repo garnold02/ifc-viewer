@@ -1,5 +1,18 @@
 {
   "component": {
+    "inspector": {
+      "attributes": {
+        "title": "Attribútumok"
+      },
+      "property_sets": {
+        "title": "Jellemző halmazok"
+      }
+    },
+    "outliner": {
+      "spatial_structure": {
+        "title": "Térbeli hierarchia"
+      }
+    },
     "toolbar": {
       "select": "Kijelölés be/kikapcsolása a 3D nézetben"
     }

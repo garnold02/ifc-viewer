@@ -1,5 +1,18 @@
 {
   "component": {
+    "inspector": {
+      "attributes": {
+        "title": "Attributes"
+      },
+      "property_sets": {
+        "title": "Property sets"
+      }
+    },
+    "outliner": {
+      "spatial_structure": {
+        "title": "Spatial structure"
+      }
+    },
     "toolbar": {
       "select": "Toggle selection in viewport"
     }

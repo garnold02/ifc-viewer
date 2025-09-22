@@ -2,6 +2,7 @@ import { Box, Stack, Tab, Tabs } from "@mui/material";
 import { useCallback, useState, type SyntheticEvent } from "react";
 import { InspectorAttributes } from "./InspectorAttributes";
 import { InspectorPropertySets } from "./InspectorPropertySets";
+import { useTranslation } from "react-i18next";
 
 type Tab = "attributes" | "property-sets";
 
@@ -12,11 +13,19 @@ export const Inspector = () => {
     [setCurrentTab]
   );
 
+  const { t } = useTranslation();
+
   return (
     <Stack width="100%" height="100%">
       <Tabs value={currentTab} onChange={onTabChange}>
-        <Tab label="Attributes" value="attributes" />
-        <Tab label="Property Sets" value="property-sets" />
+        <Tab
+          label={t("component.inspector.attributes.title")}
+          value="attributes"
+        />
+        <Tab
+          label={t("component.inspector.property_sets.title")}
+          value="property-sets"
+        />
       </Tabs>
       <Box flexGrow={1} padding={1} sx={{ overflowY: "scroll" }}>
         {currentTab === "attributes" ? <InspectorAttributes /> : null}

@@ -1,5 +1,9 @@
 import { Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 export const InspectorPropertySets = () => {
-  return <Typography>PropertySets</Typography>;
+  const { t } = useTranslation();
+  return (
+    <Typography>{t("component.inspector.property_sets.title")}</Typography>
+  );
 };
