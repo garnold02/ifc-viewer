@@ -50,7 +50,10 @@ def get_attributes(id: int):
                 "value": value,
             })
         
-        return attributes
+        return sorted(
+            attributes,
+            key=lambda x: x["name"],
+        )
     except:
         return None
 

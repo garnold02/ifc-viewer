@@ -11,27 +11,11 @@ import {
 import { useTranslation } from "react-i18next";
 import { useOutlinerStore } from "../outliner/store";
 import { useGetAttributes } from "../../api/queries/attributes/useGetAttributes";
-import { useMemo } from "react";
 
 export const InspectorAttributes = () => {
   const { t } = useTranslation();
   const selectedNodeId = useOutlinerStore((state) => state.selectedNodeId);
   const { data: attributes } = useGetAttributes(selectedNodeId);
-
-  const sortedAttributes = useMemo(
-    () =>
-      attributes !== undefined && attributes !== null
-        ? attributes
-            .map((attribute) => ({
-              name: t(`ifc.attribute.${attribute.name}`, {
-                defaultValue: attribute.name,
-              }),
-              value: attribute.value,
-            }))
-            .sort((a, b) => a.name.localeCompare(b.name))
-        : null,
-    [attributes]
-  );
 
   if (attributes === undefined) {
     return (
@@ -45,7 +29,7 @@ export const InspectorAttributes = () => {
     );
   }
 
-  if (sortedAttributes === null) {
+  if (attributes === null) {
     return (
       <Stack
         justifyContent="center"
@@ -63,7 +47,7 @@ export const InspectorAttributes = () => {
     <TableContainer sx={{ height: "100%" }}>
       <Table>
         <TableBody>
-          {sortedAttributes.map((attribute) => (
+          {attributes.map((attribute) => (
             <TableRow key={attribute.name}>
               <TableCell>
                 <Typography fontSize="0.875rem" fontWeight="bold">
