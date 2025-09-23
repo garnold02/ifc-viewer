@@ -80,6 +80,7 @@ def get_psets(id: int):
         return None
 
 
+# TODO: remove this
 @app.get("/allpsets")
 def get_allpsets():
     try:

@@ -186,6 +186,7 @@ def _xform_pset_prop(prop: ifc_entity) -> dict:
         # TODO: handle `IfcComplexProperty`
         value = {
             "type": "complex",
+            "complex": "TODO",
         }
 
     # handle subtypes of `IfcSimpleProperty`
