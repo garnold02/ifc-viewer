@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import ifc
 from ifcopenshell import entity_instance as ifc_entity
@@ -32,61 +32,65 @@ def get_tree():
 
 @app.get("/attributes/{id}")
 def get_attributes(id: int):
+    entity = None
+
     try:
         entity = ifc.file.by_id(id)
-        info = entity.get_info_2(recursive=True)
-        attributes = []
-
-        for key in info:            
-            value = info[key]
-
-            if isinstance(value, dict):
-                continue
-            
-            if isinstance(value, tuple):
-                continue
-
-            attributes.append({
-                "name": key,
-                "value": value,
-            })
-        
-        return sorted(
-            attributes,
-            key=lambda x: x["name"],
-        )
     except:
-        return None
+        raise HTTPException(status_code=404)
+
+    info = entity.get_info_2(recursive=True)
+    attributes = []
+
+    for key in info:            
+        value = info[key]
+
+        if isinstance(value, dict):
+            continue
+        
+        if isinstance(value, tuple):
+            continue
+
+        attributes.append({
+            "name": key,
+            "value": value,
+        })
+    
+    return sorted(
+        attributes,
+        key=lambda x: x["name"],
+    )
 
 
 @app.get("/psets/{id}")
 def get_psets(id: int):
+    entity = None
+
     try:
         entity = ifc.file.by_id(id)
-        psets = []
-
-        for rel in ifc.file.by_type("IfcRelDefinesByProperties"):
-            if entity in rel.RelatedObjects:
-                # TODO: handle the fact that this is actually an `IfcPropertySetDefinitionSelect`
-                #       idk how that actually works though, and I can't test it with my files
-                pset = rel.RelatingPropertyDefinition
-                psets.append(ifc.xform_pset(pset))
-        
-        # TODO: handle psets attached to the object type instead of the object itself
-        
-        return psets
-
     except:
-        return None
+        raise HTTPException(status_code=404)
+
+    psets = []
+
+    for rel in ifc.file.by_type("IfcRelDefinesByProperties"):
+        if entity in rel.RelatedObjects:
+            # TODO: handle the fact that this is actually an `IfcPropertySetDefinitionSelect`
+            #       idk how that actually works though, and I can't test it with my files
+            pset = rel.RelatingPropertyDefinition
+            psets.append(ifc.xform_pset(pset))
+    
+    # TODO: handle psets attached to the object type instead of the object itself
+    
+    return psets
 
 
 # TODO: remove this
 @app.get("/allpsets")
 def get_allpsets():
-    try:
-        result = []
-        for pset in ifc.file.by_type("IfcPropertySetDefinition"):
-            result.append(ifc.xform_pset(pset))
-        return result
-    except:
-        return None
+    result = []
+
+    for pset in ifc.file.by_type("IfcPropertySetDefinition"):
+        result.append(ifc.xform_pset(pset))
+    
+    return result
