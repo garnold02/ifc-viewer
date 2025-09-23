@@ -2,21 +2,25 @@
   "component": {
     "inspector": {
       "attributes": {
-        "no_value": "N/A",
-        "none_selected": "Nincs kiválasztott elem",
         "title": "Attribútumok"
       },
+      "no_value": "N/A",
+      "none_selected": "Nincs kiválasztott elem",
       "property_sets": {
-        "title": "Jellemző halmazok"
+        "title": "Jellemzőhalmazok",
+        "value": {
+          "false": "Nem",
+          "true": "Igen"
+        }
       }
     },
     "outliner": {
       "spatial_structure": {
-        "title": "Térbeli hierarchia",
-        "show_self": "Saját geometria megjelenítése",
+        "hide_children": "Gyerekek elrejtése",
         "hide_self": "Saját geometria elrejtése",
         "show_children": "Gyerekek megjelenítése",
-        "hide_children": "Gyerekek elrejtése"
+        "show_self": "Saját geometria megjelenítése",
+        "title": "Térbeli hierarchia"
       }
     },
     "toolbar": {

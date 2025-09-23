@@ -2,21 +2,25 @@
   "component": {
     "inspector": {
       "attributes": {
-        "no_value": "N/A",
-        "none_selected": "No element selected",
         "title": "Attributes"
       },
+      "no_value": "N/A",
+      "none_selected": "No element selected",
       "property_sets": {
-        "title": "Property sets"
+        "title": "Property sets",
+        "value": {
+          "false": "No",
+          "true": "Yes"
+        }
       }
     },
     "outliner": {
       "spatial_structure": {
-        "title": "Spatial structure",
-        "show_self": "Show self",
+        "hide_children": "Hide children",
         "hide_self": "Hide self",
         "show_children": "Show children",
-        "hide_children": "Hide children"
+        "show_self": "Show self",
+        "title": "Spatial structure"
       }
     },
     "toolbar": {

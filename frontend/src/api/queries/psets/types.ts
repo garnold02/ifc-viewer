@@ -2,7 +2,7 @@ export type PropertySets = PropertySet[];
 
 export type PropertySet = {
   name: string;
-  properties: PropertySetProperty;
+  properties: PropertySetProperty[];
 };
 
 export type PropertySetProperty = {
@@ -53,7 +53,7 @@ export type PropertySetPropertyValueReference = {
 
 export type PropertySetPropertyValueSingle = {
   type: "single";
-  single: null | number | string;
+  single: boolean | null | number | string;
 };
 
 export type PropertySetPropertyValueTable = {
@@ -93,6 +93,6 @@ export type PropertySetPropertyValueVolume = {
 
 export type PropertySetPropertyValueWeight = {
   type: "weight";
-  count: number;
+  weight: number;
   formula: string | null;
 };

@@ -37,7 +37,7 @@ export const InspectorAttributes = () => {
         sx={{ width: "100%", height: "100%" }}
       >
         <Typography fontStyle="italic" color="textDisabled">
-          {t("component.inspector.attributes.none_selected")}
+          {t("component.inspector.none_selected")}
         </Typography>
       </Stack>
     );
@@ -61,7 +61,7 @@ export const InspectorAttributes = () => {
                     fontStyle="italic"
                     color="textDisabled"
                   >
-                    {t("component.inspector.attributes.no_value")}
+                    {t("component.inspector.no_value")}
                   </Typography>
                 ) : (
                   <Typography fontSize="0.875rem">
