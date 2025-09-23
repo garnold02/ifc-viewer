@@ -256,46 +256,53 @@ def _xform_pset_quan(quan: ifc_entity) -> dict:
 
     # handle subtypes of `IfcPhysicalSimpleQuantity`
 
+    # apparently `Formula` only exists in IFC4. fallback to `None`.
+    formula = None
+    try:
+        formula = quan.Formula
+    except AttributeError:
+        pass
+
     if quan.is_a("IfcQuantityArea"):
         value = {
             "type": "area",
             "area": quan.AreaValue,
-            "formula": quan.Formula,
+            "formula": formula,
         }
 
     if quan.is_a("IfcQuantityCount"):
         value = {
             "type": "count",
             "count": quan.CountValue,
-            "formula": quan.Formula,
+            "formula": formula,
         }
 
     if quan.is_a("IfcQuantityLength"):
         value = {
             "type": "length",
             "length": quan.LengthValue,
-            "formula": quan.Formula,
+            "formula": formula,
         }
 
     if quan.is_a("IfcQuantityTime"):
         value = {
             "type": "time",
             "time": quan.TimeValue,
-            "formula": quan.Formula,
+            "formula": formula,
         }
 
     if quan.is_a("IfcQuantityVolume"):
         value = {
             "type": "volume",
             "volume": quan.VolumeValue,
-            "formula": quan.Formula,
+            "formula": formula,
         }
 
     if quan.is_a("IfcQuantityWeight"):
         value = {
             "type": "weight",
             "weight": quan.WeightValue,
-            "formula": quan.Formula,
+            "formula": formula,
         }
 
     return {
