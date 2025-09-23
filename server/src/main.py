@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import ifc
+from ifcopenshell import entity_instance as ifc_entity
 
 
 @asynccontextmanager
@@ -66,10 +67,25 @@ def get_psets(id: int):
 
         for rel in ifc.file.by_type("IfcRelDefinesByProperties"):
             if entity in rel.RelatedObjects:
+                # TODO: handle the fact that this is actually an `IfcPropertySetDefinitionSelect`
+                #       idk how that actually works though, and I can't test it with my files
                 pset = rel.RelatingPropertyDefinition
-                psets.append(pset.get_info_2(recursive=True))
+                psets.append(ifc.xform_pset(pset))
+        
+        # TODO: handle psets attached to the object type instead of the object itself
         
         return psets
 
+    except:
+        return None
+
+
+@app.get("/allpsets")
+def get_allpsets():
+    try:
+        result = []
+        for pset in ifc.file.by_type("IfcPropertySetDefinition"):
+            result.append(ifc.xform_pset(pset))
+        return result
     except:
         return None
