@@ -4,6 +4,7 @@ import { useOutlinerStore } from "../outliner/store";
 import type { ThreeEvent } from "@react-three/fiber";
 import { useToolbarStore } from "../toolbar/store";
 import { produce } from "immer";
+import { useViewportStore } from "./store";
 
 type Props = {
   id: number;
@@ -37,15 +38,18 @@ export const ViewportNodeGeometry = ({ id, geometry, highlight }: Props) => {
     (state) => state.setSelectedNodeId
   );
 
+  const cameraMoving = useViewportStore((state) => state.cameraMoving);
   const toolState = useToolbarStore((state) => state.toolState);
   const setToolState = useToolbarStore((state) => state.setToolState);
 
   const onMeshClick = useCallback(
     (event: ThreeEvent<MouseEvent>) => {
-      switch (toolState?.type) {
-        case undefined:
-          break;
+      if (cameraMoving) {
+        event.stopPropagation();
+        return;
+      }
 
+      switch (toolState?.type) {
         case "select":
           setSelectedNodeId(selectedNodeId === id ? null : id);
           break;
@@ -63,7 +67,7 @@ export const ViewportNodeGeometry = ({ id, geometry, highlight }: Props) => {
 
       event.stopPropagation();
     },
-    [id, selectedNodeId, setSelectedNodeId, toolState]
+    [cameraMoving, id, selectedNodeId, setSelectedNodeId, toolState]
   );
 
   return (
