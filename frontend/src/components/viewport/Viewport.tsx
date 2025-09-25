@@ -1,34 +1,25 @@
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import { useCallback, useMemo, useRef } from "react";
-import type { TreeNodeGeometryTransform } from "../../api/queries/tree/types";
+import { Canvas } from "@react-three/fiber";
+import { useCallback } from "react";
 import { useGetTree } from "../../api/queries/tree/useGetTree";
-import { ViewportNode } from "./ViewportNode";
-import { type DirectionalLight } from "three";
 import { useOutlinerStore } from "../outliner/store";
 import { useToolbarStore } from "../toolbar/store";
+import { ViewportLight } from "./ViewportLight";
+import { ViewportScene } from "./ViewportScene";
+import { ViewportCamera } from "./ViewportCamera";
+import { ViewportToolGeometry } from "./ViewportToolGeometry";
 
 export const Viewport = () => {
   const setSelectedNodeId = useOutlinerStore(
     (state) => state.setSelectedNodeId
   );
 
-  const selectedTool = useToolbarStore((state) => state.selectedTool);
+  const toolState = useToolbarStore((state) => state.toolState);
 
   const onCanvasClick = useCallback(() => {
-    if (selectedTool === "select") {
+    if (toolState?.type === "select") {
       setSelectedNodeId(null);
     }
-  }, [selectedTool, setSelectedNodeId]);
-
-  // Rotate +90° around X axis
-  const matrix = useMemo(
-    () =>
-      [
-        1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1,
-      ] as TreeNodeGeometryTransform,
-    []
-  );
+  }, [setSelectedNodeId, toolState?.type]);
 
   const { data: rootNode } = useGetTree();
 
@@ -41,27 +32,10 @@ export const Viewport = () => {
       }}
       onClickCapture={onCanvasClick}
     >
-      <group matrix={matrix} matrixAutoUpdate={false}>
-        {rootNode !== undefined ? (
-          <ViewportNode node={rootNode} highlight={false} />
-        ) : null}
-        <ambientLight color={[1, 1, 1]} intensity={0.5} />
-      </group>
-      <CameraDirectionLight />
-      <OrbitControls makeDefault />
+      <ViewportScene rootNode={rootNode ?? null} />
+      <ViewportToolGeometry />
+      <ViewportLight />
+      <ViewportCamera />
     </Canvas>
   );
-};
-
-const CameraDirectionLight = () => {
-  const lightRef = useRef<DirectionalLight | null>(null);
-  const { camera } = useThree();
-
-  useFrame(() => {
-    if (lightRef.current !== null) {
-      camera.getWorldDirection(lightRef.current.position);
-    }
-  });
-
-  return <directionalLight ref={lightRef} color={[1, 1, 1]} intensity={0.5} />;
 };

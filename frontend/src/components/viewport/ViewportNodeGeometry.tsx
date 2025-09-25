@@ -3,6 +3,7 @@ import type { TreeNodeGeometry } from "../../api/queries/tree/types";
 import { useOutlinerStore } from "../outliner/store";
 import type { ThreeEvent } from "@react-three/fiber";
 import { useToolbarStore } from "../toolbar/store";
+import { produce } from "immer";
 
 type Props = {
   id: number;
@@ -37,12 +38,29 @@ export const ViewportNodeGeometry = ({ id, geometry, highlight }: Props) => {
   );
 
   const toolState = useToolbarStore((state) => state.toolState);
+  const setToolState = useToolbarStore((state) => state.setToolState);
 
   const onMeshClick = useCallback(
     (event: ThreeEvent<MouseEvent>) => {
-      if (toolState?.type === "select") {
-        setSelectedNodeId(selectedNodeId === id ? null : id);
+      switch (toolState?.type) {
+        case undefined:
+          break;
+
+        case "select":
+          setSelectedNodeId(selectedNodeId === id ? null : id);
+          break;
+
+        case "measure_length":
+          setToolState((prev) =>
+            produce(prev, (draft) => {
+              if (draft?.type === "measure_length") {
+                draft.points.push(event.point);
+              }
+            })
+          );
+          break;
       }
+
       event.stopPropagation();
     },
     [id, selectedNodeId, setSelectedNodeId, toolState]
