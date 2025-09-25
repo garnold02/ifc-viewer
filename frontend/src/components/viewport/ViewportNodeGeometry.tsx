@@ -36,16 +36,16 @@ export const ViewportNodeGeometry = ({ id, geometry, highlight }: Props) => {
     (state) => state.setSelectedNodeId
   );
 
-  const selectedTool = useToolbarStore((state) => state.selectedTool);
+  const toolState = useToolbarStore((state) => state.toolState);
 
   const onMeshClick = useCallback(
     (event: ThreeEvent<MouseEvent>) => {
-      if (selectedTool === "select") {
+      if (toolState?.type === "select") {
         setSelectedNodeId(selectedNodeId === id ? null : id);
       }
       event.stopPropagation();
     },
-    [id, selectedNodeId, selectedTool, setSelectedNodeId]
+    [id, selectedNodeId, setSelectedNodeId, toolState]
   );
 
   return (

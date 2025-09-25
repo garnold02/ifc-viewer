@@ -1,6 +1,10 @@
 import { IconButton, Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useToolbarStore, type ToolName } from "./store";
+import {
+  createDefaultToolState,
+  useToolbarStore,
+  type ToolName,
+} from "./store";
 import { useCallback, useMemo, type ReactNode } from "react";
 
 type Props = {
@@ -10,17 +14,20 @@ type Props = {
 
 export const ToolbarToggleToolButton = ({ tool, icon }: Props) => {
   const { t } = useTranslation();
-  const selectedTool = useToolbarStore((state) => state.selectedTool);
-  const setSelectedTool = useToolbarStore((state) => state.setSelectedTool);
+  const toolState = useToolbarStore((state) => state.toolState);
+  const setToolState = useToolbarStore((state) => state.setToolState);
 
   const color = useMemo(
-    () => (selectedTool === tool ? "primary" : "default"),
-    [tool, selectedTool]
+    () => (toolState?.type === tool ? "primary" : "default"),
+    [tool, toolState?.type]
   );
 
   const onClick = useCallback(
-    () => setSelectedTool(selectedTool === tool ? null : tool),
-    [tool, selectedTool, setSelectedTool]
+    () =>
+      setToolState(
+        createDefaultToolState(toolState?.type === tool ? null : tool)
+      ),
+    [setToolState, tool, toolState?.type]
   );
 
   return (
