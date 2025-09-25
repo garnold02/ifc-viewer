@@ -24,6 +24,9 @@
       }
     },
     "toolbar": {
+      "measure_area": "Felületmérés",
+      "measure_length": "Hosszmérés",
+      "measure_volume": "Térfogatmérés",
       "select": "Kijelölés be/kikapcsolása a 3D nézetben"
     }
   },

@@ -3,11 +3,15 @@ import { createContext, useContext } from "react";
 import { create, useStore, type StoreApi } from "zustand";
 
 export type ToolbarState = {
-  selectedTool: Tool;
-  setSelectedTool: (value: Tool) => void;
+  selectedTool: ToolName | null;
+  setSelectedTool: (value: ToolName | null) => void;
 };
 
-type Tool = "select" | null;
+export type ToolName =
+  | "select"
+  | "measure_length"
+  | "measure_area"
+  | "measure_volume";
 
 export const createToolbarStore = () =>
   create<ToolbarState>((set) => ({

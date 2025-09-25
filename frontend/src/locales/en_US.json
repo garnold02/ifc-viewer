@@ -24,6 +24,9 @@
       }
     },
     "toolbar": {
+      "measure_area": "Measure area",
+      "measure_length": "Measure length",
+      "measure_volume": "Measure volume",
       "select": "Toggle selection in viewport"
     }
   },
