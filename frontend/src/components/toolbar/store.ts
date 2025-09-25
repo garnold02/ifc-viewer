@@ -7,6 +7,7 @@ import {
 } from "react";
 import type { Vector3 } from "three";
 import { create, useStore, type StoreApi } from "zustand";
+import type { TreeNodeGeometryTransform } from "../../api/queries/tree/types";
 
 export type ToolbarState = {
   toolState: ToolState | null;
@@ -16,10 +17,19 @@ export type ToolbarState = {
 export type ToolState =
   | { type: "select" }
   | { type: "measure_length"; points: Vector3[] }
-  | { type: "measure_area" }
+  | { type: "measure_area"; faces: AreaMeasureFace[] }
   | { type: "measure_volume" };
 
 export type ToolName = ToolState["type"];
+
+export type AreaMeasureFace = {
+  nodeId: number;
+  faceIndex: number;
+  transform: TreeNodeGeometryTransform;
+  a: Vector3;
+  b: Vector3;
+  c: Vector3;
+};
 
 export const createToolbarStore = () =>
   create<ToolbarState>((set) => ({
@@ -56,7 +66,7 @@ export const createDefaultToolState = (
       return { type: "measure_length", points: [] };
 
     case "measure_area":
-      return { type: "measure_area" };
+      return { type: "measure_area", faces: [] };
 
     case "measure_volume":
       return { type: "measure_volume" };

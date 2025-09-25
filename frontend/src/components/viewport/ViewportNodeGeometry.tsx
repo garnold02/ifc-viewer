@@ -5,6 +5,7 @@ import type { ThreeEvent } from "@react-three/fiber";
 import { useToolbarStore } from "../toolbar/store";
 import { produce } from "immer";
 import { useViewportStore } from "./store";
+import { Vector3 } from "three";
 
 type Props = {
   id: number;
@@ -63,6 +64,50 @@ export const ViewportNodeGeometry = ({ id, geometry, highlight }: Props) => {
             })
           );
           break;
+
+        case "measure_area":
+          setToolState((prev) =>
+            produce(prev, (draft) => {
+              if (
+                draft?.type === "measure_area" &&
+                event.faceIndex !== undefined &&
+                event.faceIndex !== null &&
+                event.face !== undefined &&
+                event.face !== null
+              ) {
+                const prevFace = draft.faces.find(
+                  (f) => f.nodeId === id && f.faceIndex === event.faceIndex
+                );
+
+                if (prevFace !== undefined) {
+                  draft.faces.splice(draft.faces.indexOf(prevFace), 1);
+                  return;
+                }
+
+                draft.faces.push({
+                  nodeId: id,
+                  faceIndex: event.faceIndex,
+                  transform: geometry.transform,
+                  a: new Vector3(
+                    geometry.positions[event.face.a * 3],
+                    geometry.positions[event.face.a * 3 + 1],
+                    geometry.positions[event.face.a * 3 + 2]
+                  ),
+                  b: new Vector3(
+                    geometry.positions[event.face.b * 3],
+                    geometry.positions[event.face.b * 3 + 1],
+                    geometry.positions[event.face.b * 3 + 2]
+                  ),
+                  c: new Vector3(
+                    geometry.positions[event.face.c * 3],
+                    geometry.positions[event.face.c * 3 + 1],
+                    geometry.positions[event.face.c * 3 + 2]
+                  ),
+                });
+              }
+            })
+          );
+          break;
       }
 
       event.stopPropagation();
@@ -70,40 +115,53 @@ export const ViewportNodeGeometry = ({ id, geometry, highlight }: Props) => {
     [cameraMoving, id, selectedNodeId, setSelectedNodeId, toolState]
   );
 
-  return (
-    <mesh
-      matrixAutoUpdate={false}
-      matrix={geometry.transform}
-      onClick={onMeshClick}
-    >
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          array={positions}
-          count={positions.length / 3}
-          itemSize={3}
-          args={[positions, 3, false]}
+  const mesh = useMemo(
+    () => (
+      <mesh
+        matrixAutoUpdate={false}
+        matrix={geometry.transform}
+        onClick={onMeshClick}
+      >
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            array={positions}
+            count={positions.length / 3}
+            itemSize={3}
+            args={[positions, 3, false]}
+          />
+          <bufferAttribute
+            attach="attributes-normal"
+            array={normals}
+            count={normals.length / 3}
+            itemSize={3}
+            args={[normals, 3, false]}
+          />
+          <bufferAttribute
+            attach="attributes-color"
+            array={colors}
+            count={colors.length / 4}
+            itemSize={4}
+            args={[colors, 4, false]}
+          />
+        </bufferGeometry>
+        <meshLambertMaterial
+          vertexColors
+          transparent={geometry.transparent}
+          emissive={emissive}
         />
-        <bufferAttribute
-          attach="attributes-normal"
-          array={normals}
-          count={normals.length / 3}
-          itemSize={3}
-          args={[normals, 3, false]}
-        />
-        <bufferAttribute
-          attach="attributes-color"
-          array={colors}
-          count={colors.length / 4}
-          itemSize={4}
-          args={[colors, 4, false]}
-        />
-      </bufferGeometry>
-      <meshLambertMaterial
-        vertexColors
-        transparent={geometry.transparent}
-        emissive={emissive}
-      />
-    </mesh>
+      </mesh>
+    ),
+    [
+      colors,
+      emissive,
+      geometry.transform,
+      geometry.transparent,
+      normals,
+      onMeshClick,
+      positions,
+    ]
   );
+
+  return mesh;
 };

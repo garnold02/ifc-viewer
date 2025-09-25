@@ -1,4 +1,5 @@
 import { useToolbarStore } from "../toolbar/store";
+import { ViewportToolGeometryMeasureArea } from "./ViewportToolGeometryMeasureArea";
 import { ViewportToolGeometryMeasureLength } from "./ViewportToolGeometryMeasureLength";
 
 export const ViewportToolGeometry = () => {
@@ -15,7 +16,7 @@ export const ViewportToolGeometry = () => {
       return <ViewportToolGeometryMeasureLength tool={toolState} />;
 
     case "measure_area":
-      return null;
+      return <ViewportToolGeometryMeasureArea tool={toolState} />;
 
     case "measure_volume":
       return null;
