@@ -52,7 +52,11 @@ export const ViewportToolGeometryMeasureLength = ({ tool }: Props) => {
       />
       {center !== null ? (
         <Html position={center} center>
-          <Typography color="white" fontWeight="bold">
+          <Typography
+            color="white"
+            fontWeight="bold"
+            sx={{ userSelect: "none" }}
+          >
             {`${Math.round(distance * 100) / 100}m`}
           </Typography>
         </Html>

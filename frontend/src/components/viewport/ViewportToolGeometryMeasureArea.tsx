@@ -56,7 +56,11 @@ export const ViewportToolGeometryMeasureArea = ({ tool }: Props) => {
       ))}
       {tool.faces.length > 0 ? (
         <Html position={center} center>
-          <Typography color="white" fontWeight="bold">
+          <Typography
+            color="white"
+            fontWeight="bold"
+            sx={{ userSelect: "none" }}
+          >
             {`${Math.round(area * 100) / 100}m²`}
           </Typography>
         </Html>
