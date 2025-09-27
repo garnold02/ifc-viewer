@@ -42,7 +42,7 @@ export const IfcItem = ({ ifcSummary }: Props) => {
               onClick={() => setShowPreview(true)}
               sx={{ width: "400px", height: "300px" }}
             >
-              {t("components.IfcItem.showPreviewButton.text")}
+              {t("components.IfcItem.show_preview")}
             </Button>
           )}
 
@@ -51,7 +51,7 @@ export const IfcItem = ({ ifcSummary }: Props) => {
             to="/view/$ifcId"
             params={{ ifcId: String(ifcSummary.id) }}
           >
-            {t("components.IfcItem.openButton.text")}
+            {t("components.IfcItem.open")}
           </ButtonLink>
         </Stack>
       </AccordionDetails>
