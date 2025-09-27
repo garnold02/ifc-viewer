@@ -1,4 +1,4 @@
-import type { OutlinerNodeState } from "../components/outliner/store";
+import type { OutlinerNodeState } from "../stores/outlinerStore";
 import { defaultVisibilityOf } from "./visibility";
 
 export const defaultOutlinerNodeState = (
