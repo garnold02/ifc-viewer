@@ -66,18 +66,18 @@ def get_ifc_preview(id: int):
     file = None
 
     try:
-        file = open(f"files/{ifc.file_name}.preview.glb", "rb")
+        file = open(f"files/{ifc.file_name}.preview.bin", "rb")
     except:
         file = None
     
     if file == None:
         ifc.process()
-        file = open(f"files/{ifc.file_name}.tree.json", "rb")
+        file = open(f"files/{ifc.file_name}.tree.bin", "rb")
     
-    glb = file.read()
+    content = file.read()
     file.close()
 
-    return Response(content=glb, media_type="model/gltf-binary")
+    return Response(content=content, media_type="application/octet-stream")
 
 
 @app.get("/ifc/{id}/tree")
@@ -90,18 +90,18 @@ def get_ifc_tree(id: int):
     file = None
 
     try:
-        file = open(f"files/{ifc.file_name}.tree.json", "r")
+        file = open(f"files/{ifc.file_name}.tree.bin", "rb")
     except:
         file = None
     
     if file == None:
         ifc.process()
-        file = open(f"files/{ifc.file_name}.tree.json", "r")
+        file = open(f"files/{ifc.file_name}.tree.bin", "rb")
     
-    json = file.read()
+    content = file.read()
     file.close()
 
-    return Response(content=json, media_type="application/json")
+    return Response(content=content, media_type="application/octet-stream")
 
 
 @app.get("/ifc/{ifc_id}/attributes/{ent_id}")

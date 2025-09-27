@@ -1,9 +1,9 @@
 from ifcopenshell import entity_instance as ifc_entity, file as ifc_file, geom as ifc_geom, open as ifc_open
-import json
 from math import isnan
 from multiprocessing import cpu_count
 import numpy as np
 import os.path
+import struct
 from threading import Lock
 
 
@@ -46,53 +46,46 @@ class Ifc:
             
             settings = ifc_geom.settings()
             iterator = ifc_geom.iterator(settings, self.file, cpu_count())
-            serializer_settings = ifc_geom.serializer_settings()
-            serializer = ifc_geom.serializers.gltf(
-                f"files/{self.file_name}.preview.glb",
-                settings,
-                serializer_settings,
-            )
 
             if not iterator.initialize():
                 print("    ERROR: Couldn't initialize geometry iterator!")
                 return
-            
-            serializer.setFile(self.file)
-            serializer.setUnitNameAndMagnitude("METER", 1.0)
-            serializer.writeHeader()
 
             while True:
                 shape = iterator.get()
-
-                ent = self.file.by_id(shape.id)
-                if not ent.is_a("IfcSpace") and not ent.is_a("IfcOpeningElement"):
-                    serializer.write(iterator.get())
-
-                positions = []
-                normals = []
-                colors = []
-                transparent = False
-
                 materials = shape.geometry.materials
                 material_ids = shape.geometry.material_ids
                 faces = shape.geometry.faces
                 verts = shape.geometry.verts
+                meshes = {}
 
-                for face_index in range(0, len(faces) // 3):
-                    material = materials[material_ids[face_index]]
+                for material_id in material_ids:
+                    material = materials[material_id]
                     transparency = material.transparency
 
                     if isnan(transparency):
                         transparency = 0.0
                     
                     diffuse = material.diffuse
-                    color_r = diffuse.r()
-                    color_g = diffuse.g()
-                    color_b = diffuse.b()
-                    color_a = 1.0 - transparency
+                    r = diffuse.r()
+                    g = diffuse.g()
+                    b = diffuse.b()
+                    a = 1.0 - transparency
 
-                    if color_a < 1.0:
-                        transparent = True
+                    meshes[material_id] = {
+                        "r": r,
+                        "g": g,
+                        "b": b,
+                        "a": a,
+                        "positions": [],
+                        "normals": [],
+                    }
+
+                for face_index in range(0, len(faces) // 3):
+                    material_id = material_ids[face_index]
+                    mesh = meshes[material_id]
+                    positions = mesh["positions"]
+                    normals = mesh["normals"]
 
                     f_i = face_index * 3
                     vertex_index_0 = faces[f_i]
@@ -134,55 +127,90 @@ class Ifc:
                     normal_0 = normal[0]
                     normal_1 = normal[1]
                     normal_2 = normal[2]
-                    normals.append(normal_0)
-                    normals.append(normal_1)
-                    normals.append(normal_2)
-                    normals.append(normal_0)
-                    normals.append(normal_1)
-                    normals.append(normal_2)
-                    normals.append(normal_0)
-                    normals.append(normal_1)
-                    normals.append(normal_2)
 
-                    colors.append(color_r)
-                    colors.append(color_g)
-                    colors.append(color_b)
-                    colors.append(color_a)
-                    colors.append(color_r)
-                    colors.append(color_g)
-                    colors.append(color_b)
-                    colors.append(color_a)
-                    colors.append(color_r)
-                    colors.append(color_g)
-                    colors.append(color_b)
-                    colors.append(color_a)
+                    normals.append(normal_0)
+                    normals.append(normal_1)
+                    normals.append(normal_2)
+                    normals.append(normal_0)
+                    normals.append(normal_1)
+                    normals.append(normal_2)
+                    normals.append(normal_0)
+                    normals.append(normal_1)
+                    normals.append(normal_2)
                 
                 geometry[shape.id] = {
                     "transform": shape.transformation.matrix,
-                    "positions": positions,
-                    "normals": normals,
-                    "colors": colors,
-                    "transparent": transparent,
+                    "meshes": list(meshes.values()),
                 }
 
                 if not iterator.next():
                     break
             
-            serializer.finalize()
             print("    DONE")
             return geometry
         
 
-    def _process_hierarchy(self, geometry: dict) -> dict:
+    def _process_hierarchy(self, geometry: dict) -> bytearray:
         self.load()
 
         with self.lock:
             print(f"Processing hierarchy of `{self.file_name}`...")
 
-            def collect(e):
-                geom = None
+            def collect(e: ifc_entity) -> bytearray:
+                buffer = bytearray()
+
+                # id
+                buffer += struct.pack("<I", e.id())
+
+                # type
+                type = e.is_a().encode()
+                buffer += struct.pack("<I", len(type))
+                buffer += type
+
+                # name
+                name: str = e.Name
+                if name == None:
+                    buffer += struct.pack("<I", 0)
+                else:
+                    name: bytes = name.encode()
+                    buffer += struct.pack("<I", len(name))
+                    buffer += name
+                
+                # geometry
+
                 if e.id() in geometry:
-                    geom = geometry[e.id()]
+                    buffer += struct.pack("<?", True)
+
+                    object = geometry[e.id()]
+                    transform = object["transform"]
+                    meshes = object["meshes"]
+
+                    for scalar in transform:
+                        buffer += struct.pack("<f", scalar)
+                    
+                    buffer += struct.pack("<I", len(meshes))
+
+                    for mesh in meshes:
+                        buffer += struct.pack("<f", mesh["r"])
+                        buffer += struct.pack("<f", mesh["g"])
+                        buffer += struct.pack("<f", mesh["b"])
+                        buffer += struct.pack("<f", mesh["a"])
+
+                        positions = mesh["positions"]
+                        buffer += struct.pack("<I", len(positions))
+
+                        for coordinate in positions:
+                            buffer += struct.pack("<f", coordinate)
+                        
+                        normals = mesh["normals"]
+                        buffer += struct.pack("<I", len(normals))
+                        
+                        for coordinate in normals:
+                            buffer += struct.pack("<f", coordinate)
+                else:
+                    buffer += struct.pack("<?", False)
+
+                # children
 
                 children = []
 
@@ -191,42 +219,80 @@ class Ifc:
                         continue
                     
                     for child in rel.RelatedObjects:
-                        children.append(collect(child))
+                        children.append(child)
                 
                 for rel in self.file.by_type("IfcRelContainedInSpatialStructure"):
                     if rel.RelatingStructure != e:
                         continue
                     
                     for child in rel.RelatedElements:
-                        children.append(collect(child))
-
-                return {
-                    "id": e.id(),
-                    "type": e.is_a(),
-                    "name": e.Name,
-                    "geometry": geom,
-                    "children": children,
-                }
+                        children.append(child)
+                
+                buffer += struct.pack("<I", len(children))
+                for child in children:
+                    buffer += collect(child)
+                
+                return buffer
 
             project = self.file.by_type("IfcProject")[0]
-            hierarchy = collect(project)
+            buffer = collect(project)
 
             print("    DONE")
-            return hierarchy
+            return buffer
+    
+
+    def _create_preview(self, geometry: dict):
+        print(f"Creating preview for `{self.file_name}`...")
+        buffer = bytearray()
+        buffer += struct.pack("<I", len(geometry))
+        
+        for object in geometry.values():
+            transform = object["transform"]
+            meshes = object["meshes"]
+
+            for scalar in transform:
+                struct.pack("<f", scalar)
+
+            buffer += struct.pack("<I", len(meshes))
+
+            for mesh in meshes:
+                buffer += struct.pack("<f", mesh["r"])
+                buffer += struct.pack("<f", mesh["g"])
+                buffer += struct.pack("<f", mesh["b"])
+                buffer += struct.pack("<f", mesh["a"])
+
+                positions = mesh["positions"]
+                buffer += struct.pack("<I", len(positions))
+
+                for coordinate in positions:
+                    buffer += struct.pack("<f", coordinate)
+                
+                normals = mesh["normals"]
+                buffer += struct.pack("<I", len(normals))
+                
+                for coordinate in normals:
+                    buffer += struct.pack("<f", coordinate)
+        
+        print("    DONE")
+        return buffer
 
     
     def process(self):
-        tree_exists = os.path.isfile(f"files/{self.file_name}.tree.json")
-        preview_exists = os.path.isfile(f"files/{self.file_name}.preview.glb")
+        tree_exists = os.path.isfile(f"files/{self.file_name}.tree.bin")
+        preview_exists = os.path.isfile(f"files/{self.file_name}.preview.bin")
         
         if tree_exists and preview_exists:
             return
 
         geometry = self._process_geometry()
         hierarchy = self._process_hierarchy(geometry=geometry)
+        preview = self._create_preview(geometry=geometry)
 
-        with open(f"files/{self.file_name}.tree.json", "w") as f:
-            f.write(json.dumps(hierarchy, separators=(",", ":")))
+        with open(f"files/{self.file_name}.tree.bin", "wb") as f:
+            f.write(hierarchy)
+        
+        with open(f"files/{self.file_name}.preview.bin", "wb") as f:
+            f.write(preview)
 
 
 def _xform_pset_prop(prop: ifc_entity) -> dict:

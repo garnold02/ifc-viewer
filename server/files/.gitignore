@@ -1,4 +1,2 @@
-*.glb
+*.bin
 *.ifc
-*.json
-*.tmp

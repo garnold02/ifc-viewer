@@ -3,7 +3,6 @@ import { useOutlinerStore } from "../stores/outlinerStore";
 import type { ThreeEvent } from "@react-three/fiber";
 import { useToolStore } from "../stores/toolStore";
 import { produce } from "immer";
-import { Vector3 } from "three";
 import type { TreeNodeGeometry } from "../api/queries/ifcTree";
 
 type Props = {
@@ -13,21 +12,6 @@ type Props = {
 };
 
 export const ViewportNodeGeometry = ({ id, geometry, highlight }: Props) => {
-  const positions = useMemo(
-    () => new Float32Array(geometry.positions),
-    [geometry.positions]
-  );
-
-  const normals = useMemo(
-    () => new Float32Array(geometry.normals),
-    [geometry.normals]
-  );
-
-  const colors = useMemo(
-    () => new Float32Array(geometry.colors),
-    [geometry.colors]
-  );
-
   const emissive = useMemo<[number, number, number]>(
     () => (highlight ? [0, 0.125, 0.5] : [0, 0, 0]),
     [highlight]
@@ -77,26 +61,26 @@ export const ViewportNodeGeometry = ({ id, geometry, highlight }: Props) => {
                   return;
                 }
 
-                draft.faces.push({
-                  nodeId: id,
-                  faceIndex: event.faceIndex,
-                  transform: geometry.transform,
-                  a: new Vector3(
-                    geometry.positions[event.face.a * 3],
-                    geometry.positions[event.face.a * 3 + 1],
-                    geometry.positions[event.face.a * 3 + 2]
-                  ),
-                  b: new Vector3(
-                    geometry.positions[event.face.b * 3],
-                    geometry.positions[event.face.b * 3 + 1],
-                    geometry.positions[event.face.b * 3 + 2]
-                  ),
-                  c: new Vector3(
-                    geometry.positions[event.face.c * 3],
-                    geometry.positions[event.face.c * 3 + 1],
-                    geometry.positions[event.face.c * 3 + 2]
-                  ),
-                });
+                // draft.faces.push({
+                //   nodeId: id,
+                //   faceIndex: event.faceIndex,
+                //   transform: geometry.transform,
+                //   a: new Vector3(
+                //     geometry.positions[event.face.a * 3],
+                //     geometry.positions[event.face.a * 3 + 1],
+                //     geometry.positions[event.face.a * 3 + 2]
+                //   ),
+                //   b: new Vector3(
+                //     geometry.positions[event.face.b * 3],
+                //     geometry.positions[event.face.b * 3 + 1],
+                //     geometry.positions[event.face.b * 3 + 2]
+                //   ),
+                //   c: new Vector3(
+                //     geometry.positions[event.face.c * 3],
+                //     geometry.positions[event.face.c * 3 + 1],
+                //     geometry.positions[event.face.c * 3 + 2]
+                //   ),
+                // });
               }
             })
           );
@@ -107,53 +91,41 @@ export const ViewportNodeGeometry = ({ id, geometry, highlight }: Props) => {
     [id, selectedNodeId, setSelectedNodeId, activeTool]
   );
 
-  const mesh = useMemo(
-    () => (
-      <mesh
-        matrixAutoUpdate={false}
-        matrix={geometry.transform}
-        onClick={onMeshClick}
-      >
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            array={positions}
-            count={positions.length / 3}
-            itemSize={3}
-            args={[positions, 3, false]}
+  const meshes = useMemo(
+    () =>
+      geometry.meshes.map((m, i) => (
+        <mesh
+          key={i}
+          matrixAutoUpdate={false}
+          matrix={geometry.transform}
+          onClick={onMeshClick}
+        >
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              array={m.positions}
+              count={m.positions.length / 3}
+              itemSize={3}
+              args={[m.positions, 3, false]}
+            />
+            <bufferAttribute
+              attach="attributes-normal"
+              array={m.normals}
+              count={m.normals.length / 3}
+              itemSize={3}
+              args={[m.normals, 3, false]}
+            />
+          </bufferGeometry>
+          <meshLambertMaterial
+            color={[m.color[0], m.color[1], m.color[2]]}
+            opacity={m.color[3] !== 1.0 ? m.color[3] : undefined}
+            transparent={m.color[3] !== 1.0}
+            emissive={emissive}
           />
-          <bufferAttribute
-            attach="attributes-normal"
-            array={normals}
-            count={normals.length / 3}
-            itemSize={3}
-            args={[normals, 3, false]}
-          />
-          <bufferAttribute
-            attach="attributes-color"
-            array={colors}
-            count={colors.length / 4}
-            itemSize={4}
-            args={[colors, 4, false]}
-          />
-        </bufferGeometry>
-        <meshLambertMaterial
-          vertexColors
-          transparent={geometry.transparent}
-          emissive={emissive}
-        />
-      </mesh>
-    ),
-    [
-      colors,
-      emissive,
-      geometry.transform,
-      geometry.transparent,
-      normals,
-      onMeshClick,
-      positions,
-    ]
+        </mesh>
+      )),
+    [emissive, geometry.transform, geometry.meshes, onMeshClick]
   );
 
-  return mesh;
+  return meshes;
 };
