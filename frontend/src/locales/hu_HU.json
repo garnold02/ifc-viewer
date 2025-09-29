@@ -1,8 +1,7 @@
 {
   "components": {
-    "IfcItem": {
-      "open": "Megnyitás",
-      "show_preview": "Előnézet megtekintése"
+    "IfcPreview": {
+      "none_selected": "Válasszon ki egy fájlt hogy lássa az előnézetét!"
     },
     "Inspector": {
       "attributes": "Attribútumok",
@@ -32,6 +31,11 @@
       "measure_length": "Hosszmérés",
       "measure_volume": "Térfogatmérés",
       "select": "Kijelölés be- és kikapcsolása a 3D nézetben"
+    }
+  },
+  "pages": {
+    "IfcList": {
+      "open": "Megnyitás"
     }
   }
 }

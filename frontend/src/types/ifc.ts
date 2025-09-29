@@ -1,5 +1,10 @@
 import type { Color, Matrix4 } from "three";
 
+export type IfcSummary = {
+  id: number;
+  name: string;
+};
+
 export type IfcNode = {
   id: number;
   type: string;
@@ -23,11 +28,6 @@ export type IfcMesh = {
 export type IfcAttribute = {
   name: string;
   value: null | number | string;
-};
-
-export type IfcSummary = {
-  id: number;
-  name: string;
 };
 
 export type IfcPropertySet = {

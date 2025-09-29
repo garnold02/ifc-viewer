@@ -1,8 +1,7 @@
 {
   "components": {
-    "IfcItem": {
-      "open": "Open",
-      "show_preview": "Show preview"
+    "IfcPreview": {
+      "none_selected": "Select a file to see its preview!"
     },
     "Inspector": {
       "attributes": "Attributes",
@@ -32,6 +31,11 @@
       "measure_length": "Measure length",
       "measure_volume": "Measure volume",
       "select": "Toggle selection in viewport"
+    }
+  },
+  "pages": {
+    "IfcList": {
+      "open": "Open"
     }
   }
 }
