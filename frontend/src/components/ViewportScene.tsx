@@ -1,6 +1,6 @@
 import type { IfcNode } from "../types/ifc";
 import { ViewportNode } from "./ViewportNode";
-import { ViewportUprightGroup } from "./ViewportUprightGroup";
+import { IfcTransformGroup } from "./IfcTransformGroup";
 
 type Props = {
   rootNode: IfcNode | null;
@@ -11,8 +11,8 @@ export const ViewportScene = ({ rootNode }: Props) => {
     return null;
   }
   return (
-    <ViewportUprightGroup>
+    <IfcTransformGroup>
       <ViewportNode node={rootNode} highlight={false} />
-    </ViewportUprightGroup>
+    </IfcTransformGroup>
   );
 };

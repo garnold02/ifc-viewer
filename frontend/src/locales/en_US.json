@@ -1,8 +1,5 @@
 {
   "components": {
-    "IfcPreview": {
-      "none_selected": "Select a file to see its preview!"
-    },
     "Inspector": {
       "attributes": "Attributes",
       "property_sets": "Property sets"
@@ -34,8 +31,17 @@
     }
   },
   "pages": {
-    "IfcList": {
-      "open": "Open"
+    "index": {
+      "components": {
+        "PreviewDialog": {
+          "close": "Close",
+          "open": "Open"
+        },
+        "SummaryCard": {
+          "open": "Open",
+          "preview": "Preview"
+        }
+      }
     }
   }
 }

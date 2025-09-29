@@ -34,8 +34,17 @@
     }
   },
   "pages": {
-    "IfcList": {
-      "open": "Megnyitás"
+    "index": {
+      "components": {
+        "PreviewDialog": {
+          "close": "Bezárás",
+          "open": "Megnyitás"
+        },
+        "SummaryCard": {
+          "open": "Mengyitás",
+          "preview": "Előnézet"
+        }
+      }
     }
   }
 }

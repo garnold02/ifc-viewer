@@ -1,7 +1,7 @@
 import { Typography, useTheme } from "@mui/material";
 import type { ActiveTool, AreaMeasureFace } from "../stores/toolStore";
 import { Html, Line } from "@react-three/drei";
-import { ViewportUprightGroup } from "./ViewportUprightGroup";
+import { IfcTransformGroup } from "./IfcTransformGroup";
 import { useMemo } from "react";
 import { Matrix4, Vector3 } from "three";
 
@@ -43,7 +43,7 @@ export const ViewportToolGeometryMeasureArea = ({ tool }: Props) => {
   }, [tool.faces]);
 
   return (
-    <ViewportUprightGroup>
+    <IfcTransformGroup>
       {tool.faces.map((face, i) => (
         <Line
           key={i}
@@ -65,7 +65,7 @@ export const ViewportToolGeometryMeasureArea = ({ tool }: Props) => {
           </Typography>
         </Html>
       ) : null}
-    </ViewportUprightGroup>
+    </IfcTransformGroup>
   );
 };
 
