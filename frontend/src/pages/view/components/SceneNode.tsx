@@ -24,16 +24,21 @@ export const SceneNode = ({ node, highlight }: Props) => {
     [node.id, node.type, nodeStates]
   );
 
-  return (
-    <>
-      {node.geometry !== null && nodeState.showSelf ? (
+  const geometry = useMemo(
+    () =>
+      node.geometry !== null && nodeState.showSelf ? (
         <SceneNodeGeometry
           id={node.id}
           geometry={node.geometry}
           highlight={highlight || selected}
         />
-      ) : null}
-      {nodeState.showChildren
+      ) : null,
+    [highlight, node.geometry, node.id, nodeState.showSelf, selected]
+  );
+
+  const children = useMemo(
+    () =>
+      nodeState.showChildren
         ? node.children.map((child) => (
             <SceneNode
               key={child.id}
@@ -41,7 +46,14 @@ export const SceneNode = ({ node, highlight }: Props) => {
               highlight={highlight || selected}
             />
           ))
-        : null}
+        : null,
+    [highlight, node.children, nodeState.showChildren, selected]
+  );
+
+  return (
+    <>
+      {geometry}
+      {children}
     </>
   );
 };
