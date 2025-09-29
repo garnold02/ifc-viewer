@@ -1,12 +1,11 @@
-import { IconButton, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
+import { ToolButton } from "./ToolButton";
 import PanToolAltIcon from "@mui/icons-material/PanToolAlt";
 
 export const ToolBar = () => {
   return (
     <Stack direction="row" justifyContent="center" padding={1} gap={1}>
-      <IconButton size="small">
-        <PanToolAltIcon fontSize="small" />
-      </IconButton>
+      <ToolButton tool="select" icon={<PanToolAltIcon fontSize="small" />} />
     </Stack>
   );
 };

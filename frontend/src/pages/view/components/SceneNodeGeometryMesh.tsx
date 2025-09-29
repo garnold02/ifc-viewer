@@ -1,15 +1,21 @@
 import type { Color, Matrix4 } from "three";
 import type { IfcMesh } from "../../../types/ifc";
 import { useMemo } from "react";
+import type { ThreeEvent } from "@react-three/fiber";
 
 type Props = {
-  id: number;
   matrix: Matrix4;
   mesh: IfcMesh;
   emissive: Color;
+  onClick: (event: ThreeEvent<MouseEvent>) => void;
 };
 
-export const SceneNodeGeometryMesh = ({ matrix, mesh, emissive }: Props) => {
+export const SceneNodeGeometryMesh = ({
+  matrix,
+  mesh,
+  emissive,
+  onClick,
+}: Props) => {
   const geometry = useMemo(
     () => (
       <bufferGeometry>
@@ -45,7 +51,7 @@ export const SceneNodeGeometryMesh = ({ matrix, mesh, emissive }: Props) => {
   );
 
   return (
-    <mesh matrixAutoUpdate={false} matrix={matrix}>
+    <mesh matrixAutoUpdate={false} matrix={matrix} onClick={onClick}>
       {geometry}
       {material}
     </mesh>

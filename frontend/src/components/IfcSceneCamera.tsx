@@ -1,5 +1,24 @@
 import { OrbitControls } from "@react-three/drei";
+import { useCallback } from "react";
+import { setCameraMoving } from "../global/camera";
 
 export const IfcSceneCamera = () => {
-  return <OrbitControls dampingFactor={0.25} makeDefault />;
+  const onStart = useCallback(
+    () => setTimeout(() => setCameraMoving(true), 100),
+    []
+  );
+
+  const onEnd = useCallback(
+    () => setTimeout(() => setCameraMoving(false), 100),
+    []
+  );
+
+  return (
+    <OrbitControls
+      dampingFactor={0.25}
+      onStart={onStart}
+      onEnd={onEnd}
+      makeDefault
+    />
+  );
 };

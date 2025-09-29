@@ -41,6 +41,9 @@
           "hide_self": "Saját geometria elrejtése",
           "show_children": "Gyerekek megjelenítése",
           "show_self": "Saját geometria megjelenítése"
+        },
+        "ToolButton": {
+          "select": "Kiválasztás"
         }
       }
     }

@@ -38,6 +38,9 @@
           "hide_self": "Hide self",
           "show_children": "Show children",
           "show_self": "Show self"
+        },
+        "ToolButton": {
+          "select": "Select"
         }
       }
     }

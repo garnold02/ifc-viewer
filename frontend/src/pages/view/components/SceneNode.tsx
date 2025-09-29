@@ -1,8 +1,11 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import type { IfcNode } from "../../../types/ifc";
 import { SceneNodeGeometry } from "./SceneNodeGeometry";
 import { defaultOutlinerNodeState } from "../../../utils/outliner";
 import { useOutlinerStore } from "../../../stores/outliner/store";
+import type { ThreeEvent } from "@react-three/fiber";
+import { useToolStore } from "../../../stores/tool/store";
+import { getCameraMoving } from "../../../global/camera";
 
 type Props = {
   node: IfcNode;
@@ -11,6 +14,10 @@ type Props = {
 
 export const SceneNode = ({ node, highlight }: Props) => {
   const selectedNodeId = useOutlinerStore((state) => state.selectedNodeId);
+  const setSelectedNodeId = useOutlinerStore(
+    (state) => state.setSelectedNodeId
+  );
+
   const selected = useMemo(
     () => selectedNodeId === node.id,
     [node.id, selectedNodeId]
@@ -24,16 +31,38 @@ export const SceneNode = ({ node, highlight }: Props) => {
     [node.id, node.type, nodeStates]
   );
 
+  const toolContent = useToolStore((state) => state.content);
+
+  const onMeshClick = useCallback(
+    (event: ThreeEvent<MouseEvent>) => {
+      event.stopPropagation();
+      if (getCameraMoving()) {
+        return;
+      }
+      if (toolContent?.type === "select") {
+        setSelectedNodeId(selectedNodeId === node.id ? null : node.id);
+      }
+    },
+    [node.id, selectedNodeId, setSelectedNodeId, toolContent?.type]
+  );
+
   const geometry = useMemo(
     () =>
       node.geometry !== null && nodeState.showSelf ? (
         <SceneNodeGeometry
-          id={node.id}
           geometry={node.geometry}
           highlight={highlight || selected}
+          onMeshClick={onMeshClick}
         />
       ) : null,
-    [highlight, node.geometry, node.id, nodeState.showSelf, selected]
+    [
+      highlight,
+      node.geometry,
+      node.id,
+      nodeState.showSelf,
+      onMeshClick,
+      selected,
+    ]
   );
 
   const children = useMemo(

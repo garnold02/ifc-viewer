@@ -2,6 +2,7 @@ import { getRouteApi, Navigate } from "@tanstack/react-router";
 import { OutlinerStoreProvider } from "../../stores/outliner/Provider";
 import { Content } from "./components/Content";
 import { IfcContext } from "../../contexts/ifc";
+import { ToolStoreProvider } from "../../stores/tool/Provider";
 
 const route = getRouteApi("/view/$ifcId");
 
@@ -15,7 +16,9 @@ export const Page = () => {
   return (
     <IfcContext.Provider value={{ ifcId }}>
       <OutlinerStoreProvider>
-        <Content />
+        <ToolStoreProvider>
+          <Content />
+        </ToolStoreProvider>
       </OutlinerStoreProvider>
     </IfcContext.Provider>
   );
