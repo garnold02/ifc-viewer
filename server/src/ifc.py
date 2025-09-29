@@ -1,9 +1,9 @@
+from binpack import BinPacker
 from ifcopenshell import entity_instance as ifc_entity, file as ifc_file, geom as ifc_geom, open as ifc_open
 from math import isnan
 from multiprocessing import cpu_count
 import numpy as np
 import os.path
-import struct
 from threading import Lock
 
 
@@ -157,62 +157,59 @@ class Ifc:
             return geometry
         
 
-    def _process_hierarchy(self, geometry: dict) -> bytearray:
+    def _process_hierarchy(self, geometry: dict) -> BinPacker:
         self.load()
 
         with self.lock:
             print(f"Processing hierarchy of `{self.file_name}`...")
 
-            def collect(e: ifc_entity) -> bytearray:
-                buffer = bytearray()
+            def collect(e: ifc_entity) -> BinPacker:
+                packer = BinPacker()
 
                 # id
-                buffer += struct.pack("<I", e.id())
+                packer.pack_uint32(e.id())
 
                 # type
-                type = e.is_a().encode()
-                buffer += struct.pack("<I", len(type))
-                buffer += type
+                packer.pack_string(e.is_a())
 
                 # name
-                name: str = e.Name
-                if name == None:
-                    buffer += struct.pack("<I", 0)
+                if e.Name == None:
+                    packer.pack_uint32(0)
                 else:
-                    name: bytes = name.encode()
-                    buffer += struct.pack("<I", len(name))
-                    buffer += name
+                    packer.pack_string(e.Name)
                 
                 # geometry
 
                 if e.id() in geometry:
-                    buffer += struct.pack("<?", True)
+                    packer.pack_bool(True)
 
                     object = geometry[e.id()]
                     transform = object["transform"]
                     meshes = object["meshes"]
 
                     for scalar in transform:
-                        buffer += struct.pack("<f", scalar)
-                    
-                    buffer += struct.pack("<I", len(meshes))
+                        packer.pack_float32(scalar)
+
+                    packer.pack_uint32(len(meshes))                    
 
                     for mesh in meshes:
-                        buffer += struct.pack("<f", mesh["r"])
-                        buffer += struct.pack("<f", mesh["g"])
-                        buffer += struct.pack("<f", mesh["b"])
-                        buffer += struct.pack("<f", mesh["a"])
+                        packer.pack_float32(mesh["r"])
+                        packer.pack_float32(mesh["g"])
+                        packer.pack_float32(mesh["b"])
+                        packer.pack_float32(mesh["a"])
 
                         positions = mesh["positions"]
-                        buffer += struct.pack("<I", len(positions))
-                        for coordinate in positions:
-                            buffer += struct.pack("<f", coordinate)
-                        
                         normals = mesh["normals"]
+
+                        packer.pack_uint32(len(positions))
+
+                        for coordinate in positions:
+                            packer.pack_float32(coordinate)
+
                         for coordinate in normals:
-                            buffer += struct.pack("<f", coordinate)
+                            packer.pack_float32(coordinate)
                 else:
-                    buffer += struct.pack("<?", False)
+                    packer.pack_bool(False)
 
                 # children
 
@@ -232,50 +229,53 @@ class Ifc:
                     for child in rel.RelatedElements:
                         children.append(child)
                 
-                buffer += struct.pack("<I", len(children))
-                for child in children:
-                    buffer += collect(child)
+                packer.pack_uint32(len(children))
                 
-                return buffer
+                for child in children:
+                    packer.pack_nested(collect(child))
+                
+                return packer
 
             project = self.file.by_type("IfcProject")[0]
-            buffer = collect(project)
+            packer = collect(project)
 
             print("    DONE")
-            return buffer
+            return packer
     
 
-    def _create_preview(self, geometry: dict):
+    def _create_preview(self, geometry: dict) -> BinPacker:
         print(f"Creating preview for `{self.file_name}`...")
-        buffer = bytearray()
-        buffer += struct.pack("<I", len(geometry))
+        packer = BinPacker()
+        packer.pack_uint32(len(geometry))
         
         for object in geometry.values():
             transform = object["transform"]
             meshes = object["meshes"]
 
             for scalar in transform:
-                buffer += struct.pack("<f", scalar)
+                packer.pack_float32(scalar)
 
-            buffer += struct.pack("<I", len(meshes))
+            packer.pack_uint32(len(meshes))
 
             for mesh in meshes:
-                buffer += struct.pack("<f", mesh["r"])
-                buffer += struct.pack("<f", mesh["g"])
-                buffer += struct.pack("<f", mesh["b"])
-                buffer += struct.pack("<f", mesh["a"])
+                packer.pack_float32(mesh["r"])
+                packer.pack_float32(mesh["g"])
+                packer.pack_float32(mesh["b"])
+                packer.pack_float32(mesh["a"])
 
                 positions = mesh["positions"]
-                buffer += struct.pack("<I", len(positions))
-                for coordinate in positions:
-                    buffer += struct.pack("<f", coordinate)
-                
                 normals = mesh["normals"]
+
+                packer.pack_uint32(len(positions))
+
+                for coordinate in positions:
+                    packer.pack_float32(coordinate)
+                
                 for coordinate in normals:
-                    buffer += struct.pack("<f", coordinate)
+                    packer.pack_float32(coordinate)
         
         print("    DONE")
-        return buffer
+        return packer
 
     
     def process(self):
@@ -289,11 +289,8 @@ class Ifc:
         hierarchy = self._process_hierarchy(geometry=geometry)
         preview = self._create_preview(geometry=geometry)
 
-        with open(f"files/{self.file_name}.tree.bin", "wb") as f:
-            f.write(hierarchy)
-        
-        with open(f"files/{self.file_name}.preview.bin", "wb") as f:
-            f.write(preview)
+        hierarchy.dump(f"files/{self.file_name}.tree.bin")
+        preview.dump(f"files/{self.file_name}.preview.bin")
 
 
 def _xform_pset_prop(prop: ifc_entity) -> dict:
