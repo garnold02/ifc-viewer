@@ -1,15 +1,15 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
-from ifc import Ifc, xform_pset
+from ifc_file import IfcFile, xform_pset
 import os
 
 
 ifcs = []
 
 
-def _get_ifc(id: int) -> Ifc:
-    ifc: Ifc = None
+def _get_ifc(id: int) -> IfcFile:
+    ifc: IfcFile = None
 
     try:
         ifc = ifcs[id]
@@ -26,7 +26,7 @@ async def lifespan(_: FastAPI):
     for file_path in os.listdir(files_path):
         file_name = os.fsdecode(file_path)
         if file_name.endswith(".ifc"):
-            ifc = Ifc(file_name=file_name)
+            ifc = IfcFile(file_name)
             ifc.process()
             ifc.unload()
             ifcs.append(ifc)

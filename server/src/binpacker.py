@@ -27,6 +27,13 @@ class BinPacker:
         self.array += bytes
     
 
+    def pack_string_or_none(self, value: str | None):
+        if value != None:
+            self.pack_string(value)
+        else:
+            self.pack_uint32(0)
+    
+
     def pack_nested(self, other):
         self.array += other.array
     
