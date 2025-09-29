@@ -79,15 +79,23 @@ export class BinaryParser {
   }
 
   getIfcMesh(): IfcMesh {
+    const color = this.getColor();
+    const opacity = this.getFloat32();
+    const numCoords = this.getUint32();
+
+    const positions = new Float32Array(
+      this.getArray(numCoords, () => this.getFloat32())
+    );
+
+    const normals = new Float32Array(
+      this.getArray(numCoords, () => this.getFloat32())
+    );
+
     return {
-      color: this.getColor(),
-      opacity: this.getFloat32(),
-      positions: new Float32Array(
-        this.getArray(this.getUint32(), () => this.getFloat32())
-      ),
-      normals: new Float32Array(
-        this.getArray(this.getUint32(), () => this.getFloat32())
-      ),
+      color,
+      opacity,
+      positions,
+      normals,
     };
   }
 

@@ -205,13 +205,10 @@ class Ifc:
 
                         positions = mesh["positions"]
                         buffer += struct.pack("<I", len(positions))
-
                         for coordinate in positions:
                             buffer += struct.pack("<f", coordinate)
                         
                         normals = mesh["normals"]
-                        buffer += struct.pack("<I", len(normals))
-                        
                         for coordinate in normals:
                             buffer += struct.pack("<f", coordinate)
                 else:
@@ -270,13 +267,10 @@ class Ifc:
 
                 positions = mesh["positions"]
                 buffer += struct.pack("<I", len(positions))
-
                 for coordinate in positions:
                     buffer += struct.pack("<f", coordinate)
                 
                 normals = mesh["normals"]
-                buffer += struct.pack("<I", len(normals))
-                
                 for coordinate in normals:
                     buffer += struct.pack("<f", coordinate)
         
