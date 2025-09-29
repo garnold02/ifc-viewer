@@ -4,7 +4,6 @@ import { OutlinerVisibilityButton } from "./OutlinerVisibilityButton";
 import { useCallback, useMemo } from "react";
 import { produce } from "immer";
 import { OutlinerNodeTypeLabel } from "./OutlinerNodeTypeLabel";
-import { OutlinerNodeNameLabel } from "./OutlinerNodeNameLabel";
 import { defaultOutlinerNodeState } from "../../../utils/outliner";
 import type { IfcNode } from "../../../types/ifc";
 import { useOutlinerStore } from "../../../stores/outliner/store";
@@ -72,7 +71,6 @@ export const OutlinerNode = ({ node }: Props) => {
         />
         <OutlinerNodeTypeLabel node={node} />
         <Box marginLeft="auto" />
-        <OutlinerNodeNameLabel node={node} />
         <OutlinerVisibilityButton
           variant="self"
           value={nodeState.showSelf}
