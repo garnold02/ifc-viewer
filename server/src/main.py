@@ -36,7 +36,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-allowed_origins = ["http://localhost:5173"]
+allowed_origins = ["http://localhost:4173", "http://localhost:5173"]
 
 app.add_middleware(
     CORSMiddleware,
