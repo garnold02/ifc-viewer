@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from ifc_file import IfcFile, xform_pset
 import os
 
@@ -36,11 +37,18 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 allowed_origins = ["http://localhost:5173"]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+app.add_middleware(
+    GZipMiddleware,
+    minimum_size=1024,
+    compresslevel=5
 )
 
 
