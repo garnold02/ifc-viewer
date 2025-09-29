@@ -63,7 +63,15 @@ class IfcNode:
 
         def collect(node: IfcNode):
             if node.geometry != None:
-                geometries.append(node.geometry)
+                allow = node.type not in [
+                    "IfcFurnishingElement",
+                    "IfcFurniture",
+                    "IfcOpeningElement",
+                    "IfcSpace",
+                ]
+
+                if allow:
+                    geometries.append(node.geometry)
             
             for child in node.children:
                 collect(child)
