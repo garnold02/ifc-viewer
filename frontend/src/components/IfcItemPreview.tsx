@@ -1,15 +1,22 @@
-import { Gltf, OrbitControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { IfcCanvas } from "./IfcCanvas";
 import { IfcSceneLight } from "./IfcSceneLight";
+import type { TreeNodeGeometry } from "../api/queries/ifcTree";
+import { IfcItemPreviewGeometry } from "./IfcItemPreviewGeometry";
+import { ViewportUprightGroup } from "./ViewportUprightGroup";
 
 type Props = {
-  gltfUrl: string;
+  geometries: TreeNodeGeometry[];
 };
 
-export const IfcItemPreview = ({ gltfUrl }: Props) => {
+export const IfcItemPreview = ({ geometries }: Props) => {
   return (
     <IfcCanvas style={{ width: "400px", height: "300px" }}>
-      <Gltf src={gltfUrl} />
+      <ViewportUprightGroup>
+        {geometries.map((geometry, i) => (
+          <IfcItemPreviewGeometry key={i} geometry={geometry} />
+        ))}
+      </ViewportUprightGroup>
       <IfcSceneLight />
       <OrbitControls dampingFactor={0.5} makeDefault />
     </IfcCanvas>

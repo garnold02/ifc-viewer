@@ -138,10 +138,17 @@ class Ifc:
                     normals.append(normal_1)
                     normals.append(normal_2)
                 
-                geometry[shape.id] = {
-                    "transform": shape.transformation.matrix,
-                    "meshes": list(meshes.values()),
-                }
+                mesh_list = list(
+                    mesh for mesh
+                    in meshes.values()
+                    if len(mesh["positions"]) > 0
+                )
+
+                if len(mesh_list) > 0:
+                    geometry[shape.id] = {
+                        "transform": shape.transformation.matrix,
+                        "meshes": mesh_list
+                    }
 
                 if not iterator.next():
                     break
@@ -251,7 +258,7 @@ class Ifc:
             meshes = object["meshes"]
 
             for scalar in transform:
-                struct.pack("<f", scalar)
+                buffer += struct.pack("<f", scalar)
 
             buffer += struct.pack("<I", len(meshes))
 

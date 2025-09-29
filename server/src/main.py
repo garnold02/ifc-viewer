@@ -72,7 +72,7 @@ def get_ifc_preview(id: int):
     
     if file == None:
         ifc.process()
-        file = open(f"files/{ifc.file_name}.tree.bin", "rb")
+        file = open(f"files/{ifc.file_name}.preview.bin", "rb")
     
     content = file.read()
     file.close()

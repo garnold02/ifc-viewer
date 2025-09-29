@@ -20,7 +20,7 @@ type Props = {
 
 export const IfcItem = ({ ifcSummary }: Props) => {
   const { t } = useTranslation();
-  const { data: gltfUrl } = useGetIfcPreview(ifcSummary.id);
+  const { data: previewGeometries } = useGetIfcPreview(ifcSummary.id);
   const [showPreview, setShowPreview] = useState(false);
 
   return (
@@ -31,8 +31,8 @@ export const IfcItem = ({ ifcSummary }: Props) => {
       <AccordionDetails>
         <Stack gap={1}>
           {showPreview ? (
-            gltfUrl !== undefined ? (
-              <IfcItemPreview gltfUrl={gltfUrl} />
+            previewGeometries !== undefined ? (
+              <IfcItemPreview geometries={previewGeometries} />
             ) : (
               <CircularProgress />
             )

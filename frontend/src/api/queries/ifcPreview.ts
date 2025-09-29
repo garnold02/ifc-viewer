@@ -1,12 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { API_BASE_URL } from "../constants";
+import { parsePreview } from "../../utils/parsing";
 
 export const useGetIfcPreview = (id: number) =>
   useQuery({
     queryKey: ["ifc", id, "preview"],
     queryFn: async () => {
       const response = await fetch(`${API_BASE_URL}/ifc/${id}/preview`);
-      const content = await response.blob();
-      return URL.createObjectURL(content);
+      const arrayBuffer = await response.arrayBuffer();
+      const [geometries] = parsePreview(arrayBuffer, 0);
+      return geometries;
     },
   });
