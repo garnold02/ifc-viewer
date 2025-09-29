@@ -5,7 +5,7 @@ import BuildIcon from "@mui/icons-material/Build";
 import AlarmIcon from "@mui/icons-material/Alarm";
 import ViewInArIcon from "@mui/icons-material/ViewInAr";
 import ScaleIcon from "@mui/icons-material/Scale";
-import type { IfcPropertyValue } from "../types/ifc";
+import type { IfcPropertyValue } from "../../../types/ifc";
 
 type Props = {
   valueType: IfcPropertyValue["type"];

@@ -1,5 +1,5 @@
 import { useMemo, type PropsWithChildren } from "react";
-import { createOutlinerStore, OutlinerStoreContext } from "./outlinerStore";
+import { createOutlinerStore, OutlinerStoreContext } from "./store";
 
 export const OutlinerStoreProvider = ({ children }: PropsWithChildren) => {
   const store = useMemo(() => createOutlinerStore(), []);

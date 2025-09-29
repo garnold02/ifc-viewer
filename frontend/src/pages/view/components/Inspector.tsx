@@ -13,16 +13,15 @@ export const Inspector = () => {
     [setCurrentTab]
   );
 
-  const { t } = useTranslation();
+  const { t } = useTranslation(undefined, {
+    keyPrefix: "pages.view.components.Inspector",
+  });
 
   return (
     <Stack width="100%" height="100%">
       <Tabs value={currentTab} onChange={onTabChange}>
-        <Tab label={t("components.Inspector.attributes")} value="attributes" />
-        <Tab
-          label={t("components.Inspector.property_sets")}
-          value="property_sets"
-        />
+        <Tab label={t("attributes")} value="attributes" />
+        <Tab label={t("property_sets")} value="property_sets" />
       </Tabs>
       <Box flexGrow={1} paddingLeft={1} paddingRight={1} overflow="hidden">
         {currentTab === "attributes" ? <InspectorAttributes /> : null}

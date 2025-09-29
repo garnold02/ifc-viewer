@@ -9,15 +9,17 @@ import {
   Typography,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useOutlinerStore } from "../stores/outlinerStore";
-import { useGetIfcAttributes } from "../api/queries/ifcAttributes";
-import { useIfcContext } from "../contexts/ifc";
+import { useGetIfcAttributes } from "../../../api/queries/ifcAttributes";
+import { useIfcContext } from "../../../contexts/ifc";
+import { useOutlinerStore } from "../../../stores/outliner/store";
 
 export const InspectorAttributes = () => {
   const { ifcId } = useIfcContext();
   const selectedNodeId = useOutlinerStore((state) => state.selectedNodeId);
   const { data: attributes } = useGetIfcAttributes(ifcId, selectedNodeId);
-  const { t } = useTranslation();
+  const { t } = useTranslation(undefined, {
+    keyPrefix: "pages.view.components.InspectorAttributes",
+  });
 
   if (selectedNodeId === null) {
     return (
@@ -27,7 +29,7 @@ export const InspectorAttributes = () => {
         sx={{ width: "100%", height: "100%" }}
       >
         <Typography fontStyle="italic" color="textDisabled">
-          {t("components.InspectorAttributes.none_selected")}
+          {t("none_selected")}
         </Typography>
       </Stack>
     );
@@ -63,7 +65,7 @@ export const InspectorAttributes = () => {
                     fontStyle="italic"
                     color="textDisabled"
                   >
-                    {t("components.InspectorAttributes.no_value")}
+                    {t("no_value")}
                   </Typography>
                 ) : (
                   <Typography fontSize="0.875rem">

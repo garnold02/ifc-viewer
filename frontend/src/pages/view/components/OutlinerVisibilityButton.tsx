@@ -17,11 +17,14 @@ export const OutlinerVisibilityButton = ({
   onClick,
   disabled,
 }: Props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(undefined, {
+    keyPrefix: "pages.view.components.OutlinerVisibilityButton",
+  });
+
   const title = useMemo(
     () =>
       t(
-        `components.Outliner.${value && !disabled ? "hide" : "show"}_${variant === "self" ? "self" : "children"}`
+        `${value && !disabled ? "hide" : "show"}_${variant === "self" ? "self" : "children"}`
       ),
     [disabled, value, variant]
   );

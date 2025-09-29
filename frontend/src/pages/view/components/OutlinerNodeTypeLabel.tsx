@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { Typography } from "@mui/material";
-import { useOutlinerStore } from "../stores/outlinerStore";
-import type { IfcNode } from "../types/ifc";
+import type { IfcNode } from "../../../types/ifc";
+import { useOutlinerStore } from "../../../stores/outliner/store";
 
 type Props = {
   node: IfcNode;

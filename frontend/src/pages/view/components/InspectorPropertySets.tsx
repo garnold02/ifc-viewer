@@ -14,15 +14,17 @@ import {
 import { useTranslation } from "react-i18next";
 import { InspectorPropertyValue } from "./InspectorPropertyValue";
 import { InspectorPropertyValueIcon } from "./InspectorPropertyValueIcon";
-import { useIfcContext } from "../contexts/ifc";
-import { useOutlinerStore } from "../stores/outlinerStore";
-import { useGetIfcPropertySets } from "../api/queries/ifcPropertySets";
+import { useIfcContext } from "../../../contexts/ifc";
+import { useGetIfcPropertySets } from "../../../api/queries/ifcPropertySets";
+import { useOutlinerStore } from "../../../stores/outliner/store";
 
 export const InspectorPropertySets = () => {
   const { ifcId } = useIfcContext();
   const selectedNodeId = useOutlinerStore((state) => state.selectedNodeId);
   const { data: propertySets } = useGetIfcPropertySets(ifcId, selectedNodeId);
-  const { t } = useTranslation();
+  const { t } = useTranslation(undefined, {
+    keyPrefix: "pages.view.components.InspectorPropertySets",
+  });
 
   if (selectedNodeId === null) {
     return (
@@ -32,7 +34,7 @@ export const InspectorPropertySets = () => {
         sx={{ width: "100%", height: "100%" }}
       >
         <Typography fontStyle="italic" color="textDisabled">
-          {t("components.InspectorPropertySets.none_selected")}
+          {t("none_selected")}
         </Typography>
       </Stack>
     );

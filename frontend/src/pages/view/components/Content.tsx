@@ -1,23 +1,23 @@
+import styled from "@emotion/styled";
 import { Divider } from "@mui/material";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { Outliner } from "./Outliner";
-import { Toolbar } from "./Toolbar";
 import { Viewport } from "./Viewport";
+import { Outliner } from "./Outliner";
 import { Inspector } from "./Inspector";
-import styled from "@emotion/styled";
+import { ToolBar } from "./ToolBar";
 
-export const IfcViewContent = () => {
+export const Content = () => {
   return (
     <StyledPanelGroup direction="horizontal">
       <Panel>
-        <Toolbar />
+        <ToolBar />
         <Divider orientation="horizontal" />
         <Viewport />
       </Panel>
       <PanelResizeHandle>
         <Divider orientation="vertical" />
       </PanelResizeHandle>
-      <Panel defaultSize={25} minSize={20} maxSize={30}>
+      <Panel defaultSize={30} minSize={20} maxSize={50}>
         <PanelGroup direction="vertical">
           <Panel>
             <Outliner />

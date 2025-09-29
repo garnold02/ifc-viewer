@@ -1,10 +1,19 @@
-import type { IfcGeometry } from "../types/ifc";
+import { useMemo } from "react";
+import type { IfcGeometry } from "../../../types/ifc";
+import { Color } from "three";
 
 type Props = {
+  id: number;
   geometry: IfcGeometry;
+  highlight: boolean;
 };
 
-export const IfcPreviewGeometry = ({ geometry }: Props) => {
+export const SceneNodeGeometry = ({ id, geometry, highlight }: Props) => {
+  const emissive = useMemo<Color>(
+    () => (highlight ? new Color(0, 0.125, 0.5) : new Color(0, 0, 0)),
+    [highlight]
+  );
+
   return geometry.meshes.map((mesh, i) => (
     <mesh key={i} matrixAutoUpdate={false} matrix={geometry.matrix}>
       <bufferGeometry>
@@ -27,6 +36,7 @@ export const IfcPreviewGeometry = ({ geometry }: Props) => {
         color={mesh.color}
         opacity={mesh.opacity}
         transparent={mesh.opacity !== 1.0}
+        emissive={emissive}
       />
     </mesh>
   ));

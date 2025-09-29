@@ -5,9 +5,9 @@ import { useCallback, useMemo } from "react";
 import { produce } from "immer";
 import { OutlinerNodeTypeLabel } from "./OutlinerNodeTypeLabel";
 import { OutlinerNodeNameLabel } from "./OutlinerNodeNameLabel";
-import { useOutlinerStore } from "../stores/outlinerStore";
-import { defaultOutlinerNodeState } from "../utils/outliner";
-import type { IfcNode } from "../types/ifc";
+import { defaultOutlinerNodeState } from "../../../utils/outliner";
+import type { IfcNode } from "../../../types/ifc";
+import { useOutlinerStore } from "../../../stores/outliner/store";
 
 type Props = {
   node: IfcNode;

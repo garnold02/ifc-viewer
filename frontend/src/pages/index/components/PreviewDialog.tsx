@@ -11,9 +11,9 @@ import { useTranslation } from "react-i18next";
 import { useGetIfcPreview } from "../../../api/queries/ifcPreview";
 import { IfcSceneLight } from "../../../components/IfcSceneLight";
 import { IfcTransformGroup } from "../../../components/IfcTransformGroup";
-import { IfcPreviewGeometry } from "../../../components/IfcPreviewGeometry";
 import { IfcSceneCamera } from "../../../components/IfcSceneCamera";
 import { ButtonLink } from "../../../components/ButtonLink";
+import { PreviewGeometry } from "./PreviewGeometry";
 
 type Props = {
   open: boolean;
@@ -36,7 +36,7 @@ export const PreviewDialog = ({ open, summary, onClose }: Props) => {
           <IfcTransformGroup>
             {geometries !== undefined
               ? geometries.map((geometry, i) => (
-                  <IfcPreviewGeometry key={i} geometry={geometry} />
+                  <PreviewGeometry key={i} geometry={geometry} />
                 ))
               : null}
           </IfcTransformGroup>

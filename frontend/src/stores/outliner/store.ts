@@ -1,7 +1,7 @@
 import { produce } from "immer";
 import { createContext, useContext } from "react";
 import { create, useStore, type StoreApi } from "zustand";
-import { defaultOutlinerNodeState } from "../utils/outliner";
+import { defaultOutlinerNodeState } from "../../utils/outliner";
 
 export type OutlinerState = {
   nodeStates: OutlinerNodeState[];

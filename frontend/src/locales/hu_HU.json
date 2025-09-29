@@ -1,38 +1,4 @@
 {
-  "components": {
-    "IfcPreview": {
-      "none_selected": "Válasszon ki egy fájlt hogy lássa az előnézetét!"
-    },
-    "Inspector": {
-      "attributes": "Attribútumok",
-      "property_sets": "Jellemzők"
-    },
-    "InspectorAttributes": {
-      "no_value": "N/A",
-      "none_selected": "Nincs kiválasztott elem"
-    },
-    "InspectorPropertySets": {
-      "none_selected": "Nincs kiválasztott elem"
-    },
-    "InspectorPropertyValue": {
-      "false": "Nem",
-      "no_value": "N/A",
-      "true": "Igen"
-    },
-    "Outliner": {
-      "hide_children": "Gyerekek elrejtése",
-      "hide_self": "Saját geometria elrejtése",
-      "show_children": "Gyerekek megjelenítése",
-      "show_self": "Saját geometria megjelenítése",
-      "spatial_structure": "Térbeli hierarchia"
-    },
-    "ToolbarToggleToolButton": {
-      "measure_area": "Területmérés",
-      "measure_length": "Hosszmérés",
-      "measure_volume": "Térfogatmérés",
-      "select": "Kijelölés be- és kikapcsolása a 3D nézetben"
-    }
-  },
   "pages": {
     "index": {
       "components": {
@@ -43,6 +9,38 @@
         "SummaryCard": {
           "open": "Mengyitás",
           "preview": "Előnézet"
+        }
+      }
+    },
+    "view": {
+      "components": {
+        "IfcPreview": {
+          "none_selected": "Válasszon ki egy fájlt hogy lássa az előnézetét!"
+        },
+        "Inspector": {
+          "attributes": "Attribútumok",
+          "property_sets": "Jellemzők"
+        },
+        "InspectorAttributes": {
+          "no_value": "N/A",
+          "none_selected": "Nincs kiválasztott elem"
+        },
+        "InspectorPropertySets": {
+          "none_selected": "Nincs kiválasztott elem"
+        },
+        "InspectorPropertyValue": {
+          "false": "Nem",
+          "no_value": "N/A",
+          "true": "Igen"
+        },
+        "Outliner": {
+          "spatial_structure": "Térbeli hierarchia"
+        },
+        "OutlinerVisibilityButton": {
+          "hide_children": "Gyerekek elrejtése",
+          "hide_self": "Saját geometria elrejtése",
+          "show_children": "Gyerekek megjelenítése",
+          "show_self": "Saját geometria megjelenítése"
         }
       }
     }

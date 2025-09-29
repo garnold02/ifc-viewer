@@ -1,35 +1,4 @@
 {
-  "components": {
-    "Inspector": {
-      "attributes": "Attributes",
-      "property_sets": "Property sets"
-    },
-    "InspectorAttributes": {
-      "no_value": "N/A",
-      "none_selected": "None selected"
-    },
-    "InspectorPropertySets": {
-      "none_selected": "None selected"
-    },
-    "InspectorPropertyValue": {
-      "false": "No",
-      "no_value": "N/A",
-      "true": "Yes"
-    },
-    "Outliner": {
-      "hide_children": "Hide children",
-      "hide_self": "Hide self",
-      "show_children": "Show children",
-      "show_self": "Show self",
-      "spatial_structure": "Spatial structure"
-    },
-    "ToolbarToggleToolButton": {
-      "measure_area": "Measure area",
-      "measure_length": "Measure length",
-      "measure_volume": "Measure volume",
-      "select": "Toggle selection in viewport"
-    }
-  },
   "pages": {
     "index": {
       "components": {
@@ -40,6 +9,35 @@
         "SummaryCard": {
           "open": "Open",
           "preview": "Preview"
+        }
+      }
+    },
+    "view": {
+      "components": {
+        "Inspector": {
+          "attributes": "Attributes",
+          "property_sets": "Property sets"
+        },
+        "InspectorAttributes": {
+          "no_value": "N/A",
+          "none_selected": "None selected"
+        },
+        "InspectorPropertySets": {
+          "none_selected": "None selected"
+        },
+        "InspectorPropertyValue": {
+          "false": "No",
+          "no_value": "N/A",
+          "true": "Yes"
+        },
+        "Outliner": {
+          "spatial_structure": "Spatial structure"
+        },
+        "OutlinerVisibilityButton": {
+          "hide_children": "Hide children",
+          "hide_self": "Hide self",
+          "show_children": "Show children",
+          "show_self": "Show self"
         }
       }
     }

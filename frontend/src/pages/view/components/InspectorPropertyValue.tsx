@@ -1,13 +1,15 @@
 import { useTranslation } from "react-i18next";
 import { Typography } from "@mui/material";
-import type { IfcPropertyValue } from "../types/ifc";
+import type { IfcPropertyValue } from "../../../types/ifc";
 
 type Props = {
   value: IfcPropertyValue;
 };
 
 export const InspectorPropertyValue = ({ value }: Props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(undefined, {
+    keyPrefix: "pages.view.components.InspectorPropertyValue",
+  });
 
   switch (value.type) {
     case "area":
@@ -47,7 +49,7 @@ export const InspectorPropertyValue = ({ value }: Props) => {
             fontStyle="italic"
             color="textDisabled"
           >
-            {t("components.InspectorPropertyValue.no_value")}
+            {t("no_value")}
           </Typography>
         );
       }
@@ -55,9 +57,7 @@ export const InspectorPropertyValue = ({ value }: Props) => {
       if (typeof value.single === "boolean") {
         return (
           <Typography fontSize="0.875rem">
-            {t(
-              `components.InspectorPropertyValue.${value.single ? "true" : "false"}`
-            )}
+            {t(value.single ? "true" : "false")}
           </Typography>
         );
       }

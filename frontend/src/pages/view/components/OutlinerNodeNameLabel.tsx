@@ -1,5 +1,5 @@
 import { Chip } from "@mui/material";
-import type { IfcNode } from "../types/ifc";
+import type { IfcNode } from "../../../types/ifc";
 
 type Props = {
   node: IfcNode;
