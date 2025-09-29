@@ -1,8 +1,8 @@
 import { Chip } from "@mui/material";
-import type { TreeNode } from "../api/queries/ifcTree";
+import type { IfcNode } from "../types/ifc";
 
 type Props = {
-  node: TreeNode;
+  node: IfcNode;
 };
 
 export const OutlinerNodeNameLabel = ({ node }: Props) => {

@@ -5,12 +5,12 @@ import { useCallback, useMemo } from "react";
 import { produce } from "immer";
 import { OutlinerNodeTypeLabel } from "./OutlinerNodeTypeLabel";
 import { OutlinerNodeNameLabel } from "./OutlinerNodeNameLabel";
-import type { TreeNode } from "../api/queries/ifcTree";
 import { useOutlinerStore } from "../stores/outlinerStore";
 import { defaultOutlinerNodeState } from "../utils/outliner";
+import type { IfcNode } from "../types/ifc";
 
 type Props = {
-  node: TreeNode;
+  node: IfcNode;
 };
 
 export const OutlinerNode = ({ node }: Props) => {

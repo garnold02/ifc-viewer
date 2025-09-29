@@ -3,11 +3,11 @@ import { useOutlinerStore } from "../stores/outlinerStore";
 import type { ThreeEvent } from "@react-three/fiber";
 import { useToolStore } from "../stores/toolStore";
 import { produce } from "immer";
-import type { TreeNodeGeometry } from "../api/queries/ifcTree";
+import type { IfcGeometry } from "../types/ifc";
 
 type Props = {
   id: number;
-  geometry: TreeNodeGeometry;
+  geometry: IfcGeometry;
   highlight: boolean;
 };
 
@@ -97,7 +97,7 @@ export const ViewportNodeGeometry = ({ id, geometry, highlight }: Props) => {
         <mesh
           key={i}
           matrixAutoUpdate={false}
-          matrix={geometry.transform}
+          matrix={geometry.matrix}
           onClick={onMeshClick}
         >
           <bufferGeometry>
@@ -117,14 +117,14 @@ export const ViewportNodeGeometry = ({ id, geometry, highlight }: Props) => {
             />
           </bufferGeometry>
           <meshLambertMaterial
-            color={[m.color[0], m.color[1], m.color[2]]}
-            opacity={m.color[3] !== 1.0 ? m.color[3] : undefined}
-            transparent={m.color[3] !== 1.0}
+            color={m.color}
+            opacity={m.opacity}
+            transparent={m.opacity !== 1.0}
             emissive={emissive}
           />
         </mesh>
       )),
-    [emissive, geometry.transform, geometry.meshes, onMeshClick]
+    [emissive, geometry.matrix, geometry.meshes, onMeshClick]
   );
 
   return meshes;

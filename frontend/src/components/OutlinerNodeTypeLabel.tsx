@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 import { Typography } from "@mui/material";
-import type { TreeNode } from "../api/queries/ifcTree";
 import { useOutlinerStore } from "../stores/outlinerStore";
+import type { IfcNode } from "../types/ifc";
 
 type Props = {
-  node: TreeNode;
+  node: IfcNode;
 };
 
 export const OutlinerNodeTypeLabel = ({ node }: Props) => {

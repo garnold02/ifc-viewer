@@ -1,9 +1,9 @@
-import type { TreeNode } from "../api/queries/ifcTree";
+import type { IfcNode } from "../types/ifc";
 import { ViewportNode } from "./ViewportNode";
 import { ViewportUprightGroup } from "./ViewportUprightGroup";
 
 type Props = {
-  rootNode: TreeNode | null;
+  rootNode: IfcNode | null;
 };
 
 export const ViewportScene = ({ rootNode }: Props) => {

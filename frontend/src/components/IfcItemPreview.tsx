@@ -1,12 +1,12 @@
 import { OrbitControls } from "@react-three/drei";
 import { IfcCanvas } from "./IfcCanvas";
 import { IfcSceneLight } from "./IfcSceneLight";
-import type { TreeNodeGeometry } from "../api/queries/ifcTree";
 import { IfcItemPreviewGeometry } from "./IfcItemPreviewGeometry";
 import { ViewportUprightGroup } from "./ViewportUprightGroup";
+import type { IfcGeometry } from "../types/ifc";
 
 type Props = {
-  geometries: TreeNodeGeometry[];
+  geometries: IfcGeometry[];
 };
 
 export const IfcItemPreview = ({ geometries }: Props) => {

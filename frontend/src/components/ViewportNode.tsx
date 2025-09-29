@@ -2,10 +2,10 @@ import { useMemo } from "react";
 import { ViewportNodeGeometry } from "./ViewportNodeGeometry";
 import { useOutlinerStore } from "../stores/outlinerStore";
 import { defaultOutlinerNodeState } from "../utils/outliner";
-import type { TreeNode } from "../api/queries/ifcTree";
+import type { IfcNode } from "../types/ifc";
 
 type Props = {
-  node: TreeNode;
+  node: IfcNode;
   highlight: boolean;
 };
 

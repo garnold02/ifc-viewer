@@ -1,10 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { API_BASE_URL } from "../constants";
-
-export type IfcSummary = {
-  id: number;
-  name: string;
-};
+import type { IfcSummary } from "../../types/ifc";
 
 export const useGetIfcList = () =>
   useQuery({

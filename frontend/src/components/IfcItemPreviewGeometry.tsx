@@ -1,12 +1,12 @@
-import type { TreeNodeGeometry } from "../api/queries/ifcTree";
+import type { IfcGeometry } from "../types/ifc";
 
 type Props = {
-  geometry: TreeNodeGeometry;
+  geometry: IfcGeometry;
 };
 
 export const IfcItemPreviewGeometry = ({ geometry }: Props) => {
   return geometry.meshes.map((m, i) => (
-    <mesh key={i} matrixAutoUpdate={false} matrix={geometry.transform}>
+    <mesh key={i} matrixAutoUpdate={false} matrix={geometry.matrix}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
@@ -24,9 +24,9 @@ export const IfcItemPreviewGeometry = ({ geometry }: Props) => {
         />
       </bufferGeometry>
       <meshLambertMaterial
-        color={[m.color[0], m.color[1], m.color[2]]}
-        opacity={m.color[3] !== 1.0 ? m.color[3] : undefined}
-        transparent={m.color[3] !== 1.0}
+        color={m.color}
+        opacity={m.opacity}
+        transparent={m.opacity !== 1.0}
       />
     </mesh>
   ));

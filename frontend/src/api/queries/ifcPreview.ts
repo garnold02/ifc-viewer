@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { API_BASE_URL } from "../constants";
-import { parsePreview } from "../../utils/parsing";
+import { BinaryParser } from "../../utils/BinaryParser";
 
 export const useGetIfcPreview = (id: number) =>
   useQuery({
@@ -8,7 +8,9 @@ export const useGetIfcPreview = (id: number) =>
     queryFn: async () => {
       const response = await fetch(`${API_BASE_URL}/ifc/${id}/preview`);
       const arrayBuffer = await response.arrayBuffer();
-      const [geometries] = parsePreview(arrayBuffer, 0);
-      return geometries;
+      const binaryParser = new BinaryParser(arrayBuffer);
+      return binaryParser.getArray(binaryParser.getUint32(), () =>
+        binaryParser.getIfcGeometry()
+      );
     },
   });

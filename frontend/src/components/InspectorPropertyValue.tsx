@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { Typography } from "@mui/material";
-import type { PropertySetPropertyValue } from "../api/queries/ifcPropertySets";
+import type { IfcPropertyValue } from "../types/ifc";
 
 type Props = {
-  value: PropertySetPropertyValue;
+  value: IfcPropertyValue;
 };
 
 export const InspectorPropertyValue = ({ value }: Props) => {

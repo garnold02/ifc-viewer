@@ -1,12 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { API_BASE_URL } from "../constants";
-
-export type Attributes = Attribute[];
-
-export type Attribute = {
-  name: string;
-  value: null | number | string;
-};
+import type { IfcAttribute } from "../../types/ifc";
 
 export const useGetIfcAttributes = (
   ifcId: number | null,
@@ -20,6 +14,6 @@ export const useGetIfcAttributes = (
         `${API_BASE_URL}/ifc/${ifcId}/attributes/${entityId}`
       );
       const json = await response.json();
-      return json as Attributes;
+      return json as IfcAttribute[];
     },
   });
