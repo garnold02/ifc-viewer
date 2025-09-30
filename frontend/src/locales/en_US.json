@@ -1,4 +1,16 @@
 {
+  "components": {
+    "Branding": {
+      "title": "IFC viewer"
+    },
+    "LanguageButton": {
+      "tooltip": "Change language"
+    },
+    "ThemeToggle": {
+      "use_dark": "Use dark theme",
+      "use_light": "Use light theme"
+    }
+  },
   "pages": {
     "index": {
       "components": {

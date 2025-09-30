@@ -1,4 +1,16 @@
 {
+  "components": {
+    "Branding": {
+      "title": "IFC nézegető"
+    },
+    "LanguageButton": {
+      "tooltip": "Nyelv kiválasztása"
+    },
+    "ThemeToggle": {
+      "use_dark": "Sötét kinézet használata",
+      "use_light": "Világos kinézet használata"
+    }
+  },
   "pages": {
     "index": {
       "components": {
