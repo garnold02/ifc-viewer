@@ -4,7 +4,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Outliner } from "./outliner/Outliner";
 import { ToolBar } from "./toolbar/ToolBar";
 import { Viewport } from "./viewport/Viewport";
-import { Inspector } from "./inspector/Inspector";
+import { ActionPanel } from "./ActionPanel";
 
 export const Content = () => {
   return (
@@ -26,7 +26,7 @@ export const Content = () => {
             <Divider orientation="horizontal" />
           </PanelResizeHandle>
           <Panel defaultSize={30} minSize={20} maxSize={60}>
-            <Inspector />
+            <ActionPanel />
           </Panel>
         </PanelGroup>
       </Panel>

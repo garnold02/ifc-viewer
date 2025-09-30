@@ -31,7 +31,7 @@ export const Node = ({ node, highlight }: Props) => {
     [node.id, node.type, nodeStates]
   );
 
-  const toolContent = useToolStore((state) => state.content);
+  const currentToolType = useToolStore((state) => state.current);
 
   const onMeshClick = useCallback(
     (event: ThreeEvent<MouseEvent>) => {
@@ -39,11 +39,11 @@ export const Node = ({ node, highlight }: Props) => {
       if (getCameraMoving()) {
         return;
       }
-      if (toolContent?.type === "select") {
+      if (currentToolType === "select") {
         setSelectedNodeId(selectedNodeId === node.id ? null : node.id);
       }
     },
-    [node.id, selectedNodeId, setSelectedNodeId, toolContent?.type]
+    [node.id, selectedNodeId, setSelectedNodeId, currentToolType]
   );
 
   const geometry = useMemo(

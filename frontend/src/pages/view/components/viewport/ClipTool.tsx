@@ -1,18 +1,19 @@
 import { PivotControls } from "@react-three/drei";
 import { useToolStore } from "../../../../stores/tool/store";
-import { Color, Matrix4 } from "three";
+import { Color } from "three";
 
 export const ClipTool = () => {
-  const toolContent = useToolStore((state) => state.content);
-  const setToolContent = useToolStore((state) => state.setContent);
+  const currentToolType = useToolStore((state) => state.current);
+  const matrix = useToolStore((state) => state.clipState.matrix);
+  const setMatrix = useToolStore((state) => state.setClipMatrix);
 
-  if (toolContent?.type !== "clip") {
+  if (currentToolType !== "clip") {
     return null;
   }
 
   return (
     <>
-      <group matrixAutoUpdate={false} matrix={toolContent.matrix}>
+      <group matrixAutoUpdate={false} matrix={matrix}>
         <mesh scale={100}>
           <planeGeometry />
           <meshBasicMaterial
@@ -24,10 +25,8 @@ export const ClipTool = () => {
       </group>
       <PivotControls
         autoTransform={false}
-        matrix={toolContent.matrix}
-        onDrag={(matrix) =>
-          setToolContent({ type: "clip", matrix: new Matrix4().copy(matrix) })
-        }
+        matrix={matrix}
+        onDrag={(matrix) => setMatrix(matrix)}
         scale={80}
         disableScaling
         fixed

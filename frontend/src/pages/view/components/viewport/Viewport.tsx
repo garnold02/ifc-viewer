@@ -9,7 +9,7 @@ import { useToolStore } from "../../../../stores/tool/store";
 import { ClipTool } from "./ClipTool";
 
 export const Viewport = () => {
-  const toolContent = useToolStore((state) => state.content);
+  const currentToolType = useToolStore((state) => state.current);
 
   const setSelectedNodeId = useOutlinerStore(
     (state) => state.setSelectedNodeId
@@ -19,10 +19,10 @@ export const Viewport = () => {
     if (getCameraMoving()) {
       return;
     }
-    if (toolContent?.type === "select") {
+    if (currentToolType === "select") {
       setSelectedNodeId(null);
     }
-  }, [setSelectedNodeId, toolContent?.type]);
+  }, [setSelectedNodeId, currentToolType]);
 
   return (
     <IfcCanvas onClickCapture={onClick}>

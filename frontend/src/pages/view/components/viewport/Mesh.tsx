@@ -12,17 +12,22 @@ type Props = {
 };
 
 export const Mesh = ({ matrix, mesh, emissive, onClick }: Props) => {
-  const toolContent = useToolStore((state) => state.content);
+  const currentToolType = useToolStore((state) => state.current);
+  const clipVisible = useToolStore((state) => state.clipState.visible);
+  const clipMatrix = useToolStore((state) => state.clipState.matrix);
+
   const clippingPlanes = useMemo(() => {
-    if (toolContent?.type !== "clip") {
+    if (!clipVisible && currentToolType !== "clip") {
       return [];
     }
+
     const zAxis = new Vector3();
     const position = new Vector3();
-    toolContent.matrix.extractBasis(new Vector3(), new Vector3(), zAxis);
-    toolContent.matrix.decompose(position, new Quaternion(), new Vector3());
+
+    clipMatrix.extractBasis(new Vector3(), new Vector3(), zAxis);
+    clipMatrix.decompose(position, new Quaternion(), new Vector3());
     return [new Plane(zAxis.negate(), 0).translate(position)];
-  }, [toolContent]);
+  }, [currentToolType, clipVisible, clipMatrix]);
 
   const geometry = useMemo(
     () => (

@@ -4,22 +4,40 @@ import { Matrix4 } from "three";
 import { create, useStore, type StoreApi } from "zustand";
 
 export type ToolState = {
-  content: ToolContent;
-  setContent: (value: ToolContent) => void;
+  current: ToolType | null;
+  setCurrent: (value: ToolType | null) => void;
+  clipState: ClipToolState;
+  setClipVisible: (value: boolean) => void;
+  setClipMatrix: (value: Matrix4) => void;
 };
 
-export type ToolContent =
-  | null
-  | { type: "select" }
-  | { type: "clip"; matrix: Matrix4 };
+export type ToolType = "select" | "clip";
+
+export type ClipToolState = {
+  visible: boolean;
+  matrix: Matrix4;
+};
 
 export const createToolStore = () =>
   create<ToolState>((set) => ({
-    content: null,
-    setContent: (value) =>
+    current: null,
+    setCurrent: (value) =>
       set((prev) =>
         produce(prev, (draft) => {
-          draft.content = value;
+          draft.current = value;
+        })
+      ),
+    clipState: { visible: true, matrix: new Matrix4() },
+    setClipVisible: (value) =>
+      set((prev) =>
+        produce(prev, (draft) => {
+          draft.clipState.visible = value;
+        })
+      ),
+    setClipMatrix: (value) =>
+      set((prev) =>
+        produce(prev, (draft) => {
+          draft.clipState.matrix = new Matrix4().copy(value);
         })
       ),
   }));
@@ -29,16 +47,4 @@ export const ToolStoreContext = createContext<StoreApi<ToolState> | null>(null);
 export const useToolStore = <T>(selector: (state: ToolState) => T): T => {
   const store = useContext(ToolStoreContext)!;
   return useStore(store, selector);
-};
-
-export const createToolContent = (
-  tool: NonNullable<ToolContent>["type"]
-): ToolContent => {
-  switch (tool) {
-    case "select":
-      return { type: "select" };
-
-    case "clip":
-      return { type: "clip", matrix: new Matrix4() };
-  }
 };

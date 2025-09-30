@@ -1,39 +1,43 @@
 import { IconButton, Tooltip } from "@mui/material";
 import { useCallback, useMemo, type ReactNode } from "react";
-import {
-  createToolContent,
-  useToolStore,
-  type ToolContent,
-} from "../../../../stores/tool/store";
+import { useToolStore, type ToolType } from "../../../../stores/tool/store";
 import { useTranslation } from "react-i18next";
 
 type Props = {
-  tool: NonNullable<ToolContent>["type"];
+  type: ToolType;
   icon: ReactNode;
+  disabled?: boolean;
 };
 
-export const ToolButton = ({ tool, icon }: Props) => {
+export const ToolButton = ({ type, icon, disabled }: Props) => {
   const { t } = useTranslation(undefined, {
     keyPrefix: "pages.view.components.toolbar.ToolButton",
   });
 
-  const toolContent = useToolStore((state) => state.content);
-  const setToolContent = useToolStore((state) => state.setContent);
+  const currentToolType = useToolStore((state) => state.current);
+  const setCurrentToolType = useToolStore((state) => state.setCurrent);
 
   const color = useMemo(
-    () => (toolContent?.type === tool ? "primary" : undefined),
-    [tool, toolContent?.type]
+    () => (currentToolType === type ? "primary" : undefined),
+    [currentToolType, type]
   );
 
   const onClick = useCallback(() => {
-    setToolContent(toolContent?.type === tool ? null : createToolContent(tool));
-  }, [setToolContent, toolContent?.type]);
+    setCurrentToolType(currentToolType === type ? null : type);
+  }, [currentToolType, setCurrentToolType, type]);
 
   return (
-    <Tooltip title={t(tool)}>
-      <IconButton size="small" color={color} onClick={onClick}>
-        {icon}
-      </IconButton>
+    <Tooltip title={t(type)}>
+      <span>
+        <IconButton
+          size="small"
+          color={color}
+          onClick={onClick}
+          disabled={disabled}
+        >
+          {icon}
+        </IconButton>
+      </span>
     </Tooltip>
   );
 };
