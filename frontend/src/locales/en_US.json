@@ -14,9 +14,17 @@
     },
     "view": {
       "components": {
+        "ClipSettings": {
+          "always_clip": "Always clip",
+          "reset_plane": "Reset plane",
+          "title": "Clip settings"
+        },
         "inspector": {
           "ElementAttributes": {
             "title": "Element attributes"
+          },
+          "Inspector": {
+            "title": "Element inspector"
           },
           "PropertySetHeader": {
             "name": "Name",
@@ -34,6 +42,9 @@
           }
         },
         "outliner": {
+          "Outliner": {
+            "title": "Spatial structure"
+          },
           "VisibilityButton": {
             "hide_children": "Hide children",
             "hide_self": "Hide self",

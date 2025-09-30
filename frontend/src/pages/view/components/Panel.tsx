@@ -7,8 +7,7 @@ export const Panel = ({ children }: PropsWithChildren) => {
       sx={{
         width: "100%",
         height: "100%",
-        overflowX: "hidden",
-        overflowY: "scroll",
+        overflow: "hidden",
       }}
     >
       {children}

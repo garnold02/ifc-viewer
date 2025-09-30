@@ -27,7 +27,7 @@ export const createToolStore = () =>
           draft.current = value;
         })
       ),
-    clipState: { visible: true, matrix: new Matrix4() },
+    clipState: { visible: false, matrix: new Matrix4() },
     setClipVisible: (value) =>
       set((prev) =>
         produce(prev, (draft) => {

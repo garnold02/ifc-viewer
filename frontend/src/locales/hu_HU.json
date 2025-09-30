@@ -14,9 +14,17 @@
     },
     "view": {
       "components": {
+        "ClipSettings": {
+          "always_clip": "Mindig látszódjon a vágás",
+          "reset_plane": "Sík visszaállítása",
+          "title": "Geometriavágás beállításai"
+        },
         "inspector": {
           "ElementAttributes": {
             "title": "Elemattribútumok"
+          },
+          "Inspector": {
+            "title": "Elemnézegető"
           },
           "PropertySetHeader": {
             "name": "Név",
@@ -34,6 +42,9 @@
           }
         },
         "outliner": {
+          "Outliner": {
+            "title": "Térbeli struktúra"
+          },
           "VisibilityButton": {
             "hide_children": "Gyerekek elrejtése",
             "hide_self": "Saját geometria elrejtése",

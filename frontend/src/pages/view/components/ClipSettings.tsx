@@ -4,15 +4,20 @@ import { PanelHead } from "./PanelHead";
 import { PanelBody } from "./PanelBody";
 import { useToolStore } from "../../../stores/tool/store";
 import { Matrix4 } from "three";
+import { useTranslation } from "react-i18next";
 
 export const ClipSettings = () => {
+  const { t } = useTranslation(undefined, {
+    keyPrefix: "pages.view.components.ClipSettings",
+  });
+
   const clipVisible = useToolStore((state) => state.clipState.visible);
   const setClipVisible = useToolStore((state) => state.setClipVisible);
   const setClipMatrix = useToolStore((state) => state.setClipMatrix);
 
   return (
     <Panel>
-      <PanelHead title="Clip settings" />
+      <PanelHead title={t("title")} />
       <PanelBody>
         <FormGroup>
           <FormControlLabel
@@ -24,14 +29,14 @@ export const ClipSettings = () => {
                 sx={{ marginLeft: 0.5 }}
               />
             }
-            label="Always clip"
+            label={t("always_clip")}
           />
         </FormGroup>
         <Button
           variant="contained"
           onClick={() => setClipMatrix(new Matrix4())}
         >
-          Reset plane
+          {t("reset_plane")}
         </Button>
       </PanelBody>
     </Panel>

@@ -1,34 +1,30 @@
-import { Box, CircularProgress, Stack } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { useIfcContext } from "../../../../contexts/ifc";
 import { useGetIfcRootNode } from "../../../../api/queries/ifcRootNode";
 import { Node } from "./Node";
+import { useTranslation } from "react-i18next";
+import { Panel } from "../Panel";
+import { PanelHead } from "../PanelHead";
+import { PanelBody } from "../PanelBody";
 
 export const Outliner = () => {
+  const { t } = useTranslation(undefined, {
+    keyPrefix: "pages.view.components.outliner.Outliner",
+  });
+
   const { ifcId } = useIfcContext();
   const { data: rootNode } = useGetIfcRootNode(ifcId);
 
   return (
-    <Box
-      padding={1}
-      sx={{
-        width: "100%",
-        height: "100%",
-        overflowX: "hidden",
-        overflowY: "scroll",
-      }}
-    >
-      {rootNode !== undefined ? (
-        <Node node={rootNode} />
-      ) : (
-        <Stack
-          width="100%"
-          height="100%"
-          justifyContent="center"
-          alignItems="center"
-        >
+    <Panel>
+      <PanelHead title={t("title")} />
+      <PanelBody>
+        {rootNode !== undefined ? (
+          <Node node={rootNode} />
+        ) : (
           <CircularProgress />
-        </Stack>
-      )}
-    </Box>
+        )}
+      </PanelBody>
+    </Panel>
   );
 };
