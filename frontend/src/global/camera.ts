@@ -1,9 +1,5 @@
-let cameraMoving = false;
+let cameraMoving: boolean = false;
 
-export const getCameraMoving = () => {
-  return cameraMoving;
-};
+export const getCameraMoving = () => cameraMoving;
 
-export const setCameraMoving = (value: boolean) => {
-  cameraMoving = value;
-};
+export const setCameraMoving = (value: boolean) => (cameraMoving = value);
