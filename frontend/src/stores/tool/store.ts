@@ -1,5 +1,6 @@
 import { produce } from "immer";
 import { createContext, useContext } from "react";
+import { Matrix4 } from "three";
 import { create, useStore, type StoreApi } from "zustand";
 
 export type ToolState = {
@@ -7,7 +8,10 @@ export type ToolState = {
   setContent: (value: ToolContent) => void;
 };
 
-export type ToolContent = null | { type: "select" };
+export type ToolContent =
+  | null
+  | { type: "select" }
+  | { type: "clip"; matrix: Matrix4 };
 
 export const createToolStore = () =>
   create<ToolState>((set) => ({
@@ -33,5 +37,8 @@ export const createToolContent = (
   switch (tool) {
     case "select":
       return { type: "select" };
+
+    case "clip":
+      return { type: "clip", matrix: new Matrix4() };
   }
 };

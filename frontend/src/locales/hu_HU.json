@@ -43,6 +43,7 @@
         },
         "toolbar": {
           "ToolButton": {
+            "clip": "Geometria vágása",
             "select": "Kiválasztás"
           }
         }

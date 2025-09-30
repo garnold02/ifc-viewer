@@ -6,6 +6,7 @@ import { Scene } from "./Scene";
 import { useOutlinerStore } from "../../../../stores/outliner/store";
 import { getCameraMoving } from "../../../../global/camera";
 import { useToolStore } from "../../../../stores/tool/store";
+import { ClipTool } from "./ClipTool";
 
 export const Viewport = () => {
   const toolContent = useToolStore((state) => state.content);
@@ -26,6 +27,7 @@ export const Viewport = () => {
   return (
     <IfcCanvas onClickCapture={onClick}>
       <Scene />
+      <ClipTool />
       <IfcSceneLight />
       <IfcSceneCamera />
     </IfcCanvas>

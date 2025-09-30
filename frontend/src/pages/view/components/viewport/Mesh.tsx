@@ -1,7 +1,8 @@
-import type { Color, Matrix4 } from "three";
+import { Plane, Quaternion, Vector3, type Color, type Matrix4 } from "three";
 import { useMemo } from "react";
 import type { ThreeEvent } from "@react-three/fiber";
 import type { IfcMesh } from "../../../../types/ifc";
+import { useToolStore } from "../../../../stores/tool/store";
 
 type Props = {
   matrix: Matrix4;
@@ -11,6 +12,18 @@ type Props = {
 };
 
 export const Mesh = ({ matrix, mesh, emissive, onClick }: Props) => {
+  const toolContent = useToolStore((state) => state.content);
+  const clippingPlanes = useMemo(() => {
+    if (toolContent?.type !== "clip") {
+      return [];
+    }
+    const zAxis = new Vector3();
+    const position = new Vector3();
+    toolContent.matrix.extractBasis(new Vector3(), new Vector3(), zAxis);
+    toolContent.matrix.decompose(position, new Quaternion(), new Vector3());
+    return [new Plane(zAxis.negate(), 0).translate(position)];
+  }, [toolContent]);
+
   const geometry = useMemo(
     () => (
       <bufferGeometry>
@@ -40,9 +53,10 @@ export const Mesh = ({ matrix, mesh, emissive, onClick }: Props) => {
         opacity={mesh.opacity}
         transparent={mesh.opacity !== 1.0}
         emissive={emissive}
+        clippingPlanes={clippingPlanes}
       />
     ),
-    [mesh.color, mesh.opacity, emissive]
+    [clippingPlanes, mesh.color, mesh.opacity, emissive]
   );
 
   return (

@@ -43,6 +43,7 @@
         },
         "toolbar": {
           "ToolButton": {
+            "clip": "Clip geometry",
             "select": "Select"
           }
         }
