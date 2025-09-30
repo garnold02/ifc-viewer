@@ -1,7 +1,7 @@
 import type { Color, Matrix4 } from "three";
-import type { IfcMesh } from "../../../types/ifc";
 import { useMemo } from "react";
 import type { ThreeEvent } from "@react-three/fiber";
+import type { IfcMesh } from "../../../../types/ifc";
 
 type Props = {
   matrix: Matrix4;
@@ -10,12 +10,7 @@ type Props = {
   onClick: (event: ThreeEvent<MouseEvent>) => void;
 };
 
-export const SceneNodeGeometryMesh = ({
-  matrix,
-  mesh,
-  emissive,
-  onClick,
-}: Props) => {
+export const Mesh = ({ matrix, mesh, emissive, onClick }: Props) => {
   const geometry = useMemo(
     () => (
       <bufferGeometry>

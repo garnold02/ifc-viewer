@@ -14,33 +14,37 @@
     },
     "view": {
       "components": {
-        "Inspector": {
-          "attributes": "Attributes",
-          "property_sets": "Property sets"
+        "inspector": {
+          "ElementAttributes": {
+            "title": "Element attributes"
+          },
+          "PropertySetHeader": {
+            "name": "Name",
+            "unit": "Unit",
+            "value": "Value"
+          },
+          "PropertyUnit": {
+            "no_value": "Not provided"
+          },
+          "PropertyValue": {
+            "empty_text": "Empty text",
+            "false": "No",
+            "null": "Not provided",
+            "true": "Yes"
+          }
         },
-        "InspectorAttributes": {
-          "no_value": "N/A",
-          "none_selected": "None selected"
+        "outliner": {
+          "VisibilityButton": {
+            "hide_children": "Hide children",
+            "hide_self": "Hide self",
+            "show_children": "Show children",
+            "show_self": "Show self"
+          }
         },
-        "InspectorPropertySets": {
-          "none_selected": "None selected"
-        },
-        "InspectorPropertyValue": {
-          "false": "No",
-          "no_value": "N/A",
-          "true": "Yes"
-        },
-        "Outliner": {
-          "spatial_structure": "Spatial structure"
-        },
-        "OutlinerVisibilityButton": {
-          "hide_children": "Hide children",
-          "hide_self": "Hide self",
-          "show_children": "Show children",
-          "show_self": "Show self"
-        },
-        "ToolButton": {
-          "select": "Select"
+        "toolbar": {
+          "ToolButton": {
+            "select": "Select"
+          }
         }
       }
     }

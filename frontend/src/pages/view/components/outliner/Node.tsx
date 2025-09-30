@@ -1,18 +1,18 @@
 import { Box, Stack } from "@mui/material";
-import { OutlinerExpandButton } from "./OutlinerExpandButton";
-import { OutlinerVisibilityButton } from "./OutlinerVisibilityButton";
+import { ExpandButton } from "./ExpandButton";
+import { VisibilityButton } from "./VisibilityButton";
 import { useCallback, useMemo } from "react";
 import { produce } from "immer";
-import { OutlinerNodeTypeLabel } from "./OutlinerNodeTypeLabel";
-import { defaultOutlinerNodeState } from "../../../utils/outliner";
-import type { IfcNode } from "../../../types/ifc";
-import { useOutlinerStore } from "../../../stores/outliner/store";
+import { TypeLabel } from "./TypeLabel";
+import { defaultOutlinerNodeState } from "../../../../utils/outliner";
+import type { IfcNode } from "../../../../types/ifc";
+import { useOutlinerStore } from "../../../../stores/outliner/store";
 
 type Props = {
   node: IfcNode;
 };
 
-export const OutlinerNode = ({ node }: Props) => {
+export const Node = ({ node }: Props) => {
   const nodeStates = useOutlinerStore((state) => state.nodeStates);
   const setNodeState = useOutlinerStore((state) => state.setNodeState);
 
@@ -54,30 +54,27 @@ export const OutlinerNode = ({ node }: Props) => {
   );
 
   const childComponents = useMemo(
-    () =>
-      node.children.map((child) => (
-        <OutlinerNode key={child.id} node={child} />
-      )),
+    () => node.children.map((child) => <Node key={child.id} node={child} />),
     [node.children]
   );
 
   return (
     <Stack direction="column">
       <Stack direction="row" alignItems="center">
-        <OutlinerExpandButton
+        <ExpandButton
           value={nodeState.expanded}
           onClick={onExpandClick}
           disabled={node.children.length === 0}
         />
-        <OutlinerNodeTypeLabel node={node} />
+        <TypeLabel node={node} />
         <Box marginLeft="auto" />
-        <OutlinerVisibilityButton
+        <VisibilityButton
           variant="self"
           value={nodeState.showSelf}
           onClick={onSelfVisClick}
           disabled={node.geometry === null}
         />
-        <OutlinerVisibilityButton
+        <VisibilityButton
           variant="children"
           value={nodeState.showChildren}
           onClick={onChildrenVisClick}

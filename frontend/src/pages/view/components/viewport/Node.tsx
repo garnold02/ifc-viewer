@@ -1,18 +1,18 @@
 import { useCallback, useMemo } from "react";
-import type { IfcNode } from "../../../types/ifc";
-import { SceneNodeGeometry } from "./SceneNodeGeometry";
-import { defaultOutlinerNodeState } from "../../../utils/outliner";
-import { useOutlinerStore } from "../../../stores/outliner/store";
+import { Geometry } from "./Geometry";
 import type { ThreeEvent } from "@react-three/fiber";
-import { useToolStore } from "../../../stores/tool/store";
-import { getCameraMoving } from "../../../global/camera";
+import type { IfcNode } from "../../../../types/ifc";
+import { useOutlinerStore } from "../../../../stores/outliner/store";
+import { defaultOutlinerNodeState } from "../../../../utils/outliner";
+import { useToolStore } from "../../../../stores/tool/store";
+import { getCameraMoving } from "../../../../global/camera";
 
 type Props = {
   node: IfcNode;
   highlight: boolean;
 };
 
-export const SceneNode = ({ node, highlight }: Props) => {
+export const Node = ({ node, highlight }: Props) => {
   const selectedNodeId = useOutlinerStore((state) => state.selectedNodeId);
   const setSelectedNodeId = useOutlinerStore(
     (state) => state.setSelectedNodeId
@@ -49,7 +49,7 @@ export const SceneNode = ({ node, highlight }: Props) => {
   const geometry = useMemo(
     () =>
       node.geometry !== null && nodeState.showSelf ? (
-        <SceneNodeGeometry
+        <Geometry
           geometry={node.geometry}
           highlight={highlight || selected}
           onMeshClick={onMeshClick}
@@ -69,7 +69,7 @@ export const SceneNode = ({ node, highlight }: Props) => {
     () =>
       nodeState.showChildren
         ? node.children.map((child) => (
-            <SceneNode
+            <Node
               key={child.id}
               node={child}
               highlight={highlight || selected}

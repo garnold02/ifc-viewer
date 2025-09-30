@@ -8,7 +8,7 @@ type Props = {
   disabled: boolean;
 };
 
-export const OutlinerExpandButton = ({ value, onClick, disabled }: Props) => {
+export const ExpandButton = ({ value, onClick, disabled }: Props) => {
   return (
     <IconButton size="small" onClick={onClick} disabled={disabled}>
       {value ? <KeyboardArrowDownIcon fontSize="small" /> : null}

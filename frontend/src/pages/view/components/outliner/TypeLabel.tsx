@@ -1,13 +1,13 @@
 import { useCallback } from "react";
 import { Typography } from "@mui/material";
-import type { IfcNode } from "../../../types/ifc";
-import { useOutlinerStore } from "../../../stores/outliner/store";
+import type { IfcNode } from "../../../../types/ifc";
+import { useOutlinerStore } from "../../../../stores/outliner/store";
 
 type Props = {
   node: IfcNode;
 };
 
-export const OutlinerNodeTypeLabel = ({ node }: Props) => {
+export const TypeLabel = ({ node }: Props) => {
   const selectedNodeId = useOutlinerStore((state) => state.selectedNodeId);
   const setSelectedNodeId = useOutlinerStore(
     (state) => state.setSelectedNodeId

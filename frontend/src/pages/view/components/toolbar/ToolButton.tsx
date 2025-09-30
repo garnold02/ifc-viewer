@@ -4,7 +4,7 @@ import {
   createToolContent,
   useToolStore,
   type ToolContent,
-} from "../../../stores/tool/store";
+} from "../../../../stores/tool/store";
 import { useTranslation } from "react-i18next";
 
 type Props = {
@@ -14,7 +14,7 @@ type Props = {
 
 export const ToolButton = ({ tool, icon }: Props) => {
   const { t } = useTranslation(undefined, {
-    keyPrefix: "pages.view.components.ToolButton",
+    keyPrefix: "pages.view.components.toolbar.ToolButton",
   });
 
   const toolContent = useToolStore((state) => state.content);

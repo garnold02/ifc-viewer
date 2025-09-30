@@ -11,14 +11,14 @@ type Props = {
   disabled: boolean;
 };
 
-export const OutlinerVisibilityButton = ({
+export const VisibilityButton = ({
   variant,
   value,
   onClick,
   disabled,
 }: Props) => {
   const { t } = useTranslation(undefined, {
-    keyPrefix: "pages.view.components.OutlinerVisibilityButton",
+    keyPrefix: "pages.view.components.outliner.VisibilityButton",
   });
 
   const title = useMemo(

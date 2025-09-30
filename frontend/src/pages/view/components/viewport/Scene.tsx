@@ -1,9 +1,9 @@
 import { useThree } from "@react-three/fiber";
 import { useEffect } from "react";
-import { useGetIfcRootNode } from "../../../api/queries/ifcRootNode";
-import { useIfcContext } from "../../../contexts/ifc";
-import { SceneNode } from "./SceneNode";
-import { IfcTransformGroup } from "../../../components/IfcTransformGroup";
+import { Node } from "./Node";
+import { useIfcContext } from "../../../../contexts/ifc";
+import { useGetIfcRootNode } from "../../../../api/queries/ifcRootNode";
+import { IfcTransformGroup } from "../../../../components/IfcTransformGroup";
 
 export const Scene = () => {
   const { gl } = useThree();
@@ -20,7 +20,7 @@ export const Scene = () => {
 
   return (
     <IfcTransformGroup>
-      <SceneNode node={rootNode} highlight={false} />
+      <Node node={rootNode} highlight={false} />
     </IfcTransformGroup>
   );
 };

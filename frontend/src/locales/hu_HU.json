@@ -14,36 +14,37 @@
     },
     "view": {
       "components": {
-        "IfcPreview": {
-          "none_selected": "Válasszon ki egy fájlt hogy lássa az előnézetét!"
+        "inspector": {
+          "ElementAttributes": {
+            "title": "Elemattribútumok"
+          },
+          "PropertySetHeader": {
+            "name": "Név",
+            "unit": "Egység",
+            "value": "Érték"
+          },
+          "PropertyUnit": {
+            "no_value": "Nincs megadva"
+          },
+          "PropertyValue": {
+            "empty_text": "Üres szöveg",
+            "false": "Nem",
+            "null": "Nincs megadva",
+            "true": "Igen"
+          }
         },
-        "Inspector": {
-          "attributes": "Attribútumok",
-          "property_sets": "Jellemzők"
+        "outliner": {
+          "VisibilityButton": {
+            "hide_children": "Gyerekek elrejtése",
+            "hide_self": "Saját geometria elrejtése",
+            "show_children": "Gyerekek megjelenítése",
+            "show_self": "Saját geometria megjelenítése"
+          }
         },
-        "InspectorAttributes": {
-          "no_value": "N/A",
-          "none_selected": "Nincs kiválasztott elem"
-        },
-        "InspectorPropertySets": {
-          "none_selected": "Nincs kiválasztott elem"
-        },
-        "InspectorPropertyValue": {
-          "false": "Nem",
-          "no_value": "N/A",
-          "true": "Igen"
-        },
-        "Outliner": {
-          "spatial_structure": "Térbeli hierarchia"
-        },
-        "OutlinerVisibilityButton": {
-          "hide_children": "Gyerekek elrejtése",
-          "hide_self": "Saját geometria elrejtése",
-          "show_children": "Gyerekek megjelenítése",
-          "show_self": "Saját geometria megjelenítése"
-        },
-        "ToolButton": {
-          "select": "Kiválasztás"
+        "toolbar": {
+          "ToolButton": {
+            "select": "Kiválasztás"
+          }
         }
       }
     }
