@@ -17,7 +17,7 @@ export const Content = () => {
       <PanelResizeHandle>
         <Divider orientation="vertical" />
       </PanelResizeHandle>
-      <Panel defaultSize={30} minSize={20} maxSize={50}>
+      <Panel defaultSize={30} minSize={20} maxSize={80}>
         <PanelGroup direction="vertical">
           <Panel>
             <Outliner />
@@ -25,7 +25,7 @@ export const Content = () => {
           <PanelResizeHandle>
             <Divider orientation="horizontal" />
           </PanelResizeHandle>
-          <Panel defaultSize={30} minSize={20} maxSize={60}>
+          <Panel defaultSize={30} minSize={20} maxSize={80}>
             <ActionPanel />
           </Panel>
         </PanelGroup>
