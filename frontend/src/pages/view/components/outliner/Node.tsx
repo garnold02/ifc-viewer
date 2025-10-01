@@ -7,6 +7,7 @@ import { TypeLabel } from "./TypeLabel";
 import { defaultOutlinerNodeState } from "../../../../utils/outliner";
 import type { IfcNode } from "../../../../types/ifc";
 import { useOutlinerStore } from "../../../../stores/outliner/store";
+import { NameLabel } from "./NameLabel";
 
 type Props = {
   node: IfcNode;
@@ -67,6 +68,7 @@ export const Node = ({ node }: Props) => {
           disabled={node.children.length === 0}
         />
         <TypeLabel node={node} />
+        <NameLabel node={node} />
         <Box marginLeft="auto" />
         <VisibilityButton
           variant="self"

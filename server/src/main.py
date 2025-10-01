@@ -6,7 +6,7 @@ from ifc_file import IfcFile, xform_pset
 import os
 
 
-ifcs = []
+ifcs: list[IfcFile] = []
 
 
 def _get_ifc(id: int) -> IfcFile:
@@ -52,20 +52,35 @@ app.add_middleware(
 )
 
 
-@app.get("/ifc")
-def get_ifc_root():
+@app.get("/ifc/summaries")
+def get_ifc_summaries():
     return [
         {
             "id": i,
             "name": f.file_name,
+            "schema": f.schema,
         }
         for i, f
         in enumerate(ifcs)
     ]
 
 
-@app.get("/ifc/{id}/preview")
-def get_ifc_preview(id: int):
+@app.get("/ifc/file/{id}/summary")
+def get_ifc_file_summary(id: int):
+    ifc = _get_ifc(id)
+
+    if ifc == None:
+        raise HTTPException(status_code=404)
+
+    return {
+        "id": ifcs.index(ifc),
+        "name": ifc.file_name,
+        "schema": ifc.schema
+    }
+
+
+@app.get("/ifc/file/{id}/preview")
+def get_ifc_file_preview(id: int):
     ifc = _get_ifc(id)
     
     if ifc == None:
@@ -88,8 +103,8 @@ def get_ifc_preview(id: int):
     return Response(content=content, media_type="application/octet-stream")
 
 
-@app.get("/ifc/{id}/tree")
-def get_ifc_tree(id: int):
+@app.get("/ifc/file/{id}/root_node")
+def get_ifc_file_root_node(id: int):
     ifc = _get_ifc(id)
     
     if ifc == None:
@@ -112,8 +127,8 @@ def get_ifc_tree(id: int):
     return Response(content=content, media_type="application/octet-stream")
 
 
-@app.get("/ifc/{ifc_id}/attributes/{ent_id}")
-def get_ifc_attributes(ifc_id: int, ent_id: int):
+@app.get("/ifc/file/{ifc_id}/element/{ent_id}/attributes")
+def get_ifc_file_element_attributes(ifc_id: int, ent_id: int):
     ifc = _get_ifc(ifc_id)
 
     if ifc == None:
@@ -150,8 +165,8 @@ def get_ifc_attributes(ifc_id: int, ent_id: int):
     )
 
 
-@app.get("/ifc/{ifc_id}/psets/{ent_id}")
-def get_ifc_psets(ifc_id: int, ent_id: int):
+@app.get("/ifc/file/{ifc_id}/element/{ent_id}/property_sets")
+def get_ifc_file_element_property_sets(ifc_id: int, ent_id: int):
     ifc = _get_ifc(ifc_id)
     
     if ifc == None:

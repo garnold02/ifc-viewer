@@ -8,6 +8,7 @@ from threading import Lock
 class IfcFile:
     file_name: str = None
     file: ifc_file = None
+    schema: str = None
     lock: Lock = Lock()
 
 
@@ -22,6 +23,7 @@ class IfcFile:
 
             print(f"Loading `{self.file_name}`...")
             self.file = ifc_open(f"files/{self.file_name}")
+            self.schema = self.file.schema
             print("    DONE")
     
 
@@ -36,13 +38,15 @@ class IfcFile:
     
 
     def process(self):
+        self.load()
+
         tree_exists = os.path.isfile(f"files/{self.file_name}.tree.bin")
         preview_exists = os.path.isfile(f"files/{self.file_name}.preview.bin")
         
         if tree_exists and preview_exists:
+            self.unload()
             return
         
-        self.load()
 
         with self.lock:
             print(f"Collecting geometries of `{self.file_name}`...")

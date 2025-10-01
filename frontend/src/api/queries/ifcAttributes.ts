@@ -8,10 +8,10 @@ export const useGetIfcAttributes = (
 ) =>
   useQuery({
     enabled: ifcId !== null && entityId !== null,
-    queryKey: ["ifc", ifcId, "attributes", entityId],
+    queryKey: ["ifc", "file", ifcId, "element", entityId, "attributes"],
     queryFn: async () => {
       const response = await fetch(
-        `${API_BASE_URL}/ifc/${ifcId}/attributes/${entityId}`
+        `${API_BASE_URL}/ifc/file/${ifcId}/element/${entityId}/attributes`
       );
       const json = await response.json();
       return json as IfcAttribute[];

@@ -3,6 +3,7 @@ import type { Color, Matrix4 } from "three";
 export type IfcSummary = {
   id: number;
   name: string;
+  schema: string;
 };
 
 export type IfcNode = {

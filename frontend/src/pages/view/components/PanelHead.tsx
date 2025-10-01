@@ -8,8 +8,10 @@ type Props = PropsWithChildren<{
 export const PanelHead = ({ title, children }: Props) => {
   return (
     <>
-      <Stack direction="row" gap={1} marginLeft={1}>
-        <Typography variant="overline">{title}</Typography>
+      <Stack direction="row" alignItems="center" gap={1} marginLeft={1}>
+        <Typography variant="overline" sx={{ userSelect: "none" }} noWrap>
+          {title}
+        </Typography>
         {children}
       </Stack>
       <Divider />

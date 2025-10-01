@@ -1,36 +1,32 @@
 import { ElementAttributes } from "./ElementAttributes";
-import { useOutlinerStore } from "../../../../stores/outliner/store";
 import { useGetIfcPropertySets } from "../../../../api/queries/ifcPropertySets";
 import { useIfcContext } from "../../../../contexts/ifc";
 import { PropertySet } from "./PropertySet";
 import { Panel } from "../Panel";
-import { PanelHead } from "../PanelHead";
-import { useTranslation } from "react-i18next";
 import { PanelBody } from "../PanelBody";
+import { LinearProgress } from "@mui/material";
+import { InspectorHead } from "./InspectorHead";
 
-export const Inspector = () => {
-  const { t } = useTranslation(undefined, {
-    keyPrefix: "pages.view.components.inspector.Inspector",
-  });
+type Props = {
+  nodeId: number;
+};
 
+export const Inspector = ({ nodeId }: Props) => {
   const { ifcId } = useIfcContext();
-  const selectedNodeId = useOutlinerStore((state) => state.selectedNodeId);
-  const { data: propertySets } = useGetIfcPropertySets(ifcId, selectedNodeId);
-
-  if (selectedNodeId === null) {
-    return null;
-  }
+  const { data: propertySets } = useGetIfcPropertySets(ifcId, nodeId);
 
   return (
     <Panel>
-      <PanelHead title={t("title")} />
+      <InspectorHead nodeId={nodeId} />
       <PanelBody>
-        <ElementAttributes key="element-attributes" entityId={selectedNodeId} />
-        {propertySets !== undefined
-          ? propertySets.map((propertySet) => (
-              <PropertySet key={propertySet.name} propertySet={propertySet} />
-            ))
-          : null}
+        <ElementAttributes key="element-attributes" entityId={nodeId} />
+        {propertySets !== undefined ? (
+          propertySets.map((propertySet) => (
+            <PropertySet key={propertySet.name} propertySet={propertySet} />
+          ))
+        ) : (
+          <LinearProgress />
+        )}
       </PanelBody>
     </Panel>
   );

@@ -1,4 +1,4 @@
-import { CircularProgress } from "@mui/material";
+import { LinearProgress } from "@mui/material";
 import { useIfcContext } from "../../../../contexts/ifc";
 import { useGetIfcRootNode } from "../../../../api/queries/ifcRootNode";
 import { Node } from "./Node";
@@ -19,11 +19,7 @@ export const Outliner = () => {
     <Panel>
       <PanelHead title={t("title")} />
       <PanelBody>
-        {rootNode !== undefined ? (
-          <Node node={rootNode} />
-        ) : (
-          <CircularProgress />
-        )}
+        {rootNode !== undefined ? <Node node={rootNode} /> : <LinearProgress />}
       </PanelBody>
     </Panel>
   );

@@ -8,10 +8,10 @@ export const useGetIfcPropertySets = (
 ) =>
   useQuery({
     enabled: ifcId !== null && entityId !== null,
-    queryKey: ["ifc", ifcId, "psets", entityId],
+    queryKey: ["ifc", "file", ifcId, "element", entityId, "property_sets"],
     queryFn: async () => {
       const response = await fetch(
-        `${API_BASE_URL}/ifc/${ifcId}/psets/${entityId}`
+        `${API_BASE_URL}/ifc/file/${ifcId}/element/${entityId}/property_sets`
       );
       const json = await response.json();
       return json as IfcPropertySet[];

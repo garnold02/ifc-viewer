@@ -31,11 +31,16 @@
           "reset_plane": "Reset plane",
           "title": "Clip settings"
         },
+        "FileInfo": {
+          "name": "Name",
+          "schema": "Schema",
+          "title": "File information"
+        },
         "inspector": {
           "ElementAttributes": {
             "title": "Element attributes"
           },
-          "Inspector": {
+          "InspectorHead": {
             "title": "Element inspector"
           },
           "PropertySetHeader": {

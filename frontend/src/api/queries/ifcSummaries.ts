@@ -4,9 +4,9 @@ import type { IfcSummary } from "../../types/ifc";
 
 export const useGetIfcSummaries = () =>
   useQuery({
-    queryKey: ["ifc"],
+    queryKey: ["ifc", "summaries"],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/ifc`);
+      const response = await fetch(`${API_BASE_URL}/ifc/summaries`);
       const content = await response.json();
       return content as IfcSummary[];
     },

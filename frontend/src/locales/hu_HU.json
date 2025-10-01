@@ -31,11 +31,16 @@
           "reset_plane": "Sík visszaállítása",
           "title": "Geometriavágás beállításai"
         },
+        "FileInfo": {
+          "name": "Név",
+          "schema": "Séma",
+          "title": "Fájl információk"
+        },
         "inspector": {
           "ElementAttributes": {
             "title": "Elemattribútumok"
           },
-          "Inspector": {
+          "InspectorHead": {
             "title": "Elemnézegető"
           },
           "PropertySetHeader": {
