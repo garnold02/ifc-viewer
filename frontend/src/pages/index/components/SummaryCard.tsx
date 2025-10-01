@@ -1,4 +1,10 @@
-import { Button, Card, CardActions, CardContent } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Typography,
+} from "@mui/material";
 import type { IfcSummary } from "../../../types/ifc";
 import { useTranslation } from "react-i18next";
 import { ButtonLink } from "../../../components/ButtonLink";
@@ -15,7 +21,12 @@ export const SummaryCard = ({ summary, onPreviewClick }: Props) => {
 
   return (
     <Card>
-      <CardContent>{summary.name}</CardContent>
+      <CardContent>
+        <Typography>{summary.name}</Typography>
+        <Typography variant="subtitle2" color="textSecondary">
+          {summary.schema}
+        </Typography>
+      </CardContent>
       <CardActions>
         <ButtonLink to="/view/$ifcId" params={{ ifcId: String(summary.id) }}>
           {t("open")}
