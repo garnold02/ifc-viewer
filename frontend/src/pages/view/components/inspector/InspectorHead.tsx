@@ -57,7 +57,12 @@ export const InspectorHead = ({ nodeId }: Props) => {
   return (
     <PanelHead title={t("title")}>
       {nodeType !== null ? (
-        <Typography variant="caption" color="textSecondary" noWrap>
+        <Typography
+          variant="caption"
+          color="textSecondary"
+          sx={{ userSelect: "none" }}
+          noWrap
+        >
           {nodeType}#{nodeId}
           {nodeName !== null ? ` - ${nodeName}` : null}
         </Typography>
