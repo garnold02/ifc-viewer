@@ -26,7 +26,12 @@ export const FileInfo = () => {
     <Panel>
       <PanelHead title={t("title")}>
         {summary !== undefined ? (
-          <Typography variant="caption" color="textSecondary" noWrap>
+          <Typography
+            variant="caption"
+            color="textSecondary"
+            sx={{ userSelect: "none" }}
+            noWrap
+          >
             {summary.name}
           </Typography>
         ) : null}
