@@ -13,7 +13,6 @@ export const ThemeToggle = () => {
     <Tooltip title={t(mode === "dark" ? "use_light" : "use_dark")}>
       <IconButton
         size="small"
-        color={mode === "dark" ? "primary" : undefined}
         onClick={() => setMode(mode === "dark" ? "light" : "dark")}
       >
         <DarkModeIcon fontSize="small" />
