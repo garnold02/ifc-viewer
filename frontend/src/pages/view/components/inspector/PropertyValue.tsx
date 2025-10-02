@@ -14,40 +14,48 @@ export const PropertyValue = ({ propertyValue }: Props) => {
   switch (propertyValue.type) {
     case "area":
       return <TableCell>{String(propertyValue.area)}</TableCell>;
+
     case "bounded":
       return (
         <TableCell color="text.disabled" sx={{ fontStyle: "italic" }}>
           TODO
         </TableCell>
       );
+
     case "complex":
       return (
         <TableCell color="text.disabled" sx={{ fontStyle: "italic" }}>
           TODO
         </TableCell>
       );
+
     case "count":
       return <TableCell>{String(propertyValue.count)}</TableCell>;
+
     case "enumerated":
       return (
         <TableCell color="text.disabled" sx={{ fontStyle: "italic" }}>
           TODO
         </TableCell>
       );
+
     case "length":
       return <TableCell>{String(propertyValue.length)}</TableCell>;
+
     case "list":
       return (
         <TableCell color="text.disabled" sx={{ fontStyle: "italic" }}>
           TODO
         </TableCell>
       );
+
     case "reference":
       return (
         <TableCell color="text.disabled" sx={{ fontStyle: "italic" }}>
           TODO
         </TableCell>
       );
+
     case "single":
       switch (propertyValue.single) {
         case null:
@@ -77,16 +85,20 @@ export const PropertyValue = ({ propertyValue }: Props) => {
         default:
           return <TableCell>{String(propertyValue.single)}</TableCell>;
       }
+
     case "table":
       return (
         <TableCell color="text.disabled" sx={{ fontStyle: "italic" }}>
           TODO
         </TableCell>
       );
+
     case "time":
       return <TableCell>{String(propertyValue.time)}</TableCell>;
+
     case "volume":
       return <TableCell>{String(propertyValue.volume)}</TableCell>;
+
     case "weight":
       return <TableCell>{String(propertyValue.weight)}</TableCell>;
   }

@@ -27,11 +27,15 @@ export const InspectorHead = ({ element }: Props) => {
       (attribute) => attribute.name === "type"
     )?.value;
 
-    if (value === null || value === undefined) {
+    if (
+      value === undefined ||
+      value.type !== "value" ||
+      typeof value.value !== "string"
+    ) {
       return null;
     }
 
-    return String(value);
+    return value.value;
   }, [attributes]);
 
   const elementNameAttribute = useMemo(() => {
@@ -44,15 +48,15 @@ export const InspectorHead = ({ element }: Props) => {
     )?.value;
 
     if (
-      value === null ||
       value === undefined ||
-      typeof value !== "string" ||
-      value.length === 0
+      value.type !== "value" ||
+      typeof value.value !== "string" ||
+      value.value.length === 0
     ) {
       return null;
     }
 
-    return String(value);
+    return value.value;
   }, [attributes]);
 
   return (

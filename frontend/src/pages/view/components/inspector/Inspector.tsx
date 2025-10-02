@@ -1,4 +1,4 @@
-import { ElementAttributes } from "./ElementAttributes";
+import { Attributes } from "./Attributes";
 import { useGetIfcPropertySets } from "../../../../api/queries/ifcPropertySets";
 import { PropertySet } from "./PropertySet";
 import { Panel } from "../Panel";
@@ -20,7 +20,7 @@ export const Inspector = ({ element }: Props) => {
     <Panel>
       <InspectorHead element={element} />
       <PanelBody>
-        <ElementAttributes key="element-attributes" element={element} />
+        <Attributes key="attributes" element={element} />
         {propertySets !== undefined ? (
           propertySets.map((propertySet, i) => (
             <PropertySet

@@ -3,6 +3,7 @@ from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from ifc_file import IfcFile, xform_pset
+from ifcopenshell import entity_instance as ifc_ent
 import os
 
 
@@ -141,21 +142,33 @@ def get_ifc_file_element_attributes(file_id: int, element_id: int):
     except:
         raise HTTPException(status_code=404)
 
-    info = entity.get_info_2(recursive=True)
+    info = entity.get_info()
     attributes = []
+
+
+    def xform_attribute(value) -> dict:
+        if isinstance(value, ifc_ent):
+            return {
+                "type": "element",
+                "value": value.id(),
+            }
+        if isinstance(value, tuple) or isinstance(value, list):
+            return {
+                "type": "list",
+                "value": [xform_attribute(attr) for attr in value],
+            }
+        else:
+            return {
+                "type": "value",
+                "value": value,
+            }
+
 
     for key in info:            
         value = info[key]
-
-        if isinstance(value, dict):
-            continue
-        
-        if isinstance(value, tuple):
-            continue
-
         attributes.append({
             "name": key,
-            "value": value,
+            "value": xform_attribute(value)
         })
     
     return sorted(

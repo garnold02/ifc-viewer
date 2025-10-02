@@ -37,8 +37,18 @@
           "title": "File information"
         },
         "inspector": {
-          "ElementAttributes": {
+          "Attributes": {
             "title": "Element attributes"
+          },
+          "AttributesHeader": {
+            "name": "Name",
+            "value": "Value"
+          },
+          "AttributeValue": {
+            "empty_text": "Empty text",
+            "false": "No",
+            "null": "Not provided",
+            "true": "Yes"
           },
           "InspectorHead": {
             "title": "Element inspector"

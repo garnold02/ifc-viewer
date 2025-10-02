@@ -29,8 +29,22 @@ export type IfcMesh = {
 
 export type IfcAttribute = {
   name: string;
-  value: null | number | string;
+  value: IfcAttributeValue;
 };
+
+export type IfcAttributeValue =
+  | {
+      type: "value";
+      value: boolean | null | number | string;
+    }
+  | {
+      type: "element";
+      value: number;
+    }
+  | {
+      type: "list";
+      value: IfcAttributeValue[];
+    };
 
 export type IfcPropertySet = {
   name: string;

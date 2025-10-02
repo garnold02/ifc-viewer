@@ -37,8 +37,18 @@
           "title": "Fájl információk"
         },
         "inspector": {
-          "ElementAttributes": {
+          "Attributes": {
             "title": "Elemattribútumok"
+          },
+          "AttributesHeader": {
+            "name": "Név",
+            "value": "Érték"
+          },
+          "AttributeValue": {
+            "empty_text": "Üres szöveg",
+            "false": "Nem",
+            "null": "Nincs megadva",
+            "true": "Igen"
           },
           "InspectorHead": {
             "title": "Elemnézegető"
