@@ -78,6 +78,29 @@ def get_ifc_file_summary(file_id: int):
         "schema": ifc.schema
     }
 
+@app.get("/ifc/file/{file_id}/elements")
+def get_ifc_file_elements(file_id: int):
+    ifc = _get_ifc(file_id)
+
+    if ifc == None:
+        raise HTTPException(status_code=404)
+
+    file = None
+
+    try:
+        file = open(f"files/{ifc.file_name}.elements.bin", "rb")
+    except:
+        file = None
+    
+    if file == None:
+        ifc.process()
+        file = open(f"files/{ifc.file_name}.elements.bin", "rb")
+    
+    content = file.read()
+    file.close()
+
+    return Response(content=content, media_type="application/octet-stream")
+
 
 @app.get("/ifc/file/{file_id}/preview")
 def get_ifc_file_preview(file_id: int):
@@ -96,54 +119,6 @@ def get_ifc_file_preview(file_id: int):
     if file == None:
         ifc.process()
         file = open(f"files/{ifc.file_name}.preview.bin", "rb")
-    
-    content = file.read()
-    file.close()
-
-    return Response(content=content, media_type="application/octet-stream")
-
-
-@app.get("/ifc/file/{file_id}/root_node")
-def get_ifc_file_root_node(file_id: int):
-    ifc = _get_ifc(file_id)
-    
-    if ifc == None:
-        raise HTTPException(status_code=404)
-
-    file = None
-
-    try:
-        file = open(f"files/{ifc.file_name}.tree.bin", "rb")
-    except:
-        file = None
-    
-    if file == None:
-        ifc.process()
-        file = open(f"files/{ifc.file_name}.tree.bin", "rb")
-    
-    content = file.read()
-    file.close()
-
-    return Response(content=content, media_type="application/octet-stream")
-
-
-@app.get("/ifc/file/{file_id}/elements")
-def get_ifc_file_elements(file_id: int):
-    ifc = _get_ifc(file_id)
-
-    if ifc == None:
-        raise HTTPException(status_code=404)
-
-    file = None
-
-    try:
-        file = open(f"files/{ifc.file_name}.elements.bin", "rb")
-    except:
-        file = None
-    
-    if file == None:
-        ifc.process()
-        file = open(f"files/{ifc.file_name}.elements.bin", "rb")
     
     content = file.read()
     file.close()

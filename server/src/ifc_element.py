@@ -38,26 +38,6 @@ class IfcElement:
                 self.children.append(IfcElement(child, file, geometries))
     
 
-    def pack(self) -> BinPacker:
-        packer = BinPacker()
-        packer.pack_uint32(self.id)
-        packer.pack_string(self.type)
-        packer.pack_string_or_none(self.name)
-        
-        if self.geometry != None:
-            packer.pack_bool(True)
-            packer.pack_nested(self.geometry.pack())
-        else:
-            packer.pack_bool(False)
-        
-        packer.pack_uint32(len(self.children))
-        
-        for child in self.children:
-            packer.pack_nested(child.pack())
-
-        return packer
-    
-
     def pack_elements(self) -> BinPacker:
         packer = BinPacker()
 
