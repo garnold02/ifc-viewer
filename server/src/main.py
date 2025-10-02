@@ -127,6 +127,30 @@ def get_ifc_file_root_node(id: int):
     return Response(content=content, media_type="application/octet-stream")
 
 
+@app.get("/ifc/file/{ifc_id}/elements")
+def get_ifc_file_elements(ifc_id: int):
+    ifc = _get_ifc(ifc_id)
+
+    if ifc == None:
+        raise HTTPException(status_code=404)
+
+    file = None
+
+    try:
+        file = open(f"files/{ifc.file_name}.flat.bin", "rb")
+    except:
+        file = None
+    
+    if file == None:
+        ifc.process()
+        file = open(f"files/{ifc.file_name}.flat.bin", "rb")
+    
+    content = file.read()
+    file.close()
+
+    return Response(content=content, media_type="application/octet-stream")
+
+
 @app.get("/ifc/file/{ifc_id}/element/{ent_id}/attributes")
 def get_ifc_file_element_attributes(ifc_id: int, ent_id: int):
     ifc = _get_ifc(ifc_id)

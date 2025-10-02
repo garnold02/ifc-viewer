@@ -42,8 +42,9 @@ class IfcFile:
 
         tree_exists = os.path.isfile(f"files/{self.file_name}.tree.bin")
         preview_exists = os.path.isfile(f"files/{self.file_name}.preview.bin")
+        flat_exists = os.path.isfile(f"files/{self.file_name}.flat.bin")
         
-        if tree_exists and preview_exists:
+        if tree_exists and preview_exists and flat_exists:
             self.unload()
             return
         
@@ -65,6 +66,7 @@ class IfcFile:
             print(f"Dumping output for `{self.file_name}`...")
             root_node.pack().dump(f"files/{self.file_name}.tree.bin")
             root_node.pack_preview().dump(f"files/{self.file_name}.preview.bin")
+            root_node.pack_flat().dump(f"files/{self.file_name}.flat.bin")
             print("    DONE")
 
 

@@ -58,6 +58,38 @@ class IfcNode:
         return packer
     
 
+    def pack_flat(self) -> BinPacker:
+        packer = BinPacker()
+
+        def pack_node(node: IfcNode, parent: IfcNode | None):
+            packer.pack_uint32(node.id)
+            packer.pack_string(node.type)
+            packer.pack_string_or_none(node.name)
+            
+            if node.geometry != None:
+                packer.pack_bool(True)
+                packer.pack_nested(node.geometry.pack())
+            else:
+                packer.pack_bool(False)
+            
+            if parent == None:
+                packer.pack_bool(False)
+            else:
+                packer.pack_bool(True)
+                packer.pack_uint32(parent.id)
+            
+            packer.pack_uint32(len(node.children))
+
+            for child in node.children:
+                packer.pack_uint32(child.id)
+            
+            for child in node.children:
+                pack_node(child, node)
+
+        pack_node(self, None)
+        return packer
+    
+
     def pack_preview(self) -> BinPacker:
         geometries: list[IfcGeometry] = []
 

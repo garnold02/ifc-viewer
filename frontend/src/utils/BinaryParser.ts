@@ -1,5 +1,5 @@
 import { Color, Matrix4 } from "three";
-import type { IfcGeometry, IfcMesh, IfcNode } from "../types/ifc";
+import type { IfcGeometry, IfcMesh, IfcNode, IfcNodeFlat } from "../types/ifc";
 
 export class BinaryParser {
   #arrayBuffer: ArrayBuffer;
@@ -24,6 +24,10 @@ export class BinaryParser {
     const result = this.#dataView.getUint32(this.#offset, true);
     this.#offset += 4;
     return result;
+  }
+
+  getUint32OrNull(): number | null {
+    return this.getUint8() > 0 ? this.getUint32() : null;
   }
 
   getFloat32(): number {
@@ -118,5 +122,25 @@ export class BinaryParser {
       geometry: this.getIfcGeometryOrNull(),
       children: this.getArray(this.getUint32(), () => this.getIfcNode()),
     };
+  }
+
+  getIfcNodeFlat(): IfcNodeFlat {
+    return {
+      id: this.getUint32(),
+      type: this.getString(),
+      name: this.getStringOrNull(),
+      geometry: this.getIfcGeometryOrNull(),
+      parent_id: this.getUint32OrNull(),
+      child_ids: this.getArray(this.getUint32(), () => this.getUint32()),
+    };
+  }
+
+  getIfcNodes(): Record<number, IfcNodeFlat> {
+    const nodes: Record<number, IfcNodeFlat> = {};
+    while (this.#offset < this.#arrayBuffer.byteLength) {
+      const node = this.getIfcNodeFlat();
+      nodes[node.id] = node;
+    }
+    return nodes;
   }
 }

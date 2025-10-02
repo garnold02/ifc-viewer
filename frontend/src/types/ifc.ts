@@ -14,6 +14,15 @@ export type IfcNode = {
   children: IfcNode[];
 };
 
+export type IfcNodeFlat = {
+  id: number;
+  type: string;
+  name: string | null;
+  geometry: IfcGeometry | null;
+  parent_id: number | null;
+  child_ids: number[];
+};
+
 export type IfcGeometry = {
   matrix: Matrix4;
   meshes: IfcMesh[];
