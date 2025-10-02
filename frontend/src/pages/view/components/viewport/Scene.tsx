@@ -1,5 +1,5 @@
 import { useThree } from "@react-three/fiber";
-import { useCallback, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import {
   createDefaultOutlinerNodeState,
   useIfcStore,
@@ -162,40 +162,38 @@ export const Scene = () => {
 
   const currentTool = useIfcStore((state) => state.tool.current);
 
-  const clickListener = useCallback(
-    (_: PointerEvent) => {
-      if (currentTool !== "select") {
-        return;
-      }
+  // not an arrow function because EventListener hates me
+  function clickListener(this: HTMLCanvasElement, _event: MouseEvent) {
+    if (currentTool !== "select") {
+      return;
+    }
 
-      if (getCameraMoving()) {
-        return;
-      }
+    if (getCameraMoving()) {
+      return;
+    }
 
-      raycaster.layers.disableAll();
-      raycaster.layers.enable(1);
-      const intersected = raycaster.intersectObjects(meshes);
-      raycaster.layers.enableAll();
+    raycaster.layers.disableAll();
+    raycaster.layers.enable(1);
+    const intersected = raycaster.intersectObjects(meshes);
+    raycaster.layers.enableAll();
 
-      if (intersected.length === 0) {
-        setSelectedElement(null);
-        return;
-      }
+    if (intersected.length === 0) {
+      setSelectedElement(null);
+      return;
+    }
 
-      const object = intersected[0].object;
+    const object = intersected[0].object;
 
-      if (
-        object.userData === undefined ||
-        object.userData["element"] === undefined
-      ) {
-        return;
-      }
+    if (
+      object.userData === undefined ||
+      object.userData["element"] === undefined
+    ) {
+      return;
+    }
 
-      const element: IfcElement = object.userData["element"];
-      setSelectedElement(selectedElement === element ? null : element);
-    },
-    [currentTool, raycaster, meshes, setSelectedElement, selectedElement]
-  );
+    const element: IfcElement = object.userData["element"];
+    setSelectedElement(selectedElement === element ? null : element);
+  }
 
   useEffect(() => {
     canvas.addEventListener("click", clickListener);
