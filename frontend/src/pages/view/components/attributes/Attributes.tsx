@@ -1,5 +1,4 @@
 import { useGetIfcAttributes } from "../../../../api/queries/ifcAttributes";
-import type { IfcElement } from "../../../../types/ifc";
 import { useTranslation } from "react-i18next";
 import { useIfcStore } from "../../../../stores/ifc/store";
 import {
@@ -16,16 +15,16 @@ import { AttributesHeader } from "./AttributesHeader";
 import { Attribute } from "./Attribute";
 
 type Props = {
-  element: IfcElement;
+  id: number;
 };
 
-export const Attributes = ({ element }: Props) => {
+export const Attributes = ({ id }: Props) => {
   const { t } = useTranslation(undefined, {
-    keyPrefix: "pages.view.components.inspector.Attributes",
+    keyPrefix: "pages.view.components.attributes.Attributes",
   });
 
   const fileId = useIfcStore((state) => state.fileId);
-  const { data: attributes } = useGetIfcAttributes(fileId, element.id);
+  const { data: attributes } = useGetIfcAttributes(fileId, id);
 
   if (attributes === undefined) {
     return <LinearProgress />;

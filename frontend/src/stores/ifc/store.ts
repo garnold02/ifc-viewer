@@ -22,6 +22,13 @@ export type IfcState = {
       setMatrix: (value: Matrix4) => void;
     };
   };
+  details: {
+    elementStack: number[];
+    pushElement: (value: number) => void;
+    popElement: () => void;
+    clearElementStack: () => void;
+    revertElementStack: (position: number) => void;
+  };
 };
 
 export type OutlinerNodeState = {
@@ -77,6 +84,33 @@ export const createIfcStore = (
             })
           ),
       },
+    },
+    details: {
+      elementStack: [],
+      pushElement: (value) =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            draft.details.elementStack.push(value);
+          })
+        ),
+      popElement: () =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            draft.details.elementStack.pop();
+          })
+        ),
+      clearElementStack: () =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            draft.details.elementStack = [];
+          })
+        ),
+      revertElementStack: (position) =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            draft.details.elementStack.length = position + 1;
+          })
+        ),
     },
   }));
 

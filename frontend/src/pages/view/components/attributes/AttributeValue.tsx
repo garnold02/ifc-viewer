@@ -7,7 +7,7 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-import { ElementReference } from "./ElementReference";
+import { ElementReference } from "../ElementReference";
 
 type Props = {
   value: IfcAttributeValue;
@@ -15,7 +15,7 @@ type Props = {
 
 export const AttributeValue = ({ value }: Props) => {
   const { t } = useTranslation(undefined, {
-    keyPrefix: "pages.view.components.inspector.AttributeValue",
+    keyPrefix: "pages.view.components.attributes.AttributeValue",
   });
 
   switch (value.type) {

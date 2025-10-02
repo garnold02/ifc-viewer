@@ -26,17 +26,7 @@
     },
     "view": {
       "components": {
-        "ClipSettings": {
-          "always_clip": "Mindig látszódjon a vágás",
-          "reset_plane": "Sík visszaállítása",
-          "title": "Geometriavágás beállításai"
-        },
-        "FileInfo": {
-          "name": "Név",
-          "schema": "Séma",
-          "title": "Fájl információk"
-        },
-        "inspector": {
+        "attributes": {
           "Attributes": {
             "title": "Elemattribútumok"
           },
@@ -49,8 +39,24 @@
             "false": "Nem",
             "null": "Nincs megadva",
             "true": "Igen"
-          },
+          }
+        },
+        "ClipSettings": {
+          "always_clip": "Mindig látszódjon a vágás",
+          "reset_plane": "Sík visszaállítása",
+          "title": "Geometriavágás beállításai"
+        },
+        "Details": {
+          "title": "Elem részletek"
+        },
+        "FileInfo": {
+          "name": "Név",
+          "schema": "Séma",
+          "title": "Fájl információk"
+        },
+        "inspector": {
           "InspectorHead": {
+            "details": "Részletek",
             "title": "Elemnézegető"
           },
           "PropertySetHeader": {

@@ -26,17 +26,7 @@
     },
     "view": {
       "components": {
-        "ClipSettings": {
-          "always_clip": "Always clip",
-          "reset_plane": "Reset plane",
-          "title": "Clip settings"
-        },
-        "FileInfo": {
-          "name": "Name",
-          "schema": "Schema",
-          "title": "File information"
-        },
-        "inspector": {
+        "attributes": {
           "Attributes": {
             "title": "Element attributes"
           },
@@ -49,8 +39,24 @@
             "false": "No",
             "null": "Not provided",
             "true": "Yes"
-          },
+          }
+        },
+        "ClipSettings": {
+          "always_clip": "Always clip",
+          "reset_plane": "Reset plane",
+          "title": "Clip settings"
+        },
+        "Details": {
+          "title": "Element details"
+        },
+        "FileInfo": {
+          "name": "Name",
+          "schema": "Schema",
+          "title": "File information"
+        },
+        "inspector": {
           "InspectorHead": {
+            "details": "Details",
             "title": "Element inspector"
           },
           "PropertySetHeader": {

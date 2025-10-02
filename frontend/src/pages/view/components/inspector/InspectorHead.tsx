@@ -2,9 +2,10 @@ import { useTranslation } from "react-i18next";
 import { PanelHead } from "../PanelHead";
 import { useGetIfcAttributes } from "../../../../api/queries/ifcAttributes";
 import { useMemo } from "react";
-import { Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import type { IfcElement } from "../../../../types/ifc";
 import { useIfcStore } from "../../../../stores/ifc/store";
+import MenuIcon from "@mui/icons-material/Menu";
 
 type Props = {
   element: IfcElement;
@@ -17,6 +18,7 @@ export const InspectorHead = ({ element }: Props) => {
 
   const fileId = useIfcStore((state) => state.fileId);
   const { data: attributes } = useGetIfcAttributes(fileId, element.id);
+  const pushDetailsElement = useIfcStore((state) => state.details.pushElement);
 
   const elementTypeAttribute = useMemo(() => {
     if (attributes === undefined) {
@@ -72,6 +74,12 @@ export const InspectorHead = ({ element }: Props) => {
           {elementNameAttribute !== null ? ` - ${elementNameAttribute}` : null}
         </Typography>
       ) : null}
+      <Box flexGrow={1} />
+      <Tooltip title={t("details")}>
+        <IconButton size="small" onClick={() => pushDetailsElement(element.id)}>
+          <MenuIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
     </PanelHead>
   );
 };

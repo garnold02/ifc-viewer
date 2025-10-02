@@ -2,6 +2,7 @@ import { getRouteApi, Navigate } from "@tanstack/react-router";
 import { Content } from "./components/Content";
 import { useGetIfcElements } from "../../api/queries/ifcElements";
 import { IfcStoreProvider } from "../../stores/ifc/Provider";
+import { Details } from "./components/details/Details";
 
 const route = getRouteApi("/view/$fileId");
 
@@ -20,6 +21,7 @@ export const Page = () => {
   return (
     <IfcStoreProvider fileId={fileId} elements={elements}>
       <Content />
+      <Details />
     </IfcStoreProvider>
   );
 };

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 export const AttributesHeader = () => {
   const { t } = useTranslation(undefined, {
-    keyPrefix: "pages.view.components.inspector.AttributesHeader",
+    keyPrefix: "pages.view.components.attributes.AttributesHeader",
   });
 
   return (
