@@ -1,21 +1,21 @@
 import { useMemo } from "react";
 import { useGetIfcAttributes } from "../../../../api/queries/ifcAttributes";
-import { useIfcContext } from "../../../../contexts/ifc";
-import type { IfcPropertySet } from "../../../../types/ifc";
+import type { IfcElement, IfcPropertySet } from "../../../../types/ifc";
 import { useTranslation } from "react-i18next";
 import { PropertySet } from "./PropertySet";
+import { useIfcStore } from "../../../../stores/ifc/store";
 
 type Props = {
-  entityId: number;
+  element: IfcElement;
 };
 
-export const ElementAttributes = ({ entityId }: Props) => {
+export const ElementAttributes = ({ element }: Props) => {
   const { t } = useTranslation(undefined, {
     keyPrefix: "pages.view.components.inspector.ElementAttributes",
   });
 
-  const { ifcId } = useIfcContext();
-  const { data: attributes } = useGetIfcAttributes(ifcId, entityId);
+  const fileId = useIfcStore((state) => state.fileId);
+  const { data: attributes } = useGetIfcAttributes(fileId, element.id);
 
   const propertySet: IfcPropertySet | null = useMemo(
     () =>

@@ -45,7 +45,7 @@ export const PreviewDialog = ({ open, summary, onClose }: Props) => {
         </IfcCanvas>
       </DialogContent>
       <DialogActions>
-        <ButtonLink to="/view/$ifcId" params={{ ifcId: String(summary.id) }}>
+        <ButtonLink to="/view/$fileId" params={{ fileId: String(summary.id) }}>
           {t("open")}
         </ButtonLink>
         <Button onClick={onClose}>{t("close")}</Button>

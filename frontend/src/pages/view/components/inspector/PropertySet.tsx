@@ -13,12 +13,16 @@ import { PropertySetHeader } from "./PropertySetHeader";
 
 type Props = {
   propertySet: IfcPropertySet;
+  ordinal?: number;
 };
 
-export const PropertySet = ({ propertySet }: Props) => {
+export const PropertySet = ({ propertySet, ordinal }: Props) => {
   return (
     <Accordion>
-      <AccordionSummary>{propertySet.name}</AccordionSummary>
+      <AccordionSummary>
+        {ordinal !== undefined ? `${ordinal}. ` : null}
+        {propertySet.name}
+      </AccordionSummary>
       <AccordionDetails>
         <TableContainer>
           <Table>

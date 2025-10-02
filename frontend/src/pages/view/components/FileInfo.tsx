@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { useIfcContext } from "../../../contexts/ifc";
 import { Panel } from "./Panel";
 import { PanelHead } from "./PanelHead";
 import { PanelBody } from "./PanelBody";
@@ -13,14 +12,15 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { useIfcStore } from "../../../stores/ifc/store";
 
 export const FileInfo = () => {
   const { t } = useTranslation(undefined, {
     keyPrefix: "pages.view.components.FileInfo",
   });
 
-  const { ifcId } = useIfcContext();
-  const { data: summary } = useGetIfcSummary(ifcId);
+  const fileId = useIfcStore((state) => state.fileId);
+  const { data: summary } = useGetIfcSummary(fileId);
 
   return (
     <Panel>

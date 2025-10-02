@@ -10,43 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ViewIfcIdRouteImport } from './routes/view.$ifcId'
+import { Route as ViewFileIdRouteImport } from './routes/view.$fileId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ViewIfcIdRoute = ViewIfcIdRouteImport.update({
-  id: '/view/$ifcId',
-  path: '/view/$ifcId',
+const ViewFileIdRoute = ViewFileIdRouteImport.update({
+  id: '/view/$fileId',
+  path: '/view/$fileId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/view/$ifcId': typeof ViewIfcIdRoute
+  '/view/$fileId': typeof ViewFileIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/view/$ifcId': typeof ViewIfcIdRoute
+  '/view/$fileId': typeof ViewFileIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/view/$ifcId': typeof ViewIfcIdRoute
+  '/view/$fileId': typeof ViewFileIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/view/$ifcId'
+  fullPaths: '/' | '/view/$fileId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/view/$ifcId'
-  id: '__root__' | '/' | '/view/$ifcId'
+  to: '/' | '/view/$fileId'
+  id: '__root__' | '/' | '/view/$fileId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ViewIfcIdRoute: typeof ViewIfcIdRoute
+  ViewFileIdRoute: typeof ViewFileIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,11 +58,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/view/$ifcId': {
-      id: '/view/$ifcId'
-      path: '/view/$ifcId'
-      fullPath: '/view/$ifcId'
-      preLoaderRoute: typeof ViewIfcIdRouteImport
+    '/view/$fileId': {
+      id: '/view/$fileId'
+      path: '/view/$fileId'
+      fullPath: '/view/$fileId'
+      preLoaderRoute: typeof ViewFileIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -70,7 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ViewIfcIdRoute: ViewIfcIdRoute,
+  ViewFileIdRoute: ViewFileIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

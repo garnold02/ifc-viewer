@@ -65,9 +65,9 @@ def get_ifc_summaries():
     ]
 
 
-@app.get("/ifc/file/{id}/summary")
-def get_ifc_file_summary(id: int):
-    ifc = _get_ifc(id)
+@app.get("/ifc/file/{file_id}/summary")
+def get_ifc_file_summary(file_id: int):
+    ifc = _get_ifc(file_id)
 
     if ifc == None:
         raise HTTPException(status_code=404)
@@ -79,9 +79,9 @@ def get_ifc_file_summary(id: int):
     }
 
 
-@app.get("/ifc/file/{id}/preview")
-def get_ifc_file_preview(id: int):
-    ifc = _get_ifc(id)
+@app.get("/ifc/file/{file_id}/preview")
+def get_ifc_file_preview(file_id: int):
+    ifc = _get_ifc(file_id)
     
     if ifc == None:
         raise HTTPException(status_code=404)
@@ -103,9 +103,9 @@ def get_ifc_file_preview(id: int):
     return Response(content=content, media_type="application/octet-stream")
 
 
-@app.get("/ifc/file/{id}/root_node")
-def get_ifc_file_root_node(id: int):
-    ifc = _get_ifc(id)
+@app.get("/ifc/file/{file_id}/root_node")
+def get_ifc_file_root_node(file_id: int):
+    ifc = _get_ifc(file_id)
     
     if ifc == None:
         raise HTTPException(status_code=404)
@@ -127,9 +127,9 @@ def get_ifc_file_root_node(id: int):
     return Response(content=content, media_type="application/octet-stream")
 
 
-@app.get("/ifc/file/{ifc_id}/elements")
-def get_ifc_file_elements(ifc_id: int):
-    ifc = _get_ifc(ifc_id)
+@app.get("/ifc/file/{file_id}/elements")
+def get_ifc_file_elements(file_id: int):
+    ifc = _get_ifc(file_id)
 
     if ifc == None:
         raise HTTPException(status_code=404)
@@ -137,13 +137,13 @@ def get_ifc_file_elements(ifc_id: int):
     file = None
 
     try:
-        file = open(f"files/{ifc.file_name}.flat.bin", "rb")
+        file = open(f"files/{ifc.file_name}.elements.bin", "rb")
     except:
         file = None
     
     if file == None:
         ifc.process()
-        file = open(f"files/{ifc.file_name}.flat.bin", "rb")
+        file = open(f"files/{ifc.file_name}.elements.bin", "rb")
     
     content = file.read()
     file.close()
@@ -151,9 +151,9 @@ def get_ifc_file_elements(ifc_id: int):
     return Response(content=content, media_type="application/octet-stream")
 
 
-@app.get("/ifc/file/{ifc_id}/element/{ent_id}/attributes")
-def get_ifc_file_element_attributes(ifc_id: int, ent_id: int):
-    ifc = _get_ifc(ifc_id)
+@app.get("/ifc/file/{file_id}/element/{element_id}/attributes")
+def get_ifc_file_element_attributes(file_id: int, element_id: int):
+    ifc = _get_ifc(file_id)
 
     if ifc == None:
         raise HTTPException(status_code=404)
@@ -162,7 +162,7 @@ def get_ifc_file_element_attributes(ifc_id: int, ent_id: int):
     entity = None
 
     try:
-        entity = ifc.file.by_id(ent_id)
+        entity = ifc.file.by_id(element_id)
     except:
         raise HTTPException(status_code=404)
 
@@ -189,9 +189,9 @@ def get_ifc_file_element_attributes(ifc_id: int, ent_id: int):
     )
 
 
-@app.get("/ifc/file/{ifc_id}/element/{ent_id}/property_sets")
-def get_ifc_file_element_property_sets(ifc_id: int, ent_id: int):
-    ifc = _get_ifc(ifc_id)
+@app.get("/ifc/file/{file_id}/element/{element_id}/property_sets")
+def get_ifc_file_element_property_sets(file_id: int, element_id: int):
+    ifc = _get_ifc(file_id)
     
     if ifc == None:
         raise HTTPException(status_code=404)
@@ -200,7 +200,7 @@ def get_ifc_file_element_property_sets(ifc_id: int, ent_id: int):
     entity = None
 
     try:
-        entity = ifc.file.by_id(ent_id)
+        entity = ifc.file.by_id(element_id)
     except:
         raise HTTPException(status_code=404)
 

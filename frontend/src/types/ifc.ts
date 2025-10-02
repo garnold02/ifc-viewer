@@ -6,15 +6,7 @@ export type IfcSummary = {
   schema: string;
 };
 
-export type IfcNode = {
-  id: number;
-  type: string;
-  name: string | null;
-  geometry: IfcGeometry | null;
-  children: IfcNode[];
-};
-
-export type IfcNodeFlat = {
+export type IfcElement = {
   id: number;
   type: string;
   name: string | null;

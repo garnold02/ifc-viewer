@@ -1,28 +1,33 @@
 import { ElementAttributes } from "./ElementAttributes";
 import { useGetIfcPropertySets } from "../../../../api/queries/ifcPropertySets";
-import { useIfcContext } from "../../../../contexts/ifc";
 import { PropertySet } from "./PropertySet";
 import { Panel } from "../Panel";
 import { PanelBody } from "../PanelBody";
 import { LinearProgress } from "@mui/material";
 import { InspectorHead } from "./InspectorHead";
+import type { IfcElement } from "../../../../types/ifc";
+import { useIfcStore } from "../../../../stores/ifc/store";
 
 type Props = {
-  nodeId: number;
+  element: IfcElement;
 };
 
-export const Inspector = ({ nodeId }: Props) => {
-  const { ifcId } = useIfcContext();
-  const { data: propertySets } = useGetIfcPropertySets(ifcId, nodeId);
+export const Inspector = ({ element }: Props) => {
+  const fileId = useIfcStore((state) => state.fileId);
+  const { data: propertySets } = useGetIfcPropertySets(fileId, element.id);
 
   return (
     <Panel>
-      <InspectorHead nodeId={nodeId} />
+      <InspectorHead element={element} />
       <PanelBody>
-        <ElementAttributes key="element-attributes" entityId={nodeId} />
+        <ElementAttributes key="element-attributes" element={element} />
         {propertySets !== undefined ? (
-          propertySets.map((propertySet) => (
-            <PropertySet key={propertySet.name} propertySet={propertySet} />
+          propertySets.map((propertySet, i) => (
+            <PropertySet
+              key={`${propertySet.name}-${i}`}
+              propertySet={propertySet}
+              ordinal={i + 1}
+            />
           ))
         ) : (
           <LinearProgress />

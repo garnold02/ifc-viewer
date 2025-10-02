@@ -1,18 +1,50 @@
 import { IconButton } from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import type { IfcElement } from "../../../../types/ifc";
+import { useCallback, useMemo } from "react";
+import {
+  createDefaultOutlinerNodeState,
+  useIfcStore,
+} from "../../../../stores/ifc/store";
+import { produce } from "immer";
 
 type Props = {
-  value: boolean;
-  onClick: () => void;
-  disabled: boolean;
+  element: IfcElement;
 };
 
-export const ExpandButton = ({ value, onClick, disabled }: Props) => {
+export const ExpandButton = ({ element }: Props) => {
+  const nodeStates = useIfcStore((state) => state.outlinerNodeStates);
+  const setNodeState = useIfcStore((state) => state.setOutlinerNodeState);
+
+  const nodeState = useMemo(() => {
+    if (element.id in nodeStates) {
+      return nodeStates[element.id];
+    } else {
+      return createDefaultOutlinerNodeState(element);
+    }
+  }, [element, nodeStates]);
+
+  const onClick = useCallback(
+    () =>
+      setNodeState(
+        element,
+        produce(nodeState, (draft) => {
+          draft.expanded = !nodeState.expanded;
+        })
+      ),
+    [setNodeState, element, nodeState]
+  );
+
+  const disabled = useMemo(
+    () => element.child_ids.length === 0,
+    [element.child_ids.length]
+  );
+
   return (
     <IconButton size="small" onClick={onClick} disabled={disabled}>
-      {value ? <KeyboardArrowDownIcon fontSize="small" /> : null}
-      {!value ? <KeyboardArrowRightIcon fontSize="small" /> : null}
+      {nodeState.expanded ? <KeyboardArrowDownIcon fontSize="small" /> : null}
+      {!nodeState.expanded ? <KeyboardArrowRightIcon fontSize="small" /> : null}
     </IconButton>
   );
 };

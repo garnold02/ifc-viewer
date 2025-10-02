@@ -1,25 +1,25 @@
 import { getRouteApi, Navigate } from "@tanstack/react-router";
-import { OutlinerStoreProvider } from "../../stores/outliner/Provider";
 import { Content } from "./components/Content";
-import { IfcContext } from "../../contexts/ifc";
-import { ToolStoreProvider } from "../../stores/tool/Provider";
+import { useGetIfcElements } from "../../api/queries/ifcElements";
+import { IfcStoreProvider } from "../../stores/ifc/Provider";
 
-const route = getRouteApi("/view/$ifcId");
+const route = getRouteApi("/view/$fileId");
 
 export const Page = () => {
-  const { ifcId } = route.useLoaderData();
+  const { fileId } = route.useLoaderData();
+  const { data: elements } = useGetIfcElements(fileId);
 
-  if (ifcId === null) {
+  if (fileId === null) {
     return <Navigate to="/" />;
   }
 
+  if (elements === undefined) {
+    return null;
+  }
+
   return (
-    <IfcContext.Provider value={{ ifcId }}>
-      <OutlinerStoreProvider>
-        <ToolStoreProvider>
-          <Content />
-        </ToolStoreProvider>
-      </OutlinerStoreProvider>
-    </IfcContext.Provider>
+    <IfcStoreProvider fileId={fileId} elements={elements}>
+      <Content />
+    </IfcStoreProvider>
   );
 };

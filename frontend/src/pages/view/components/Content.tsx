@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
 import { Divider } from "@mui/material";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { FlatOutliner } from "./flat_outliner/FlatOutliner";
+import { Outliner } from "./outliner/Outliner";
 import { ToolBar } from "./toolbar/ToolBar";
-import { Viewport } from "./viewport/Viewport";
 import { ActionPanel } from "./ActionPanel";
+import { Viewport } from "./viewport/Viewport";
 
 export const Content = () => {
   return (
@@ -20,7 +20,7 @@ export const Content = () => {
       <Panel defaultSize={30} minSize={20} maxSize={80}>
         <PanelGroup direction="vertical">
           <Panel>
-            <FlatOutliner />
+            <Outliner />
           </Panel>
           <PanelResizeHandle>
             <Divider orientation="horizontal" />

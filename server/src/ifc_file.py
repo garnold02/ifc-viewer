@@ -1,5 +1,5 @@
+from ifc_element import IfcElement
 import ifc_geometry
-from ifc_node import IfcNode
 from ifcopenshell import entity_instance as ifc_ent, file as ifc_file, open as ifc_open
 import os.path
 from threading import Lock
@@ -40,11 +40,10 @@ class IfcFile:
     def process(self):
         self.load()
 
-        tree_exists = os.path.isfile(f"files/{self.file_name}.tree.bin")
+        elements_exists = os.path.isfile(f"files/{self.file_name}.elements.bin")
         preview_exists = os.path.isfile(f"files/{self.file_name}.preview.bin")
-        flat_exists = os.path.isfile(f"files/{self.file_name}.flat.bin")
         
-        if tree_exists and preview_exists and flat_exists:
+        if elements_exists and preview_exists:
             self.unload()
             return
         
@@ -59,14 +58,13 @@ class IfcFile:
                 print("    ERROR")
                 return
 
-            print(f"Collecting nodes of `{self.file_name}`...")
-            root_node = IfcNode(self.file.by_type("IfcProject")[0], self.file, geometries)
+            print(f"Collecting elements of `{self.file_name}`...")
+            root_element = IfcElement(self.file.by_type("IfcProject")[0], self.file, geometries)
             print(f"    DONE")
 
             print(f"Dumping output for `{self.file_name}`...")
-            root_node.pack().dump(f"files/{self.file_name}.tree.bin")
-            root_node.pack_preview().dump(f"files/{self.file_name}.preview.bin")
-            root_node.pack_flat().dump(f"files/{self.file_name}.flat.bin")
+            root_element.pack_elements().dump(f"files/{self.file_name}.elements.bin")
+            root_element.pack_preview().dump(f"files/{self.file_name}.preview.bin")
             print("    DONE")
 
 

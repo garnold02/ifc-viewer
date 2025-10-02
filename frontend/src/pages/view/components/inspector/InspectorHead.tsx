@@ -1,23 +1,24 @@
 import { useTranslation } from "react-i18next";
 import { PanelHead } from "../PanelHead";
 import { useGetIfcAttributes } from "../../../../api/queries/ifcAttributes";
-import { useIfcContext } from "../../../../contexts/ifc";
 import { useMemo } from "react";
 import { Typography } from "@mui/material";
+import type { IfcElement } from "../../../../types/ifc";
+import { useIfcStore } from "../../../../stores/ifc/store";
 
 type Props = {
-  nodeId: number;
+  element: IfcElement;
 };
 
-export const InspectorHead = ({ nodeId }: Props) => {
+export const InspectorHead = ({ element }: Props) => {
   const { t } = useTranslation(undefined, {
     keyPrefix: "pages.view.components.inspector.InspectorHead",
   });
 
-  const { ifcId } = useIfcContext();
-  const { data: attributes } = useGetIfcAttributes(ifcId, nodeId);
+  const fileId = useIfcStore((state) => state.fileId);
+  const { data: attributes } = useGetIfcAttributes(fileId, element.id);
 
-  const nodeType = useMemo(() => {
+  const elementTypeAttribute = useMemo(() => {
     if (attributes === undefined) {
       return null;
     }
@@ -33,7 +34,7 @@ export const InspectorHead = ({ nodeId }: Props) => {
     return String(value);
   }, [attributes]);
 
-  const nodeName = useMemo(() => {
+  const elementNameAttribute = useMemo(() => {
     if (attributes === undefined) {
       return null;
     }
@@ -56,15 +57,15 @@ export const InspectorHead = ({ nodeId }: Props) => {
 
   return (
     <PanelHead title={t("title")}>
-      {nodeType !== null ? (
+      {elementTypeAttribute !== null ? (
         <Typography
           variant="caption"
           color="textSecondary"
           sx={{ userSelect: "none" }}
           noWrap
         >
-          {nodeType}#{nodeId}
-          {nodeName !== null ? ` - ${nodeName}` : null}
+          {elementTypeAttribute}#{element.id}
+          {elementNameAttribute !== null ? ` - ${elementNameAttribute}` : null}
         </Typography>
       ) : null}
     </PanelHead>

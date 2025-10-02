@@ -3,12 +3,12 @@ from ifc_geometry import IfcGeometry
 from ifcopenshell import entity_instance as ifc_ent, file as ifc_file
 
 
-class IfcNode:
+class IfcElement:
     id: int
     type: str
     name: str | None
     geometry: IfcGeometry | None
-    children: list["IfcNode"]
+    children: list["IfcElement"]
 
 
     def __init__(self, ent: ifc_ent, file: ifc_file, geometries: dict[int, IfcGeometry]):
@@ -28,14 +28,14 @@ class IfcNode:
                 continue
             
             for child in rel.RelatedObjects:
-                self.children.append(IfcNode(child, file, geometries))
+                self.children.append(IfcElement(child, file, geometries))
         
         for rel in file.by_type("IfcRelContainedInSpatialStructure"):
             if rel.RelatingStructure != ent:
                 continue
             
             for child in rel.RelatedElements:
-                self.children.append(IfcNode(child, file, geometries))
+                self.children.append(IfcElement(child, file, geometries))
     
 
     def pack(self) -> BinPacker:
@@ -58,10 +58,10 @@ class IfcNode:
         return packer
     
 
-    def pack_flat(self) -> BinPacker:
+    def pack_elements(self) -> BinPacker:
         packer = BinPacker()
 
-        def pack_node(node: IfcNode, parent: IfcNode | None):
+        def pack_node(node: IfcElement, parent: IfcElement | None):
             packer.pack_uint32(node.id)
             packer.pack_string(node.type)
             packer.pack_string_or_none(node.name)
@@ -93,7 +93,7 @@ class IfcNode:
     def pack_preview(self) -> BinPacker:
         geometries: list[IfcGeometry] = []
 
-        def collect(node: IfcNode):
+        def collect(node: IfcElement):
             if node.geometry != None:
                 allow = node.type not in [
                     "IfcFurnishingElement",

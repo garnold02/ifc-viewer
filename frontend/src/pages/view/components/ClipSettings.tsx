@@ -2,18 +2,20 @@ import { Button, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import { Panel } from "./Panel";
 import { PanelHead } from "./PanelHead";
 import { PanelBody } from "./PanelBody";
-import { useToolStore } from "../../../stores/tool/store";
 import { Matrix4 } from "three";
 import { useTranslation } from "react-i18next";
+import { useIfcStore } from "../../../stores/ifc/store";
 
 export const ClipSettings = () => {
   const { t } = useTranslation(undefined, {
     keyPrefix: "pages.view.components.ClipSettings",
   });
 
-  const clipVisible = useToolStore((state) => state.clipState.visible);
-  const setClipVisible = useToolStore((state) => state.setClipVisible);
-  const setClipMatrix = useToolStore((state) => state.setClipMatrix);
+  const alwaysVisible = useIfcStore((state) => state.tool.clip.alwaysVisible);
+  const setAlwaysVisible = useIfcStore(
+    (state) => state.tool.clip.setAlwaysVisible
+  );
+  const setMatrix = useIfcStore((state) => state.tool.clip.setMatrix);
 
   return (
     <Panel>
@@ -24,18 +26,15 @@ export const ClipSettings = () => {
             control={
               <Checkbox
                 size="small"
-                checked={clipVisible}
-                onChange={(event) => setClipVisible(event.target.checked)}
+                checked={alwaysVisible}
+                onChange={(event) => setAlwaysVisible(event.target.checked)}
                 sx={{ marginLeft: 0.5 }}
               />
             }
             label={t("always_clip")}
           />
         </FormGroup>
-        <Button
-          variant="contained"
-          onClick={() => setClipMatrix(new Matrix4())}
-        >
+        <Button variant="contained" onClick={() => setMatrix(new Matrix4())}>
           {t("reset_plane")}
         </Button>
       </PanelBody>

@@ -28,7 +28,7 @@ export const SummaryCard = ({ summary, onPreviewClick }: Props) => {
         </Typography>
       </CardContent>
       <CardActions>
-        <ButtonLink to="/view/$ifcId" params={{ ifcId: String(summary.id) }}>
+        <ButtonLink to="/view/$fileId" params={{ fileId: String(summary.id) }}>
           {t("open")}
         </ButtonLink>
         <Button onClick={onPreviewClick}>{t("preview")}</Button>

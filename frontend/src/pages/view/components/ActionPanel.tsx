@@ -1,18 +1,17 @@
-import { useOutlinerStore } from "../../../stores/outliner/store";
-import { useToolStore } from "../../../stores/tool/store";
+import { useIfcStore } from "../../../stores/ifc/store";
 import { ClipSettings } from "./ClipSettings";
 import { FileInfo } from "./FileInfo";
 import { Inspector } from "./inspector/Inspector";
 
 export const ActionPanel = () => {
-  const currentTool = useToolStore((state) => state.current);
-  const selectedNodeId = useOutlinerStore((state) => state.selectedNodeId);
+  const currentTool = useIfcStore((state) => state.tool.current);
+  const selectedElement = useIfcStore((state) => state.selectedElement);
 
   switch (currentTool) {
     case null:
     case "select":
-      if (selectedNodeId !== null) {
-        return <Inspector nodeId={selectedNodeId} />;
+      if (selectedElement !== null) {
+        return <Inspector element={selectedElement} />;
       } else {
         return <FileInfo />;
       }

@@ -1,13 +1,13 @@
 import { PivotControls } from "@react-three/drei";
-import { useToolStore } from "../../../../stores/tool/store";
 import { Color } from "three";
+import { useIfcStore } from "../../../../stores/ifc/store";
 
 export const ClipTool = () => {
-  const currentToolType = useToolStore((state) => state.current);
-  const matrix = useToolStore((state) => state.clipState.matrix);
-  const setMatrix = useToolStore((state) => state.setClipMatrix);
+  const currentTool = useIfcStore((state) => state.tool.current);
+  const matrix = useIfcStore((state) => state.tool.clip.matrix);
+  const setMatrix = useIfcStore((state) => state.tool.clip.setMatrix);
 
-  if (currentToolType !== "clip") {
+  if (currentTool !== "clip") {
     return null;
   }
 

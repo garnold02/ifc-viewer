@@ -1,25 +1,28 @@
-import { LinearProgress } from "@mui/material";
-import { useIfcContext } from "../../../../contexts/ifc";
-import { useGetIfcRootNode } from "../../../../api/queries/ifcRootNode";
-import { Node } from "./Node";
 import { useTranslation } from "react-i18next";
 import { Panel } from "../Panel";
 import { PanelHead } from "../PanelHead";
 import { PanelBody } from "../PanelBody";
+import { useIfcStore } from "../../../../stores/ifc/store";
+import { useMemo } from "react";
+import { Element } from "./Element";
 
 export const Outliner = () => {
   const { t } = useTranslation(undefined, {
     keyPrefix: "pages.view.components.outliner.Outliner",
   });
 
-  const { ifcId } = useIfcContext();
-  const { data: rootNode } = useGetIfcRootNode(ifcId);
+  const elements = useIfcStore((state) => state.elements);
+  const rootElement = useMemo(
+    () =>
+      Object.values(elements).find((element) => element.parent_id === null)!,
+    [elements]
+  );
 
   return (
     <Panel>
       <PanelHead title={t("title")} />
       <PanelBody>
-        {rootNode !== undefined ? <Node node={rootNode} /> : <LinearProgress />}
+        <Element element={rootElement} />
       </PanelBody>
     </Panel>
   );

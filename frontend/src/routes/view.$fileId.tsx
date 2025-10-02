@@ -2,9 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { parseIntCorrectly } from "../utils/parsing";
 import { Page } from "../pages/view/Page";
 
-export const Route = createFileRoute("/view/$ifcId")({
+export const Route = createFileRoute("/view/$fileId")({
   loader: async ({ params }) => ({
-    ifcId: parseIntCorrectly(params.ifcId),
+    fileId: parseIntCorrectly(params.fileId),
   }),
   component: Page,
 });

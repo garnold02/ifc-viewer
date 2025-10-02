@@ -1,12 +1,12 @@
 import { Typography } from "@mui/material";
-import type { IfcNode } from "../../../../types/ifc";
+import type { IfcElement } from "../../../../types/ifc";
 
 type Props = {
-  node: IfcNode;
+  element: IfcElement;
 };
 
-export const NameLabel = ({ node }: Props) => {
-  if (node.name === null || node.name.length === 0) {
+export const NameLabel = ({ element }: Props) => {
+  if (element.name === null || element.name.length === 0) {
     return null;
   }
 
@@ -18,7 +18,7 @@ export const NameLabel = ({ node }: Props) => {
       sx={{ userSelect: "none" }}
       noWrap
     >
-      {node.name}
+      {element.name}
     </Typography>
   );
 };
