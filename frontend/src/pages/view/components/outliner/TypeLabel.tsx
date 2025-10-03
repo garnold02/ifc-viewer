@@ -2,6 +2,7 @@ import { useCallback, useMemo } from "react";
 import { Typography } from "@mui/material";
 import { type IfcElement } from "../../../../types/ifc";
 import { useIfcStore } from "../../../../stores/ifc/store";
+import { pascalToSentenceCase } from "../../../../utils/casing";
 
 type Props = {
   element: IfcElement;
@@ -20,6 +21,11 @@ export const TypeLabel = ({ element }: Props) => {
     setSelectedElement(selectedElement === element ? null : element);
   }, [setSelectedElement, selectedElement, element]);
 
+  const text = useMemo(
+    () => pascalToSentenceCase(element.type),
+    [element.type]
+  );
+
   return (
     <Typography
       color={selected ? "primary" : "textPrimary"}
@@ -28,7 +34,7 @@ export const TypeLabel = ({ element }: Props) => {
       onClick={onTypographyClick}
       noWrap
     >
-      {element.type}
+      {text}
     </Typography>
   );
 };
