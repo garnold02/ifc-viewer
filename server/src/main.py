@@ -148,10 +148,13 @@ def get_ifc_file_element_attributes(file_id: int, element_id: int):
 
     def xform_attribute(value) -> dict:
         if isinstance(value, ifc_ent):
-            return {
-                "type": "element",
-                "value": value.id(),
-            }
+            if value.is_entity():
+                return {
+                    "type": "element",
+                    "value": value.id(),
+                }
+            else:
+                return xform_attribute(value.wrappedValue)
         if isinstance(value, tuple) or isinstance(value, list):
             return {
                 "type": "list",
