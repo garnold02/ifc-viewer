@@ -16,9 +16,10 @@ import { Attribute } from "./Attribute";
 
 type Props = {
   id: number;
+  defaultExpanded?: boolean;
 };
 
-export const Attributes = ({ id }: Props) => {
+export const Attributes = ({ id, defaultExpanded }: Props) => {
   const { t } = useTranslation(undefined, {
     keyPrefix: "pages.view.components.attributes.Attributes",
   });
@@ -31,7 +32,7 @@ export const Attributes = ({ id }: Props) => {
   }
 
   return (
-    <Accordion>
+    <Accordion defaultExpanded={defaultExpanded}>
       <AccordionSummary>{t("title")}</AccordionSummary>
       <AccordionDetails>
         <TableContainer>

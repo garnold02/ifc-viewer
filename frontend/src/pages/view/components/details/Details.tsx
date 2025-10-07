@@ -33,6 +33,7 @@ export const Details = () => {
             <Attributes
               key={elementStack[elementStack.length - 1]}
               id={elementStack[elementStack.length - 1]}
+              defaultExpanded
             />
           ) : null}
         </Stack>
