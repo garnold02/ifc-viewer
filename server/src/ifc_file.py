@@ -1,234 +1,126 @@
 from ifc_element import IfcElement
-import ifc_geometry
-from ifcopenshell import entity_instance as ifc_ent, file as ifc_file, open as ifc_open
-import os.path
-from threading import Lock
+from ifc_process import IfcProcessElement, collect_geometries
+import ifcopenshell as ios
+import os
+from threading import Lock, Timer
+
+
+class IfcFileSummary:
+    id: int
+    name: str
+    schema: str
 
 
 class IfcFile:
-    file_name: str = None
-    file: ifc_file = None
-    schema: str = None
-    lock: Lock = Lock()
+    name: str
+    _schema: str | None
+    _file: ios.file | None
+    _lock: Lock
+    _units: list[dict] | None
 
 
-    def __init__(self, file_name: str):
-        self.file_name = file_name
+    def __init__(self, name: str):
+        self.name = name
+        self._schema = None
+        self._file = None
+        self._lock = Lock()
+        self._units = None
     
 
-    def load(self):
-        with self.lock:
-            if self.file != None:
-                return
-
-            print(f"Loading `{self.file_name}`...")
-            self.file = ifc_open(f"files/{self.file_name}")
-            self.schema = self.file.schema
-            print("    DONE")
+    def _load(self):
+        if self._file == None:
+            self._file = ios.open(f"files/{self.name}")
     
 
-    def unload(self):
-        with self.lock:
-            if self.file == None:
-                return
-            
-            print(f"Unloading `{self.file_name}`...")
-            self.file = None
-            print("    DONE")
+    def _unload(self):
+        self._file = None
     
 
     def process(self):
-        self.load()
+        with self._lock:
+            elements_exists = os.path.isfile(f"files/{self.name}.elements.bin")
+            preview_exists = os.path.isfile(f"files/{self.name}.preview.bin")
 
-        elements_exists = os.path.isfile(f"files/{self.file_name}.elements.bin")
-        preview_exists = os.path.isfile(f"files/{self.file_name}.preview.bin")
-        
-        if elements_exists and preview_exists:
-            self.unload()
-            return
-        
+            if elements_exists and preview_exists:
+                print(f"File `{self.name}` already processed. Skipping...")
+                return
 
-        with self.lock:
-            print(f"Collecting geometries of `{self.file_name}`...")
-            geometries = ifc_geometry.collect(self.file)
+            self._load()            
+            print(f"Collecting geometries of `{self.name}`...")
+            geometries = collect_geometries(self._file)
 
             if geometries != None:
                 print("    DONE")
             else:
                 print("    ERROR")
+                self._unload()
                 return
-
-            print(f"Collecting elements of `{self.file_name}`...")
-            root_element = IfcElement(self.file.by_type("IfcProject")[0], self.file, geometries)
+            
+            print(f"Collecting elements of `{self.name}`...")
+            root_element = IfcProcessElement(
+                self._file.by_type("IfcProject")[0],
+                self._file,
+                geometries
+            )
             print(f"    DONE")
 
-            print(f"Dumping output for `{self.file_name}`...")
-            root_element.pack_elements().dump(f"files/{self.file_name}.elements.bin")
-            root_element.pack_preview().dump(f"files/{self.file_name}.preview.bin")
+            print(f"Dumping output for `{self.name}`...")
+            root_element.pack_elements().dump(f"files/{self.name}.elements.bin")
+            root_element.pack_preview().dump(f"files/{self.name}.preview.bin")
             print("    DONE")
 
-
-def _xform_pset_prop(prop: ifc_ent) -> dict:
-    # `prop` is an `IfcProperty`
-
-    name = prop.Name
-    description = prop.Description
-    value = None
-
-    if prop.is_a("IfcComplexProperty"):
-        # TODO: handle `IfcComplexProperty`
-        value = {
-            "type": "complex",
-            "complex": "TODO",
-        }
-
-    # handle subtypes of `IfcSimpleProperty`
-
-    if prop.is_a("IfcPropertyBoundedValue"):
-        # TODO: handle `IfcPropertyBoundedValue`
-        value = {
-            "type": "bounded",
-            "bounded": "TODO",
-        }
-
-    if prop.is_a("IfcPropertyEnumeratedValue"):
-        # TODO: handle `IfcPropertyEnumeratedValue`
-        value = {
-            "type": "enumerated",
-            "enumerated": "TODO",
-        }
-
-    if prop.is_a("IfcPropertyListValue"):
-        # TODO: handle `IfcPropertyListValue`
-        value = {
-            "type": "list",
-            "list": "TODO",
-        }
-
-    if prop.is_a("IfcPropertyReferenceValue"):
-        # TODO: handle `IfcPropertyReferenceValue`
-        value = {
-            "type": "reference",
-            "reference": "TODO",
-        }
-
-    if prop.is_a("IfcPropertySingleValue"):
-        if prop.NominalValue != None:
-            value = {
-                "type": "single",
-                "single": prop.NominalValue.wrappedValue,
-            }
-
-    if prop.is_a("IfcPropertyTableValue"):
-        # TODO: handle `IfcPropertyTableValue`
-        value = {
-            "type": "table",
-            "table": "TODO"
-        }
-
-    return {
-        "name": name,
-        "description": description,
-        "value": value,
-    }
-
-
-def _xform_pset_quan(quan: ifc_ent) -> dict:
-    # `quan` is an `IfcPhysicalQuantity`
+            self._unload()
     
-    name = quan.Name
-    description = quan.Description
-    value = None
 
-    if quan.is_a("IfcPhysicalComplexQuantity"):
-        # TODO: handle `IfcPhysicalComplexQuantity`
-        value = {
-            "type": "complex",
-            "complex": "TODO"
-        }
+    def get_summary(self, id: int) -> IfcFileSummary:
+        summary = IfcFileSummary()
+        summary.id = id
+        summary.name = self.name
 
-    # handle subtypes of `IfcPhysicalSimpleQuantity`
+        if self._schema == None:
+            with self._lock:
+                self._load()
+                self._schema = self._file.schema
+        
+        summary.schema = self._schema
+        return summary
+    
 
-    # apparently `Formula` only exists in IFC4. fallback to `None`.
-    formula = None
-    try:
-        formula = quan.Formula
-    except AttributeError:
-        pass
+    def get_elements(self) -> bytes:
+        with open(f"files/{self.name}.elements.bin", "rb") as file:
+            return file.read()
+    
 
-    if quan.is_a("IfcQuantityArea"):
-        value = {
-            "type": "area",
-            "area": quan.AreaValue,
-            "formula": formula,
-        }
+    def get_preview(self) -> bytes:
+        with open(f"files/{self.name}.preview.bin", "rb") as file:
+            return file.read()
+    
 
-    if quan.is_a("IfcQuantityCount"):
-        value = {
-            "type": "count",
-            "count": quan.CountValue,
-            "formula": formula,
-        }
+    def get_global_units(self) -> list[dict]:
+        if self._units == None:
+            with self._lock:
+                self._load()
+                project = self._file.by_type("IfcProject")[0]
+                units: list[ios.entity_instance] = list(project.UnitsInContext.Units)
+                transformed_units: list[dict] = []
+                
+                for unit in units:
+                    unit_element = IfcElement(unit)
+                    transformed_units.append(unit_element.transform_unit())
 
-    if quan.is_a("IfcQuantityLength"):
-        value = {
-            "type": "length",
-            "length": quan.LengthValue,
-            "formula": formula,
-        }
-
-    if quan.is_a("IfcQuantityTime"):
-        value = {
-            "type": "time",
-            "time": quan.TimeValue,
-            "formula": formula,
-        }
-
-    if quan.is_a("IfcQuantityVolume"):
-        value = {
-            "type": "volume",
-            "volume": quan.VolumeValue,
-            "formula": formula,
-        }
-
-    if quan.is_a("IfcQuantityWeight"):
-        value = {
-            "type": "weight",
-            "weight": quan.WeightValue,
-            "formula": formula,
-        }
-
-    return {
-        "name": name,
-        "description": description,
-        "value": value,
-    }
+                self._units = transformed_units
+        
+        return self._units
 
 
-def xform_pset(pset: ifc_ent) -> dict:
-    # for now, we assume `pset` must be an `IfcPropertySetDefinition`
+    def get_element(self, element_id: int) -> IfcElement | None:
+        with self._lock:
+            self._load()
+            entity: ios.entity_instance
 
-    name = pset.Name
-    properties = []
+            try:
+                entity = self._file.by_id(element_id)
+            except:
+                return None
 
-    if pset.is_a("IfcPreDefinedPropertySet"):
-        # TODO: handle `IfcPreDefinedPropertySet`
-        pass
-
-    # property sets only have this one type
-    if pset.is_a("IfcPropertySet"):
-        for prop in pset.HasProperties:
-            # `prop` is an `IfcProperty`
-            properties.append(_xform_pset_prop(prop))
-
-    # quantity sets (`IfcQuantitySet`) *can* have multiple subtypes, handle them here
-    # even though as of IFC4, the only subtype is `IfcElementQuantity`
-    if pset.is_a("IfcElementQuantity"):
-        for quan in pset.Quantities:
-            # `quan` is an `IfcPhysicalQuantity`
-            properties.append(_xform_pset_quan(quan))
-
-    return {
-        "name": name,
-        "properties": properties,
-    }
+            return IfcElement(entity)
