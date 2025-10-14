@@ -1,30 +1,16 @@
-import type { Element } from "../../../../api/types/file/element";
+import { Panel } from "../Panel";
+import { PanelBody } from "../PanelBody";
+import { InspectorHead } from "./InspectorHead";
 
 type Props = {
-  element: Element;
+  elementId: number;
 };
 
-export const Inspector = ({ element }: Props) => {
-  return null;
-  // const fileId = useIfcStore((state) => state.fileId);
-  // const { data: propertySets } = useGetIfcPropertySets(fileId, element.id);
-  // return (
-  //   <Panel>
-  //     <InspectorHead element={element} />
-  //     <PanelBody>
-  //       <Attributes key="attributes" id={element.id} />
-  //       {propertySets !== undefined ? (
-  //         propertySets.map((propertySet, i) => (
-  //           <PropertySet
-  //             key={`${propertySet.name}-${i}`}
-  //             propertySet={propertySet}
-  //             ordinal={i + 1}
-  //           />
-  //         ))
-  //       ) : (
-  //         <LinearProgress />
-  //       )}
-  //     </PanelBody>
-  //   </Panel>
-  // );
+export const Inspector = ({ elementId }: Props) => {
+  return (
+    <Panel>
+      <InspectorHead elementId={elementId} />
+      <PanelBody></PanelBody>
+    </Panel>
+  );
 };

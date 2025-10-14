@@ -6,11 +6,13 @@ import unit_utils
 class IfcElementSignature:
     type: str
     id: int
+    name: str | None
 
 
-    def __init__(self, type: str, id: int):
+    def __init__(self, type: str, id: int, name: str | None):
         self.type = type
         self.id = id
+        self.name = name
 
 
 class IfcElement:
@@ -28,9 +30,20 @@ class IfcElement:
     
 
     def get_signature(self) -> IfcElementSignature:
+        name: str | None = None
+
+        try:
+            name = self._entity.Name
+        except:
+            pass
+
+        if name != None and len(name) == 0:
+            name = None
+
         return IfcElementSignature(
             self._entity.is_a(),
             self._entity.id(),
+            name,
         )
     
 
