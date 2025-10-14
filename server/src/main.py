@@ -39,12 +39,12 @@ app.add_middleware(
 
 
 @app.get("/api/summaries")
-def get_ifc_summaries():
+def get_summaries():
     return repo.get_file_summaries()
 
 
 @app.get("/api/file/{file_id}/summary")
-def get_ifc_file_summary(file_id: int):
+def get_file_summary(file_id: int):
     file = repo.get_file(file_id)
 
     if file == None:
@@ -54,7 +54,7 @@ def get_ifc_file_summary(file_id: int):
 
 
 @app.get("/api/file/{file_id}/elements")
-def get_ifc_file_elements(file_id: int):
+def get_file_elements(file_id: int):
     file = repo.get_file(file_id)
 
     if file == None:
@@ -65,7 +65,7 @@ def get_ifc_file_elements(file_id: int):
 
 
 @app.get("/api/file/{file_id}/preview")
-def get_ifc_file_preview(file_id: int):
+def get_file_preview(file_id: int):
     file = repo.get_file(file_id)
 
     if file == None:
@@ -75,18 +75,8 @@ def get_ifc_file_preview(file_id: int):
     return Response(content=content, media_type="application/octet-stream")
 
 
-@app.get("/api/file/{file_id}/units")
-def get_ifc_file_units(file_id: int):
-    file = repo.get_file(file_id)
-
-    if file == None:
-        raise HTTPException(status_code=404)
-    
-    return file.get_global_units()
-
-
 @app.get("/api/file/{file_id}/element/{element_id}/signature")
-def get_ifc_file_element_signature(file_id: int, element_id: int):
+def get_file_element_signature(file_id: int, element_id: int):
     file = repo.get_file(file_id)
 
     if file == None:
@@ -101,7 +91,7 @@ def get_ifc_file_element_signature(file_id: int, element_id: int):
 
 
 @app.get("/api/file/{file_id}/element/{element_id}/property_tree")
-def get_ifc_file_element_property_tree(file_id: int, element_id: int):
+def get_file_element_property_tree(file_id: int, element_id: int):
     file = repo.get_file(file_id)
 
     if file == None:
