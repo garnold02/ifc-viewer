@@ -286,39 +286,425 @@ class IfcElement:
             raise Exception()
     
 
+    def _transform_builtin_property(
+        self,
+        value: ios.entity_instance,
+        name: str,
+        semantics: str,
+        measure: str | None,
+    ) -> dict:
+        resolved_value = getattr(value, name, None)
+        unit: str | None = None
+
+        if measure != None and resolved_value != None:
+            unit = IfcElement(None, self._global_units).resolve_unit(measure)
+
+        return {
+            "name": name,
+            "description": None,
+            "type": "leaf",
+            "semantics": semantics if resolved_value != None else "null",
+            "unit": unit,
+            "value": resolved_value,
+        }
+    
+
     def _transform_property_set(self, value: ios.entity_instance) -> dict:
         name: str = value.Name
         properties: list[dict] = []
 
         if value.is_a("IfcDoorLiningProperties"):
-            # TODO: handle `IfcDoorLiningProperties`
-            # raise Exception()
-            pass
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningDepth",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningThickness",
+                "IfcNonNegativeLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "ThresholdDepth",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "ThresholdThickness",
+                "IfcNonNegativeLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "TransomOffset",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningOffset",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "ThresholdOffset",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "CasingThickness",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "CasingDepth",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningToPanelOffsetX",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningToPanelOffsetY",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
 
         elif value.is_a("IfcDoorPanelProperties"):
-            # TODO: handle `IfcDoorPanelProperties`
-            # raise Exception()
-            pass
+            properties.append(self._transform_builtin_property(
+                value,
+                "PanelDepth",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "PanelOperation",
+                "string",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "PanelWidth",
+                "IfcNormalisedRatioMeasure",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "PanelPosition",
+                "string",
+                None,
+            ))
         
         elif value.is_a("IfcPermeableCoveringProperties"):
-            # TODO: handle `IfcPermeableCoveringProperties`
-            # raise Exception()
-            pass
+            properties.append(self._transform_builtin_property(
+                value,
+                "OperationType",
+                "string",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "PanelPosition",
+                "string",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "FrameDepth",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "FrameThickness",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_value(
+                "ShapeAspectStyle",
+                value.ShapeAspectStyle,
+            ))
         
         elif value.is_a("IfcReinforcementDefinitionProperties"):
-            # TODO: handle `IfcReinforcementDefinitionProperties`
-            # raise Exception()
-            pass
+            properties.append(self._transform_builtin_property(
+                value,
+                "DefinitionType",
+                "string",
+                None,
+            ))
+
+            properties.append({
+                "name": "ReinforcementSectionDefinitions",
+                "description": None,
+                "type": "node",
+                "children": [
+                    {
+                        "name": f"{i + 1}.",
+                        "description": None,
+                        "type": "node",
+                        "children": [
+                            self._transform_builtin_property(
+                                inner,
+                                "LongitudinalStartPosition",
+                                "IfcLengthMeasure",
+                                "IfcLengthMeasure",
+                            ),
+                            self._transform_builtin_property(
+                                inner,
+                                "LongitudinalEndPosition",
+                                "IfcLengthMeasure",
+                                "IfcLengthMeasure",
+                            ),
+                            self._transform_builtin_property(
+                                inner,
+                                "TransversePosition",
+                                "IfcLengthMeasure",
+                                "IfcLengthMeasure",
+                            ),
+                            self._transform_builtin_property(
+                                inner,
+                                "ReinforcementRole",
+                                "string",
+                                None,
+                            ),
+                            {
+                                "name": "SectionDefinition",
+                                "description": None,
+                                "type": "node",
+                                "children": [
+                                    self._transform_builtin_property(
+                                        inner.SectionDefinition,
+                                        "SectionType",
+                                        "string",
+                                        None,
+                                    ),
+                                    {
+                                        "name": "StartProfile",
+                                        "description": None,
+                                        "type": "node",
+                                        "children": [
+                                            self._transform_builtin_property(
+                                                inner.SectionDefinition.StartProfile,
+                                                "ProfileType",
+                                                "string",
+                                                None,
+                                            ),
+                                            self._transform_builtin_property(
+                                                inner.SectionDefinition.StartProfile,
+                                                "ProfileName",
+                                                "string",
+                                                None,
+                                            ),
+                                        ],
+                                    },
+                                    {
+                                        "name": "EndProfile",
+                                        "description": None,
+                                        "type": "node",
+                                        "children": [
+                                            self._transform_builtin_property(
+                                                inner.SectionDefinition.EndProfile,
+                                                "ProfileType",
+                                                "string",
+                                                None,
+                                            ),
+                                            self._transform_builtin_property(
+                                                inner.SectionDefinition.EndProfile,
+                                                "ProfileName",
+                                                "string",
+                                                None,
+                                            ),
+                                        ],
+                                    }
+                                ],
+                            },
+                            {
+                                "name": "CrossSectionReinforcementDefinitions",
+                                "description": None,
+                                "type": "node",
+                                "children": [
+                                    {
+                                        "name": f"{j + 1}.",
+                                        "description": None,
+                                        "type": "node",
+                                        "children": [
+                                            self._transform_builtin_property(
+                                                inner2,
+                                                "TotalCrossSectionArea",
+                                                "IfcAreaMeasure",
+                                                "IfcAreaMeasure",
+                                            ),
+                                            self._transform_builtin_property(
+                                                inner2,
+                                                "SteelGrade",
+                                                "string",
+                                                None,
+                                            ),
+                                            self._transform_builtin_property(
+                                                inner2,
+                                                "BarSurface",
+                                                "string",
+                                                None,
+                                            ),
+                                            self._transform_builtin_property(
+                                                inner2,
+                                                "EffectiveDepth",
+                                                "IfcLengthMeasure",
+                                                "IfcLengthMeasure",
+                                            ),
+                                            self._transform_builtin_property(
+                                                inner2,
+                                                "NominalBarDiameter",
+                                                "IfcPositiveLengthMeasure",
+                                                "IfcLengthMeasure",
+                                            ),
+                                            self._transform_builtin_property(
+                                                inner2,
+                                                "BarCount",
+                                                "IfcCountMeasure",
+                                                None,
+                                            ),
+                                        ],
+                                    }
+                                    for j, inner2
+                                    in enumerate(inner.CrossSectionReinforcementDefinitions)
+                                ],
+                            },
+                        ],
+                    }
+                    for i, inner
+                    in enumerate(value.ReinforcementSectionDefinitions)
+                ],
+            })
         
         elif value.is_a("IfcWindowLiningProperties"):
-            # TODO: handle `IfcWindowLiningProperties`
-            # raise Exception()
-            pass
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningThickness",
+                "IfcNonNegativeLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "TransomThickness",
+                "IfcNonNegativeLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "MullionThickness",
+                "IfcNonNegativeLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "FirstTransomOffset",
+                "IfcNormalisedRatioMeasure",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "SecondTransomOffset",
+                "IfcNormalisedRatioMeasure",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "FirstMullionOffset",
+                "IfcNormalisedRatioMeasure",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "SecondMullionOffset",
+                "IfcNormalisedRatioMeasure",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningOffset",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningToPanelOffsetX",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningToPanelOffsetY",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
         
         elif value.is_a("IfcWindowPanelProperties"):
-            # TODO: handle `IfcWindowPanelProperties`
-            # raise Exception()
-            pass
+            properties.append(self._transform_builtin_property(
+                value,
+                "OperationType",
+                "string",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "PanelPosition",
+                "string",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "FrameDepth",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "FrameThickness",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
 
         elif value.is_a("IfcPropertySet"):
             for property in value.HasProperties:
