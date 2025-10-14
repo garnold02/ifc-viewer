@@ -149,9 +149,87 @@ def si_unit_shorthand(unit: str) -> str:
 
 
 def misc_unit_name(unit: str) -> str:
-    match unit:
+    match unit.upper():        
+        case "INCH":
+            return "in"
+        
+        case "FOOT":
+            return "ft"
+        
+        case "YARD":
+            return "yd"
+        
+        case "MILE":
+            return "mi"
+        
+        case "SQUARE INCH":
+            return "in²"
+
+        case "SQUARE FOOT":
+            return "ft²"
+        
+        case "SQUARE YARD":
+            return "yd²"
+        
+        case "LITRE":
+            return "l"
+        
+        case "FLUID ONCE UK":
+            return "fl oz (UK)"
+        
+        case "FLUID OUNCE US":
+            return "fl oz (US)"
+        
+        case "PINT UK":
+            return "pt (UK)"
+        
+        case "PINT US":
+            return "pt (US)"
+        
+        case "GALLON UK":
+            return "gal (UK)"
+        
+        case "GALLON US":
+            return "gal (US)"
+        
         case "DEGREE":
             return "°"
+        
+        case "OUNCE":
+            return "oz"
+        
+        case "POUND":
+            return "lb"
+        
+        case "TON UK":
+            return "ton (UK)"
+        
+        case "TON US":
+            return "ton (US)"
+        
+        case "LBF":
+            return "lbf"
+        
+        case "KIP":
+            return "kip"
+        
+        case "PSI":
+            return "psi"
+        
+        case "KSI":
+            return "ksi"
+        
+        case "MINUTE":
+            return "min"
+        
+        case "HOUR":
+            return "hr"
+        
+        case "DAY":
+            return "day"
+        
+        case "BTU":
+            return "btu"
         
         case _:
             return unit
