@@ -760,9 +760,13 @@ class IfcElement:
                             and pset.is_a("IfcPropertySetDefinition")
                         ):
                             pset_entities.append(pset)
+                        
+                        elif isinstance(pset, tuple) or isinstance(pset, list):
+                            for pset2 in pset:
+                                pset_entities.append(pset2)
+                        
                         else:
-                            # NOTE: Maybe this can also be `IfcPropertySetDefinitionSelect`?
-                            # the standard is very unclear on this...
+                            # NOTE: this shouldn't happen
                             raise Exception()
 
         
@@ -777,8 +781,13 @@ class IfcElement:
                     and pset.is_a("IfcPropertySetDefinition")
                 ):
                     pset_entities.append(pset)
+                
+                elif isinstance(pset, tuple) or isinstance(pset, list):
+                    for pset2 in pset:
+                        pset_entities.append(pset2)
+                
                 else:
-                    # TODO: `IfcPropertySetDefinitionSet` (find test file that has this)
+                    # NOTE: this shouldn't happen
                     raise Exception()
         
         # transform the collected property/quantity sets
