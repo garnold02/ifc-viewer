@@ -24,7 +24,7 @@ export const ElementReference = ({ id, stackPosition }: Props) => {
     } else {
       pushDetailsElement(id);
     }
-  }, [stackPosition, revertDetailsElementStack, pushDetailsElement]);
+  }, [id, stackPosition, revertDetailsElementStack, pushDetailsElement]);
 
   if (signature === undefined) {
     return <LinearProgress />;

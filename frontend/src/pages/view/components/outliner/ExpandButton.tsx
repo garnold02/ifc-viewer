@@ -42,7 +42,12 @@ export const ExpandButton = ({ element }: Props) => {
   );
 
   return (
-    <IconButton size="small" onClick={onClick} disabled={disabled}>
+    <IconButton
+      size="small"
+      onClick={onClick}
+      disabled={disabled}
+      sx={{ visibility: disabled ? "hidden" : undefined }}
+    >
       {nodeState.expanded ? <KeyboardArrowDownIcon fontSize="small" /> : null}
       {!nodeState.expanded ? <KeyboardArrowRightIcon fontSize="small" /> : null}
     </IconButton>

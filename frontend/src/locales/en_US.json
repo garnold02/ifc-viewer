@@ -85,6 +85,18 @@
             "show_self": "Show self"
           }
         },
+        "property": {
+          "LeafPropertyValue": {
+            "false": "No",
+            "null": "Empty",
+            "true": "Yes"
+          },
+          "NodeProperty": {
+            "name": {
+              "__attributes__": "Element attributes"
+            }
+          }
+        },
         "toolbar": {
           "ToolButton": {
             "clip": "Clip geometry",

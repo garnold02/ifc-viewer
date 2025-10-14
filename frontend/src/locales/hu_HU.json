@@ -85,6 +85,18 @@
             "show_self": "Saját geometria megjelenítése"
           }
         },
+        "property": {
+          "LeafPropertyValue": {
+            "false": "Nem",
+            "null": "Üres",
+            "true": "Igen"
+          },
+          "NodeProperty": {
+            "name": {
+              "__attributes__": "Elemattribútumok"
+            }
+          }
+        },
         "toolbar": {
           "ToolButton": {
             "clip": "Geometria vágása",

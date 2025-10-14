@@ -110,7 +110,7 @@ class IfcElement:
                 "description": None,
                 "type": "node",
                 "children": [
-                    self._transform_value(str(ordinal), attr)
+                    self._transform_value(f"{ordinal + 1}.", attr)
                     for ordinal, attr
                     in enumerate(value)
                 ]
@@ -353,7 +353,7 @@ class IfcElement:
             attrs.append(self._transform_value(key, value))
         
         children: list[dict] = [{
-            "name": "attributes",
+            "name": "__attributes__",
             "description": None,
             "type": "node",
             "children": attrs,

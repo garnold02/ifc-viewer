@@ -1,5 +1,6 @@
 import { Panel } from "../Panel";
 import { PanelBody } from "../PanelBody";
+import { PropertyTree } from "../property/PropertyTree";
 import { InspectorHead } from "./InspectorHead";
 
 type Props = {
@@ -10,7 +11,9 @@ export const Inspector = ({ elementId }: Props) => {
   return (
     <Panel>
       <InspectorHead elementId={elementId} />
-      <PanelBody></PanelBody>
+      <PanelBody>
+        <PropertyTree elementId={elementId} />
+      </PanelBody>
     </Panel>
   );
 };

@@ -1,9 +1,12 @@
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
+  Stack,
 } from "@mui/material";
 import { IfcCanvas } from "../../../components/IfcCanvas";
 import { useTranslation } from "react-i18next";
@@ -14,6 +17,7 @@ import { IfcSceneCamera } from "../../../components/IfcSceneCamera";
 import { ButtonLink } from "../../../components/ButtonLink";
 import { PreviewGeometry } from "./PreviewGeometry";
 import type { FileSummary } from "../../../api/types/file/summary";
+import CloseIcon from "@mui/icons-material/Close";
 
 type Props = {
   open: boolean;
@@ -30,7 +34,15 @@ export const PreviewDialog = ({ open, summary, onClose }: Props) => {
 
   return (
     <Dialog open={open} fullScreen>
-      <DialogTitle>{summary.name}</DialogTitle>
+      <DialogTitle>
+        <Stack direction="row" alignItems="center">
+          {summary.name}
+          <Box flexGrow={1} />
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </Stack>
+      </DialogTitle>
       <DialogContent>
         <IfcCanvas>
           <IfcTransformGroup>

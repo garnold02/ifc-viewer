@@ -2,7 +2,7 @@ import { getRouteApi, Navigate } from "@tanstack/react-router";
 import { Content } from "./components/Content";
 import { useGetFileElements } from "../../api/hooks/file/elements";
 import { IfcStoreProvider } from "../../stores/ifc/Provider";
-import { Details } from "./components/details/Details";
+import { Details } from "./components/Details";
 
 const route = getRouteApi("/view/$fileId");
 
