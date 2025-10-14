@@ -6,7 +6,7 @@ type Props = {
 };
 
 export const DescriptionTooltip = ({ description }: Props) => {
-  if (description === null) {
+  if (description === null || description.length === 0) {
     return null;
   }
 

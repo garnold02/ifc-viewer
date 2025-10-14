@@ -31,7 +31,10 @@ export const NodeProperty = ({ nodeProperty, level, path }: Props) => {
       <TableRow>
         <TableCell sx={{ paddingLeft: level * 2 }}>
           <Stack direction="row" alignItems="center">
-            <ExpandButton path={path} />
+            <ExpandButton
+              path={path}
+              hidden={nodeProperty.children.length === 0}
+            />
             {nameT(nodeProperty.name, { defaultValue: nodeProperty.name })}
             <DescriptionTooltip description={nodeProperty.description} />
           </Stack>
@@ -44,7 +47,7 @@ export const NodeProperty = ({ nodeProperty, level, path }: Props) => {
               key={i}
               property={child}
               level={level + 1}
-              path={`${path}/${child.name}`}
+              path={`${path}/${child.name}.${i}`}
             />
           ))
         : null}

@@ -6,9 +6,10 @@ import { usePropertyStore } from "../../../../stores/property/store";
 
 type Props = {
   path?: string;
+  hidden?: boolean;
 };
 
-export const ExpandButton = ({ path }: Props) => {
+export const ExpandButton = ({ path, hidden }: Props) => {
   const expansionStates = usePropertyStore((state) => state.expansionStates);
   const setExpanded = usePropertyStore((state) => state.setExpanded);
 
@@ -29,8 +30,8 @@ export const ExpandButton = ({ path }: Props) => {
     <IconButton
       size="small"
       onClick={onClick}
-      disabled={path === undefined}
-      sx={{ visibility: path === undefined ? "hidden" : undefined }}
+      disabled={path === undefined || hidden}
+      sx={{ visibility: path === undefined || hidden ? "hidden" : undefined }}
     >
       {expanded ? <KeyboardArrowDownIcon fontSize="small" /> : null}
       {!expanded ? <KeyboardArrowRightIcon fontSize="small" /> : null}

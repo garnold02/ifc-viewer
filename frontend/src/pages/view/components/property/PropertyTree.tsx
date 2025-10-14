@@ -56,7 +56,12 @@ export const PropertyTree = ({ elementId, onlyAttributes }: Props) => {
         <Table>
           <TableBody>
             {children.map((child, i) => (
-              <Property key={i} property={child} level={0} path={child.name} />
+              <Property
+                key={i}
+                property={child}
+                level={0}
+                path={`${child.name}.${i}`}
+              />
             ))}
           </TableBody>
         </Table>
