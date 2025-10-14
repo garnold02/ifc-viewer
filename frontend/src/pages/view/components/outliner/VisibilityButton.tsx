@@ -3,16 +3,16 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import type { IfcElement } from "../../../../types/ifc";
 import {
   createDefaultOutlinerNodeState,
   useIfcStore,
 } from "../../../../stores/ifc/store";
 import { produce } from "immer";
+import type { Element } from "../../../../api/types/file/element";
 
 type Props = {
   variant: "self" | "children";
-  element: IfcElement;
+  element: Element;
 };
 
 export const VisibilityButton = ({ variant, element }: Props) => {

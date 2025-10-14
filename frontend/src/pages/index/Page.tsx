@@ -1,14 +1,14 @@
 import { Container, Stack } from "@mui/material";
-import { useGetIfcSummaries } from "../../api/queries/ifcSummaries";
+import { useGetSummaries } from "../../api/hooks/summaries";
 import { SummaryCard } from "./components/SummaryCard";
 import { PreviewDialog } from "./components/PreviewDialog";
 import { useState } from "react";
-import type { IfcSummary } from "../../types/ifc";
 import { AppBar } from "./components/AppBar";
+import type { FileSummary } from "../../api/types/file/summary";
 
 export const Page = () => {
-  const { data: summaries } = useGetIfcSummaries();
-  const [selected, setSelected] = useState<IfcSummary | null>(null);
+  const { data: summaries } = useGetSummaries();
+  const [selected, setSelected] = useState<FileSummary | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
 
   if (summaries === undefined) {

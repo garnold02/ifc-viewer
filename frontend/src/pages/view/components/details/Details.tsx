@@ -1,7 +1,6 @@
 import { Dialog, DialogContent, DialogTitle, Stack } from "@mui/material";
 import { useIfcStore } from "../../../../stores/ifc/store";
 import { useTranslation } from "react-i18next";
-import { Attributes } from "../attributes/Attributes";
 import { ElementReference } from "../ElementReference";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { Fragment } from "react/jsx-runtime";
@@ -29,13 +28,14 @@ export const Details = () => {
               </Fragment>
             ))}
           </Stack>
-          {elementStack.length > 0 ? (
-            <Attributes
-              key={elementStack[elementStack.length - 1]}
-              id={elementStack[elementStack.length - 1]}
-              defaultExpanded
-            />
-          ) : null}
+          {elementStack.length > 0
+            ? // <Attributes
+              //   key={elementStack[elementStack.length - 1]}
+              //   id={elementStack[elementStack.length - 1]}
+              //   defaultExpanded
+              // />
+              null
+            : null}
         </Stack>
       </DialogContent>
     </Dialog>

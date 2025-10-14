@@ -1,16 +1,16 @@
 import { IconButton } from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import type { IfcElement } from "../../../../types/ifc";
 import { useCallback, useMemo } from "react";
 import {
   createDefaultOutlinerNodeState,
   useIfcStore,
 } from "../../../../stores/ifc/store";
 import { produce } from "immer";
+import type { Element } from "../../../../api/types/file/element";
 
 type Props = {
-  element: IfcElement;
+  element: Element;
 };
 
 export const ExpandButton = ({ element }: Props) => {

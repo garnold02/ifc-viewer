@@ -1,17 +1,17 @@
 import { create, useStore, type StoreApi } from "zustand";
-import type { IfcElement } from "../../types/ifc";
 import { createContext, useContext } from "react";
 import { produce } from "immer";
 import { defaultVisibilityOf } from "../../utils/visibility";
 import { Matrix4 } from "three";
+import type { Element } from "../../api/types/file/element";
 
 export type IfcState = {
   fileId: number;
-  elements: Record<number, IfcElement>;
-  selectedElement: IfcElement | null;
-  setSelectedElement: (value: IfcElement | null) => void;
+  elements: Record<number, Element>;
+  selectedElement: Element | null;
+  setSelectedElement: (value: Element | null) => void;
   outlinerNodeStates: Record<number, OutlinerNodeState>;
-  setOutlinerNodeState: (element: IfcElement, state: OutlinerNodeState) => void;
+  setOutlinerNodeState: (element: Element, state: OutlinerNodeState) => void;
   tool: {
     current: ToolName | null;
     setCurrent: (value: ToolName | null) => void;
@@ -41,7 +41,7 @@ export type ToolName = "select" | "clip";
 
 export const createIfcStore = (
   fileId: number,
-  elements: Record<number, IfcElement>
+  elements: Record<number, Element>
 ) =>
   create<IfcState>((set) => ({
     fileId,
@@ -115,7 +115,7 @@ export const createIfcStore = (
   }));
 
 export const createDefaultOutlinerNodeState = (
-  element: IfcElement
+  element: Element
 ): OutlinerNodeState => ({
   expanded: false,
   selfVisible: defaultVisibilityOf(element.type),

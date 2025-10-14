@@ -277,21 +277,43 @@ class IfcElement:
         name: str = value.Name
         properties: list[dict] = []
 
-        if value.is_a("IfcPreDefinedPropertySet"):
-            # TODO: handle `IfcPreDefinedPropertySet`
-            raise Exception()
+        if value.is_a("IfcDoorLiningProperties"):
+            # TODO: handle `IfcDoorLiningProperties`
+            # raise Exception()
+            pass
 
-        # property sets only have this one type
+        elif value.is_a("IfcDoorPanelProperties"):
+            # TODO: handle `IfcDoorPanelProperties`
+            # raise Exception()
+            pass
+        
+        elif value.is_a("IfcPermeableCoveringProperties"):
+            # TODO: handle `IfcPermeableCoveringProperties`
+            # raise Exception()
+            pass
+        
+        elif value.is_a("IfcReinforcementDefinitionProperties"):
+            # TODO: handle `IfcReinforcementDefinitionProperties`
+            # raise Exception()
+            pass
+        
+        elif value.is_a("IfcWindowLiningProperties"):
+            # TODO: handle `IfcWindowLiningProperties`
+            # raise Exception()
+            pass
+        
+        elif value.is_a("IfcWindowPanelProperties"):
+            # TODO: handle `IfcWindowPanelProperties`
+            # raise Exception()
+            pass
+
         elif value.is_a("IfcPropertySet"):
             for property in value.HasProperties:
                 # `property` is an `IfcProperty`
                 properties.append(self._transform_property(property))
 
-        # quantity sets (`IfcQuantitySet`) *can* have multiple subtypes, handle them here
-        # even though as of IFC4, the only subtype is `IfcElementQuantity`
         elif value.is_a("IfcElementQuantity"):
             for quantity in value.Quantities:
-                # `quantity` is an `IfcPhysicalQuantity`
                 properties.append(self._transform_quantity(quantity))
         
         else:

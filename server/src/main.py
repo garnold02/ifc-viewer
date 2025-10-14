@@ -75,8 +75,18 @@ def get_ifc_file_preview(file_id: int):
     return Response(content=content, media_type="application/octet-stream")
 
 
+@app.get("/api/file/{file_id}/units")
+def get_ifc_file_units(file_id: int):
+    file = repo.get_file(file_id)
+
+    if file == None:
+        raise HTTPException(status_code=404)
+    
+    return file.get_global_units()
+
+
 @app.get("/api/file/{file_id}/element/{element_id}/signature")
-def get_ifc_file_element_property_tree(file_id: int, element_id: int):
+def get_ifc_file_element_signature(file_id: int, element_id: int):
     file = repo.get_file(file_id)
 
     if file == None:

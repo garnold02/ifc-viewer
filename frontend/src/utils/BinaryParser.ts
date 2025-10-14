@@ -1,5 +1,9 @@
 import { Color, Matrix4 } from "three";
-import type { IfcGeometry, IfcMesh, IfcElement } from "../types/ifc";
+import type {
+  Element,
+  ElementGeometry,
+  ElementGeometryMesh,
+} from "../api/types/file/element";
 
 export class BinaryParser {
   #arrayBuffer: ArrayBuffer;
@@ -82,7 +86,7 @@ export class BinaryParser {
     return Array.from(Array(length).keys()).map((_) => getElement());
   }
 
-  getIfcMesh(): IfcMesh {
+  getElementGeometryMesh(): ElementGeometryMesh {
     const color = this.getColor();
     const opacity = this.getFloat32();
     const numCoords = this.getUint32();
@@ -103,32 +107,34 @@ export class BinaryParser {
     };
   }
 
-  getIfcGeometry(): IfcGeometry {
+  getElementGeometry(): ElementGeometry {
     return {
       matrix: this.getMatrix4(),
-      meshes: this.getArray(this.getUint32(), () => this.getIfcMesh()),
+      meshes: this.getArray(this.getUint32(), () =>
+        this.getElementGeometryMesh()
+      ),
     };
   }
 
-  getIfcGeometryOrNull(): IfcGeometry | null {
-    return this.getUint8() === 1 ? this.getIfcGeometry() : null;
+  getElementGeometryOrNull(): ElementGeometry | null {
+    return this.getUint8() === 1 ? this.getElementGeometry() : null;
   }
 
-  getIfcElement(): IfcElement {
+  getElement(): Element {
     return {
       id: this.getUint32(),
       type: this.getString(),
       name: this.getStringOrNull(),
-      geometry: this.getIfcGeometryOrNull(),
+      geometry: this.getElementGeometryOrNull(),
       parent_id: this.getUint32OrNull(),
       child_ids: this.getArray(this.getUint32(), () => this.getUint32()),
     };
   }
 
-  getIfcElements(): Record<number, IfcElement> {
-    const nodes: Record<number, IfcElement> = {};
+  getElements(): Record<number, Element> {
+    const nodes: Record<number, Element> = {};
     while (this.#offset < this.#arrayBuffer.byteLength) {
-      const node = this.getIfcElement();
+      const node = this.getElement();
       nodes[node.id] = node;
     }
     return nodes;

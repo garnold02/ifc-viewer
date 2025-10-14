@@ -1,10 +1,10 @@
 import { useMemo, type PropsWithChildren } from "react";
 import { createIfcStore, IfcStoreContext } from "./store";
-import type { IfcElement } from "../../types/ifc";
+import type { Element } from "../../api/types/file/element";
 
 type Props = PropsWithChildren<{
   fileId: number;
-  elements: Record<number, IfcElement>;
+  elements: Record<number, Element>;
 }>;
 
 export const IfcStoreProvider = ({ fileId, elements, children }: Props) => {

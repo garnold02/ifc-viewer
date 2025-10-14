@@ -5,19 +5,19 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import type { IfcSummary } from "../../../types/ifc";
 import { IfcCanvas } from "../../../components/IfcCanvas";
 import { useTranslation } from "react-i18next";
-import { useGetIfcPreview } from "../../../api/queries/ifcPreview";
+import { useGetFilePreview } from "../../../api/hooks/file/preview";
 import { IfcSceneLight } from "../../../components/IfcSceneLight";
 import { IfcTransformGroup } from "../../../components/IfcTransformGroup";
 import { IfcSceneCamera } from "../../../components/IfcSceneCamera";
 import { ButtonLink } from "../../../components/ButtonLink";
 import { PreviewGeometry } from "./PreviewGeometry";
+import type { FileSummary } from "../../../api/types/file/summary";
 
 type Props = {
   open: boolean;
-  summary: IfcSummary;
+  summary: FileSummary;
   onClose: () => void;
 };
 
@@ -26,7 +26,7 @@ export const PreviewDialog = ({ open, summary, onClose }: Props) => {
     keyPrefix: "pages.index.components.PreviewDialog",
   });
 
-  const { data: geometries } = useGetIfcPreview(summary.id);
+  const { data: geometries } = useGetFilePreview(summary.id);
 
   return (
     <Dialog open={open} fullScreen>

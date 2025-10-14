@@ -1,0 +1,15 @@
+import { useQuery } from "@tanstack/react-query";
+import { API_BASE_URL } from "../../constants";
+import type { FileSummary } from "../../types/file/summary";
+
+export const useGetFileSummary = (fileId: number) =>
+  useQuery({
+    queryKey: ["api", "file", fileId, "summary"],
+    queryFn: async () => {
+      const response = await fetch(
+        `${API_BASE_URL}/api/file/${fileId}/summary`
+      );
+      const json = await response.json();
+      return json as FileSummary;
+    },
+  });

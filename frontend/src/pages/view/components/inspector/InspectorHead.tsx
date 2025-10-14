@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { PanelHead } from "../PanelHead";
-import { useGetIfcAttributes } from "../../../../api/queries/ifcAttributes";
+import { useGetIfcAttributes } from "../../../../api/hooks/ifcAttributes";
 import { useMemo } from "react";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import type { IfcElement } from "../../../../types/ifc";

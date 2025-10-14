@@ -1,4 +1,4 @@
-import { useGetIfcAttributes } from "../../../../api/queries/ifcAttributes";
+import { useGetIfcAttributes } from "../../../../api/hooks/ifcAttributes";
 import { useTranslation } from "react-i18next";
 import { useIfcStore } from "../../../../stores/ifc/store";
 import {
