@@ -17,8 +17,8 @@ import {
   Plane,
 } from "three";
 import { defaultVisibilityOf } from "../../../../utils/visibility";
-import type { IfcElement } from "../../../../types/ifc";
 import { getCameraMoving } from "../../../../global/camera";
+import type { Element } from "../../../../api/types/file/element";
 
 export const Scene = () => {
   const { gl, scene, raycaster } = useThree();
@@ -90,7 +90,7 @@ export const Scene = () => {
   useEffect(() => {
     meshes.forEach((mesh) => {
       let highlight = false;
-      let currentElement: IfcElement = mesh.userData["element"];
+      let currentElement: Element = mesh.userData["element"];
 
       while (true) {
         if (currentElement === selectedElement) {
@@ -119,7 +119,7 @@ export const Scene = () => {
     meshes.forEach((mesh) => {
       let visible = true;
 
-      let currentElement: IfcElement = mesh.userData["element"];
+      let currentElement: Element = mesh.userData["element"];
       let nodeState =
         currentElement.id in nodeStates
           ? nodeStates[currentElement.id]
@@ -191,7 +191,7 @@ export const Scene = () => {
       return;
     }
 
-    const element: IfcElement = object.userData["element"];
+    const element: Element = object.userData["element"];
     setSelectedElement(selectedElement === element ? null : element);
   }
 

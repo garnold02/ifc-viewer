@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import type { IfcElement } from "../../../../types/ifc";
 import { Box, Stack } from "@mui/material";
 import { ExpandButton } from "./ExpandButton";
 import { TypeLabel } from "./TypeLabel";
@@ -9,9 +8,10 @@ import {
   createDefaultOutlinerNodeState,
   useIfcStore,
 } from "../../../../stores/ifc/store";
+import type { Element as ElementType } from "../../../../api/types/file/element";
 
 type Props = {
-  element: IfcElement;
+  element: ElementType;
 };
 
 export const Element = ({ element }: Props) => {

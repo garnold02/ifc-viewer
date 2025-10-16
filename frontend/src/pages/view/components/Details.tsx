@@ -1,10 +1,19 @@
-import { Dialog, DialogContent, DialogTitle, Stack } from "@mui/material";
-import { useIfcStore } from "../../../../stores/ifc/store";
+import {
+  Box,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
+  Stack,
+} from "@mui/material";
+import { useIfcStore } from "../../../stores/ifc/store";
 import { useTranslation } from "react-i18next";
-import { Attributes } from "../attributes/Attributes";
-import { ElementReference } from "../ElementReference";
+import { ElementReference } from "./ElementReference";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { Fragment } from "react/jsx-runtime";
+import { PropertyTree } from "./property/PropertyTree";
+import CloseIcon from "@mui/icons-material/Close";
 
 export const Details = () => {
   const { t } = useTranslation(undefined, {
@@ -17,8 +26,20 @@ export const Details = () => {
   );
 
   return (
-    <Dialog open={elementStack.length > 0} onClose={clearElementStack}>
-      <DialogTitle>{t("title")}</DialogTitle>
+    <Dialog
+      open={elementStack.length > 0}
+      onClose={clearElementStack}
+      fullScreen
+    >
+      <DialogTitle>
+        <Stack direction="row" alignItems="center">
+          {t("title")}
+          <Box flexGrow={1} />
+          <IconButton onClick={clearElementStack}>
+            <CloseIcon />
+          </IconButton>
+        </Stack>
+      </DialogTitle>
       <DialogContent dividers>
         <Stack gap={1}>
           <Stack direction="row" alignItems="center" flexWrap="wrap" rowGap={1}>
@@ -30,11 +51,13 @@ export const Details = () => {
             ))}
           </Stack>
           {elementStack.length > 0 ? (
-            <Attributes
-              key={elementStack[elementStack.length - 1]}
-              id={elementStack[elementStack.length - 1]}
-              defaultExpanded
-            />
+            <>
+              <Divider />
+              <PropertyTree
+                elementId={elementStack[elementStack.length - 1]}
+                onlyAttributes
+              />
+            </>
           ) : null}
         </Stack>
       </DialogContent>

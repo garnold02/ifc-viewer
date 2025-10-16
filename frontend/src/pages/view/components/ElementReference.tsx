@@ -1,8 +1,8 @@
 import { Chip, LinearProgress } from "@mui/material";
 import LinkIcon from "@mui/icons-material/Link";
 import { useIfcStore } from "../../../stores/ifc/store";
-import { useGetIfcAttributes } from "../../../api/queries/ifcAttributes";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
+import { useGetFileElementSignature } from "../../../api/hooks/file/element/signature";
 
 type Props = {
   id: number;
@@ -11,7 +11,7 @@ type Props = {
 
 export const ElementReference = ({ id, stackPosition }: Props) => {
   const fileId = useIfcStore((state) => state.fileId);
-  const { data: attributes } = useGetIfcAttributes(fileId, id);
+  const { data: signature } = useGetFileElementSignature(fileId, id);
 
   const pushDetailsElement = useIfcStore((state) => state.details.pushElement);
   const revertDetailsElementStack = useIfcStore(
@@ -24,39 +24,17 @@ export const ElementReference = ({ id, stackPosition }: Props) => {
     } else {
       pushDetailsElement(id);
     }
-  }, [stackPosition, revertDetailsElementStack, pushDetailsElement]);
+  }, [id, stackPosition, revertDetailsElementStack, pushDetailsElement]);
 
-  const type = useMemo(() => {
-    if (attributes === undefined) {
-      return null;
-    }
-
-    const attribute = attributes.find((attribute) => attribute.name === "type");
-
-    if (
-      attribute === undefined ||
-      attribute.value.type !== "value" ||
-      typeof attribute.value.value !== "string"
-    ) {
-      return null;
-    }
-
-    return attribute.value.value;
-  }, [attributes]);
-
-  if (attributes === undefined) {
+  if (signature === undefined) {
     return <LinearProgress />;
-  }
-
-  if (type === null) {
-    return null;
   }
 
   return (
     <Chip
       size="small"
       icon={<LinkIcon fontSize="small" />}
-      label={`${type}#${id}`}
+      label={`${signature.type}#${signature.id}`}
       onClick={onClick}
       sx={{ userSelect: "none" }}
     />

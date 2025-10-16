@@ -1,100 +1,1043 @@
-from binpacker import BinPacker
-from ifc_geometry import IfcGeometry
-from ifcopenshell import entity_instance as ifc_ent, file as ifc_file
+import ifcopenshell as ios
+from typing import Any, Tuple
+import unit_utils
+
+
+class IfcElementSignature:
+    type: str
+    id: int
+    name: str | None
+
+
+    def __init__(self, type: str, id: int, name: str | None):
+        self.type = type
+        self.id = id
+        self.name = name
 
 
 class IfcElement:
-    id: int
-    type: str
-    name: str | None
-    geometry: IfcGeometry | None
-    children: list["IfcElement"]
+    _entity: ios.entity_instance
+    _global_units: list[dict] | None
 
 
-    def __init__(self, ent: ifc_ent, file: ifc_file, geometries: dict[int, IfcGeometry]):
-        self.id = ent.id()
-        self.type = ent.is_a()
-        self.name = ent.Name
-
-        if self.id in geometries:
-            self.geometry = geometries[self.id]
-        else:
-            self.geometry = None
-        
-        self.children = []
-
-        for rel in file.by_type("IfcRelAggregates"):
-            if rel.RelatingObject != ent:
-                continue
-            
-            for child in rel.RelatedObjects:
-                self.children.append(IfcElement(child, file, geometries))
-        
-        for rel in file.by_type("IfcRelContainedInSpatialStructure"):
-            if rel.RelatingStructure != ent:
-                continue
-            
-            for child in rel.RelatedElements:
-                self.children.append(IfcElement(child, file, geometries))
+    def __init__(self, entity: ios.entity_instance, global_units: list[dict] | None = None):
+        self._entity = entity
+        self._global_units = global_units
     
 
-    def pack_elements(self) -> BinPacker:
-        packer = BinPacker()
-
-        def pack_node(node: IfcElement, parent: IfcElement | None):
-            packer.pack_uint32(node.id)
-            packer.pack_string(node.type)
-            packer.pack_string_or_none(node.name)
-            
-            if node.geometry != None:
-                packer.pack_bool(True)
-                packer.pack_nested(node.geometry.pack())
-            else:
-                packer.pack_bool(False)
-            
-            if parent == None:
-                packer.pack_bool(False)
-            else:
-                packer.pack_bool(True)
-                packer.pack_uint32(parent.id)
-            
-            packer.pack_uint32(len(node.children))
-
-            for child in node.children:
-                packer.pack_uint32(child.id)
-            
-            for child in node.children:
-                pack_node(child, node)
-
-        pack_node(self, None)
-        return packer
+    def set_global_units(self, global_units: list[dict] | None):
+        self._global_units = global_units
     
 
-    def pack_preview(self) -> BinPacker:
-        geometries: list[IfcGeometry] = []
+    def get_signature(self) -> IfcElementSignature:
+        name: str | None = None
 
-        def collect(node: IfcElement):
-            if node.geometry != None:
-                allow = node.type not in [
-                    "IfcFurnishingElement",
-                    "IfcFurniture",
-                    "IfcOpeningElement",
-                    "IfcSpace",
+        try:
+            name = self._entity.Name
+        except:
+            pass
+
+        if name != None and len(name) == 0:
+            name = None
+
+        return IfcElementSignature(
+            self._entity.is_a(),
+            self._entity.id(),
+            name,
+        )
+    
+
+    def _transform_value(self, key: str, value: Any) -> dict:
+        if value == None:
+            return {
+                "name": key,
+                "description": None,
+                "type": "leaf",
+                "semantics": "null",
+                "unit": None,
+                "value": None,
+            }
+
+        elif (
+            (isinstance(value, float) or isinstance(value, int))
+            and not isinstance(value, bool)
+        ):
+            return {
+                "name": key,
+                "description": None,
+                "type": "leaf",
+                "semantics": "number",
+                "unit": None,
+                "value": value,
+            }
+        
+        elif isinstance(value, str):
+            return {
+                "name": key,
+                "description": None,
+                "type": "leaf",
+                "semantics": "string",
+                "unit": None,
+                "value": value,
+            }
+        
+        elif isinstance(value, bool):
+            return {
+                "name": key,
+                "description": None,
+                "type": "leaf",
+                "semantics": "boolean",
+                "unit": None,
+                "value": value,
+            }
+        
+        elif isinstance(value, ios.entity_instance):
+            if value.is_entity():
+                return {
+                    "name": key,
+                    "description": None,
+                    "type": "leaf",
+                    "semantics": "element",
+                    "unit": None,
+                    "value": value.id(),
+                }
+            else:
+                return self._transform_value(key, value.wrappedValue)
+        
+        elif isinstance(value, tuple):
+            return {
+                "name": key,
+                "description": None,
+                "type": "node",
+                "children": [
+                    self._transform_value(f"{ordinal + 1}.", attr)
+                    for ordinal, attr
+                    in enumerate(value)
                 ]
-
-                if allow:
-                    geometries.append(node.geometry)
-            
-            for child in node.children:
-                collect(child)
-
-        collect(self)
-
-        packer = BinPacker()
-        packer.pack_uint32(len(geometries))
-
-        for geometry in geometries:
-            packer.pack_nested(geometry.pack())
-
-        return packer
+            }
+        
+        else:
+            # NOTE: this shouldn't happen
+            raise Exception()
     
+
+    def _transform_property(self, value: ios.entity_instance) -> dict:
+        name: str = value.Name
+        description: str = value.Description
+
+        if value.is_a("IfcComplexProperty"):
+            name: str = value.UsageName
+            children: list[ios.entity_instance] = []
+
+            for prop in value.HasProperties:
+                children.append(self._transform_property(prop))
+
+            return {
+                "name": name,
+                "description": description,
+                "type": "node",
+                "children": children,
+            }
+        
+        # handle subtypes of `IfcSimpleProperty`
+
+        elif value.is_a("IfcPropertyBoundedValue"):
+            lower = None
+            upper = None
+            point = None
+            measure: str | None = None
+
+            if value.LowerBoundValue != None:
+                lower = value.LowerBoundValue.wrappedValue
+                measure = value.LowerBoundValue.is_a()
+            
+            if value.UpperBoundValue != None:
+                upper = value.UpperBoundValue.wrappedValue
+                measure = value.UpperBoundValue.is_a()
+            
+            if value.SetPointValue != None:
+                point = value.SetPointValue.wrappedValue
+                measure = value.SetPointValueValue.is_a()
+            
+            unit = IfcElement(value.Unit, self._global_units).resolve_unit(measure)
+
+            return {
+                "name": name,
+                "description": description,
+                "type": "leaf",
+                "semantics": "bounded",
+                "measure": measure,
+                "unit": unit,
+                "lower": lower,
+                "upper": upper,
+                "point": point,
+            }
+        
+        elif value.is_a("IfcPropertyEnumeratedValue"):
+            unit: ios.entity_instance | None = None
+            measure: str | None = None
+            values: list = []
+
+            if value.EnumerationReference != None:
+                unit = value.EnumerationReference.Unit
+            
+            for e_val in value.EnumerationValues:
+                measure = e_val.is_a()
+                values.append(e_val.wrappedValue)
+            
+            resolved_unit = IfcElement(unit, self._global_units).resolve_unit(
+                measure,
+            )
+            
+            return {
+                "name": name,
+                "description": description,
+                "type": "node",
+                "children": [
+                    {
+                        "name": f"{i + 1}.",
+                        "description": None,
+                        "type": "leaf",
+                        "semantics": measure,
+                        "unit": resolved_unit,
+                        "value": e_val,
+                    }
+                    for i, e_val
+                    in enumerate(values)
+                ]
+            }
+        
+        elif value.is_a("IfcPropertyListValue"):
+            unit: ios.entity_instance | None = value.Unit
+            measure: str | None = None
+            values: list = []
+
+            for l_val in value.ListValues:
+                measure = l_val.is_a()
+                values.append(l_val.wrappedValue)
+            
+            resolved_unit = IfcElement(unit, self._global_units).resolve_unit(
+                measure,
+            )
+            
+            return {
+                "name": name,
+                "description": description,
+                "type": "node",
+                "children": [
+                    {
+                        "name": f"{i + 1}.",
+                        "description": None,
+                        "type": "leaf",
+                        "semantics": measure,
+                        "unit": resolved_unit,
+                        "value": l_val,
+                    }
+                    for i, l_val
+                    in enumerate(values)
+                ],
+            }
+        
+        elif value.is_a("IfcPropertyReferenceValue"):
+            return {
+                "name": name,
+                "description": description,
+                "type": "node",
+                "children": [
+                    {
+                        "name": "UsageName",
+                        "description": None,
+                        "type": "leaf",
+                        "semantics": "string" if value.UsageName != None else "null",
+                        "unit": None,
+                        "value": value.UsageName,
+                    },
+                    {
+                        "name": "PropertyReference",
+                        "description": None,
+                        "type": "leaf",
+                        "semantics": "element" if value.PropertyReference != None else "null",
+                        "unit": None,
+                        "value": value.PropertyReference.id() if value.PropertyReferencec != None else "null",
+                    },
+                ],
+            }
+        
+        elif value.is_a("IfcPropertySingleValue"):
+            wrapped = None
+
+            if value.NominalValue != None:
+                wrapped = value.NominalValue.wrappedValue
+            
+            transformed = self._transform_value(name, wrapped)
+            
+            if (
+                (isinstance(wrapped, int) or isinstance(wrapped, float))
+                and not isinstance(wrapped, bool)
+            ):
+                transformed["semantics"] = value.NominalValue.is_a()
+
+            transformed["description"] = description
+            transformed["unit"] = IfcElement(value.Unit, self._global_units).resolve_unit(
+                value.NominalValue.is_a(),
+            )
+
+            return transformed
+        
+        elif value.is_a("IfcPropertyTableValue"):
+            return {
+                "name": name,
+                "description": description,
+                "type": "leaf",
+                "semantics": "element",
+                "unit": None,
+                "value": value.id(),
+            }
+        
+        else:
+            # NOTE: this shouldn't happen
+            raise Exception()
+
+
+    def _transform_quantity(self, value: ios.entity_instance) -> dict:
+        name: str = value.Name
+        description: str = value.Description
+
+        if value.is_a("IfcPhysicalComplexQuantity"):
+            return {
+                "name": name,
+                "description": description,
+                "type": "node",
+                "children": [
+                    {
+                        "name": "Discrimination",
+                        "description": None,
+                        "type": "leaf",
+                        "semantics": "string",
+                        "unit": None,
+                        "value": value.Discrimination,
+                    },
+                    {
+                        "name": "Quality",
+                        "description": None,
+                        "type": "leaf",
+                        "semantics": "string" if value.Quality != None else "null",
+                        "unit": None,
+                        "value": value.Quality,
+                    },
+                    {
+                        "name": "Usage",
+                        "description": None,
+                        "type": "leaf",
+                        "semantics": "string" if value.Usage != None else "null",
+                        "unit": None,
+                        "value": value.Usage,
+                    },
+                    {
+                        "name": "HasQuantities",
+                        "description": None,
+                        "type": "node",
+                        "children": [
+                            self._transform_quantity(q)
+                            for q in value.HasQuantities
+                        ],
+                    },
+                ],
+            }
+        
+        # handle subtypes of `IfcPhysicalSimpleQuantity`
+        
+        elif value.is_a("IfcQuantityArea"):
+            unit = IfcElement(value.Unit, self._global_units).resolve_unit(
+                "IfcAreaMeasure",
+            )
+            
+            return {
+                "name": name,
+                "description": description,
+                "type": "leaf",
+                "semantics": "IfcAreaMeasure",
+                "unit": unit,
+                "value": value.AreaValue,
+            }
+        
+        elif value.is_a("IfcQuantityCount"):
+            unit = IfcElement(value.Unit, self._global_units).resolve_unit(
+                "IfcCountMeasure",
+            )
+            
+            return {
+                "name": name,
+                "description": description,
+                "type": "leaf",
+                "semantics": "IfcCountMeasure",
+                "unit": unit,
+                "value": value.CountValue
+            }
+        
+        elif value.is_a("IfcQuantityLength"):
+            unit = IfcElement(value.Unit, self._global_units).resolve_unit(
+                "IfcLengthMeasure",
+            )
+            
+            return {
+                "name": name,
+                "description": description,
+                "type": "leaf",
+                "semantics": "IfcLengthMeasure",
+                "unit": unit,
+                "value": value.LengthValue
+            }
+        
+        elif value.is_a("IfcQuantityTime"):
+            unit = IfcElement(value.Unit, self._global_units).resolve_unit(
+                "IfcTimeMeasure",
+            )
+            
+            return {
+                "name": name,
+                "description": description,
+                "type": "leaf",
+                "meaning": "IfcTimeMeasure",
+                "unit": unit,
+                "value": value.TimeValue
+            }
+        
+        elif value.is_a("IfcQuantityVolume"):
+            unit = IfcElement(value.Unit, self._global_units).resolve_unit(
+                "IfcVolumeMeasure",
+            )
+            
+            return {
+                "name": name,
+                "description": description,
+                "type": "leaf",
+                "semantics": "IfcVolumeMeasure",
+                "unit": unit,
+                "value": value.VolumeValue
+            }
+        
+        elif value.is_a("IfcQuantityWeight"):
+            unit = IfcElement(value.Unit, self._global_units).resolve_unit(
+                "IfcWeightMeasure",
+            )
+            
+            return {
+                "name": name,
+                "description": description,
+                "type": "leaf",
+                "semantics": "IfcWeightMeasure",
+                "unit": unit,
+                "value": value.WeightValue
+            }
+        
+        else:
+            # NOTE: this shouldn't happen
+            raise Exception()
+    
+
+    def _transform_builtin_property(
+        self,
+        value: ios.entity_instance,
+        name: str,
+        semantics: str,
+        measure: str | None,
+    ) -> dict:
+        resolved_value = getattr(value, name, None)
+        unit: str | None = None
+
+        if measure != None and resolved_value != None:
+            unit = IfcElement(None, self._global_units).resolve_unit(measure)
+
+        return {
+            "name": name,
+            "description": None,
+            "type": "leaf",
+            "semantics": semantics if resolved_value != None else "null",
+            "unit": unit,
+            "value": resolved_value,
+        }
+    
+
+    def _transform_property_set(self, value: ios.entity_instance) -> dict:
+        name: str = value.Name
+        properties: list[dict] = []
+
+        if value.is_a("IfcDoorLiningProperties"):
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningDepth",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningThickness",
+                "IfcNonNegativeLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "ThresholdDepth",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "ThresholdThickness",
+                "IfcNonNegativeLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "TransomOffset",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningOffset",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "ThresholdOffset",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "CasingThickness",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "CasingDepth",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningToPanelOffsetX",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningToPanelOffsetY",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+        elif value.is_a("IfcDoorPanelProperties"):
+            properties.append(self._transform_builtin_property(
+                value,
+                "PanelDepth",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "PanelOperation",
+                "string",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "PanelWidth",
+                "IfcNormalisedRatioMeasure",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "PanelPosition",
+                "string",
+                None,
+            ))
+        
+        elif value.is_a("IfcPermeableCoveringProperties"):
+            properties.append(self._transform_builtin_property(
+                value,
+                "OperationType",
+                "string",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "PanelPosition",
+                "string",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "FrameDepth",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "FrameThickness",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_value(
+                "ShapeAspectStyle",
+                value.ShapeAspectStyle,
+            ))
+        
+        elif value.is_a("IfcReinforcementDefinitionProperties"):
+            properties.append(self._transform_builtin_property(
+                value,
+                "DefinitionType",
+                "string",
+                None,
+            ))
+
+            properties.append({
+                "name": "ReinforcementSectionDefinitions",
+                "description": None,
+                "type": "node",
+                "children": [
+                    {
+                        "name": f"{i + 1}.",
+                        "description": None,
+                        "type": "node",
+                        "children": [
+                            self._transform_builtin_property(
+                                inner,
+                                "LongitudinalStartPosition",
+                                "IfcLengthMeasure",
+                                "IfcLengthMeasure",
+                            ),
+                            self._transform_builtin_property(
+                                inner,
+                                "LongitudinalEndPosition",
+                                "IfcLengthMeasure",
+                                "IfcLengthMeasure",
+                            ),
+                            self._transform_builtin_property(
+                                inner,
+                                "TransversePosition",
+                                "IfcLengthMeasure",
+                                "IfcLengthMeasure",
+                            ),
+                            self._transform_builtin_property(
+                                inner,
+                                "ReinforcementRole",
+                                "string",
+                                None,
+                            ),
+                            {
+                                "name": "SectionDefinition",
+                                "description": None,
+                                "type": "node",
+                                "children": [
+                                    self._transform_builtin_property(
+                                        inner.SectionDefinition,
+                                        "SectionType",
+                                        "string",
+                                        None,
+                                    ),
+                                    {
+                                        "name": "StartProfile",
+                                        "description": None,
+                                        "type": "node",
+                                        "children": [
+                                            self._transform_builtin_property(
+                                                inner.SectionDefinition.StartProfile,
+                                                "ProfileType",
+                                                "string",
+                                                None,
+                                            ),
+                                            self._transform_builtin_property(
+                                                inner.SectionDefinition.StartProfile,
+                                                "ProfileName",
+                                                "string",
+                                                None,
+                                            ),
+                                        ],
+                                    },
+                                    {
+                                        "name": "EndProfile",
+                                        "description": None,
+                                        "type": "node",
+                                        "children": [
+                                            self._transform_builtin_property(
+                                                inner.SectionDefinition.EndProfile,
+                                                "ProfileType",
+                                                "string",
+                                                None,
+                                            ),
+                                            self._transform_builtin_property(
+                                                inner.SectionDefinition.EndProfile,
+                                                "ProfileName",
+                                                "string",
+                                                None,
+                                            ),
+                                        ],
+                                    }
+                                ],
+                            },
+                            {
+                                "name": "CrossSectionReinforcementDefinitions",
+                                "description": None,
+                                "type": "node",
+                                "children": [
+                                    {
+                                        "name": f"{j + 1}.",
+                                        "description": None,
+                                        "type": "node",
+                                        "children": [
+                                            self._transform_builtin_property(
+                                                inner2,
+                                                "TotalCrossSectionArea",
+                                                "IfcAreaMeasure",
+                                                "IfcAreaMeasure",
+                                            ),
+                                            self._transform_builtin_property(
+                                                inner2,
+                                                "SteelGrade",
+                                                "string",
+                                                None,
+                                            ),
+                                            self._transform_builtin_property(
+                                                inner2,
+                                                "BarSurface",
+                                                "string",
+                                                None,
+                                            ),
+                                            self._transform_builtin_property(
+                                                inner2,
+                                                "EffectiveDepth",
+                                                "IfcLengthMeasure",
+                                                "IfcLengthMeasure",
+                                            ),
+                                            self._transform_builtin_property(
+                                                inner2,
+                                                "NominalBarDiameter",
+                                                "IfcPositiveLengthMeasure",
+                                                "IfcLengthMeasure",
+                                            ),
+                                            self._transform_builtin_property(
+                                                inner2,
+                                                "BarCount",
+                                                "IfcCountMeasure",
+                                                None,
+                                            ),
+                                        ],
+                                    }
+                                    for j, inner2
+                                    in enumerate(inner.CrossSectionReinforcementDefinitions)
+                                ],
+                            },
+                        ],
+                    }
+                    for i, inner
+                    in enumerate(value.ReinforcementSectionDefinitions)
+                ],
+            })
+        
+        elif value.is_a("IfcWindowLiningProperties"):
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningThickness",
+                "IfcNonNegativeLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "TransomThickness",
+                "IfcNonNegativeLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "MullionThickness",
+                "IfcNonNegativeLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "FirstTransomOffset",
+                "IfcNormalisedRatioMeasure",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "SecondTransomOffset",
+                "IfcNormalisedRatioMeasure",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "FirstMullionOffset",
+                "IfcNormalisedRatioMeasure",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "SecondMullionOffset",
+                "IfcNormalisedRatioMeasure",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningOffset",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningToPanelOffsetX",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "LiningToPanelOffsetY",
+                "IfcLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+        
+        elif value.is_a("IfcWindowPanelProperties"):
+            properties.append(self._transform_builtin_property(
+                value,
+                "OperationType",
+                "string",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "PanelPosition",
+                "string",
+                None,
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "FrameDepth",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+            properties.append(self._transform_builtin_property(
+                value,
+                "FrameThickness",
+                "IfcPositiveLengthMeasure",
+                "IfcLengthMeasure",
+            ))
+
+        elif value.is_a("IfcPropertySet"):
+            for property in value.HasProperties:
+                # `property` is an `IfcProperty`
+                properties.append(self._transform_property(property))
+
+        elif value.is_a("IfcElementQuantity"):
+            for quantity in value.Quantities:
+                properties.append(self._transform_quantity(quantity))
+        
+        else:
+            # NOTE: this shouldn't happen
+            raise Exception()
+        
+        return {
+            "name": name,
+            "description": None,
+            "type": "node",
+            "children": properties,
+        }
+
+
+    def get_property_tree(self) -> dict:
+        # first, collect the element's regular attributes
+
+        attrs: list[dict] = []
+
+        for key, value in self._entity.get_info().items():
+            if key == "type" or key == "id":
+                continue
+            
+            attrs.append(self._transform_value(key, value))
+        
+        children: list[dict] = [{
+            "name": "__attributes__",
+            "description": None,
+            "type": "node",
+            "children": attrs,
+        }]
+
+        # then, look for property sets attached to the element's object type(s)
+
+        pset_entities: list[ios.entity_instance] = []
+
+        for rel in self._entity.file.by_type("IfcRelDefinesByType"):
+            if self._entity in rel.RelatedObjects:
+                type_entity: ios.entity_instance = rel.RelatingType
+                psets = type_entity.HasPropertySets
+                if psets != None:
+                    for pset in psets:
+                        if (
+                            isinstance(pset, ios.entity_instance)
+                            and pset.is_a("IfcPropertySetDefinition")
+                        ):
+                            pset_entities.append(pset)
+                        
+                        elif isinstance(pset, tuple) or isinstance(pset, list):
+                            for pset2 in pset:
+                                pset_entities.append(pset2)
+                        
+                        else:
+                            # NOTE: this shouldn't happen
+                            raise Exception()
+
+        
+        # finally, discover all the property/quantity sets directly relating to this element
+
+        for rel in self._entity.file.by_type("IfcRelDefinesByProperties"):
+            if self._entity in rel.RelatedObjects:
+                pset = rel.RelatingPropertyDefinition   
+
+                if (
+                    isinstance(pset, ios.entity_instance)
+                    and pset.is_a("IfcPropertySetDefinition")
+                ):
+                    pset_entities.append(pset)
+                
+                elif isinstance(pset, tuple) or isinstance(pset, list):
+                    for pset2 in pset:
+                        pset_entities.append(pset2)
+                
+                else:
+                    # NOTE: this shouldn't happen
+                    raise Exception()
+        
+        # transform the collected property/quantity sets
+
+        for pset in pset_entities:
+            children.append(self._transform_property_set(pset))
+        
+        return {
+            "name": "root",
+            "description": None,
+            "type": "node",
+            "children": children,
+        }
+    
+
+    def transform_unit(self) -> dict:
+        if self._entity.is_a("IfcDerivedUnit"):
+            pairs: list[Tuple[str, int]] = []
+
+            for element in self._entity.Elements:
+                unit = IfcElement(element.Unit, self._global_units).transform_unit()
+                unit_name: str = unit["name"]
+                exponent: int = element.Exponent
+
+                # workaround for a *very* strange design decision at buildingSMART
+                match unit_name:
+                    case "m²":
+                        unit_name = "m"
+                        exponent *= 2
+
+                    case "m³":
+                        unit_name = "m"
+                        exponent *= 3
+
+                    case _:
+                        pass
+                
+                if exponent != 0:
+                    pairs.append((unit_name, exponent))
+
+            pairs.sort(key=lambda x: (-x[1], x[0]))                        
+            name = "⋅".join([
+                pair[0] if pair[1] == 1 else f"{pair[0]}{unit_utils.exponent_shorthand(pair[1])}"
+                for pair in pairs
+            ])
+            
+            return {
+                "measure": self._entity.UnitType,
+                "name": name,
+            }
+        
+        elif self._entity.is_a("IfcContextDependentUnit"):
+            return {
+                "measure": self._entity.UnitType,
+                "name": unit_utils.misc_unit_name(self._entity.Name),
+            }
+        
+        elif self._entity.is_a("IfcConversionBasedUnit"):
+            return {
+                "measure": self._entity.UnitType,
+                "name": unit_utils.misc_unit_name(self._entity.Name),
+            }
+        
+        elif self._entity.is_a("IfcSIUnit"):
+            name = ""
+
+            if self._entity.Prefix != None:
+                name += unit_utils.si_prefix_shorthand(self._entity.Prefix)
+
+            name += unit_utils.si_unit_shorthand(self._entity.Name)
+            
+            return {
+                "measure": self._entity.UnitType,
+                "name": name,
+            }
+        
+        elif self._entity.is_a("IfcMonetaryUnit"):
+            return {
+                "measure": "MONEYUNIT",
+                "name": self._entity.Currency
+            }
+        
+        else:
+            # NOTE: This shouldn't happen
+            raise Exception()
+    
+
+    def resolve_unit(self, measure: str | None) -> str | None:
+        if self._entity != None:
+            return self.transform_unit()["name"]
+
+        if self._global_units == None or measure == None:
+            return None
+        
+        resolved_unit = unit_utils.get_unit_from_measure(
+            measure,
+            self._global_units,
+        )
+
+        if resolved_unit == None:
+            return None
+        
+        return resolved_unit["name"]

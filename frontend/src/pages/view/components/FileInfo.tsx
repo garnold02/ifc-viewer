@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Panel } from "./Panel";
 import { PanelHead } from "./PanelHead";
 import { PanelBody } from "./PanelBody";
-import { useGetIfcSummary } from "../../../api/queries/ifcSummary";
+import { useGetFileSummary } from "../../../api/hooks/file/summary";
 import {
   LinearProgress,
   Table,
@@ -20,7 +20,7 @@ export const FileInfo = () => {
   });
 
   const fileId = useIfcStore((state) => state.fileId);
-  const { data: summary } = useGetIfcSummary(fileId);
+  const { data: summary } = useGetFileSummary(fileId);
 
   return (
     <Panel>

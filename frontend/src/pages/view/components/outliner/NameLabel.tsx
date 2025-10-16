@@ -1,8 +1,8 @@
 import { Typography } from "@mui/material";
-import type { IfcElement } from "../../../../types/ifc";
+import type { Element } from "../../../../api/types/file/element";
 
 type Props = {
-  element: IfcElement;
+  element: Element;
 };
 
 export const NameLabel = ({ element }: Props) => {

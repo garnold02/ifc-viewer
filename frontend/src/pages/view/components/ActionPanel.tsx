@@ -11,7 +11,7 @@ export const ActionPanel = () => {
     case null:
     case "select":
       if (selectedElement !== null) {
-        return <Inspector element={selectedElement} />;
+        return <Inspector elementId={selectedElement.id} />;
       } else {
         return <FileInfo />;
       }

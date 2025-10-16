@@ -1,37 +1,18 @@
-import { Attributes } from "../attributes/Attributes";
-import { useGetIfcPropertySets } from "../../../../api/queries/ifcPropertySets";
-import { PropertySet } from "./PropertySet";
 import { Panel } from "../Panel";
 import { PanelBody } from "../PanelBody";
-import { LinearProgress } from "@mui/material";
+import { PropertyTree } from "../property/PropertyTree";
 import { InspectorHead } from "./InspectorHead";
-import type { IfcElement } from "../../../../types/ifc";
-import { useIfcStore } from "../../../../stores/ifc/store";
 
 type Props = {
-  element: IfcElement;
+  elementId: number;
 };
 
-export const Inspector = ({ element }: Props) => {
-  const fileId = useIfcStore((state) => state.fileId);
-  const { data: propertySets } = useGetIfcPropertySets(fileId, element.id);
-
+export const Inspector = ({ elementId }: Props) => {
   return (
     <Panel>
-      <InspectorHead element={element} />
+      <InspectorHead elementId={elementId} />
       <PanelBody>
-        <Attributes key="attributes" id={element.id} />
-        {propertySets !== undefined ? (
-          propertySets.map((propertySet, i) => (
-            <PropertySet
-              key={`${propertySet.name}-${i}`}
-              propertySet={propertySet}
-              ordinal={i + 1}
-            />
-          ))
-        ) : (
-          <LinearProgress />
-        )}
+        <PropertyTree elementId={elementId} />
       </PanelBody>
     </Panel>
   );

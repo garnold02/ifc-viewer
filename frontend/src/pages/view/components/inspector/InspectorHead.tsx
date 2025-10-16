@@ -1,85 +1,55 @@
 import { useTranslation } from "react-i18next";
 import { PanelHead } from "../PanelHead";
-import { useGetIfcAttributes } from "../../../../api/queries/ifcAttributes";
-import { useMemo } from "react";
-import { Box, IconButton, Tooltip, Typography } from "@mui/material";
-import type { IfcElement } from "../../../../types/ifc";
+import {
+  Box,
+  IconButton,
+  LinearProgress,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useIfcStore } from "../../../../stores/ifc/store";
+import { useGetFileElementSignature } from "../../../../api/hooks/file/element/signature";
 import MenuIcon from "@mui/icons-material/Menu";
 
 type Props = {
-  element: IfcElement;
+  elementId: number;
 };
 
-export const InspectorHead = ({ element }: Props) => {
+export const InspectorHead = ({ elementId }: Props) => {
   const { t } = useTranslation(undefined, {
     keyPrefix: "pages.view.components.inspector.InspectorHead",
   });
 
   const fileId = useIfcStore((state) => state.fileId);
-  const { data: attributes } = useGetIfcAttributes(fileId, element.id);
+  const { data: signature } = useGetFileElementSignature(fileId, elementId);
   const pushDetailsElement = useIfcStore((state) => state.details.pushElement);
-
-  const elementTypeAttribute = useMemo(() => {
-    if (attributes === undefined) {
-      return null;
-    }
-
-    const value = attributes.find(
-      (attribute) => attribute.name === "type"
-    )?.value;
-
-    if (
-      value === undefined ||
-      value.type !== "value" ||
-      typeof value.value !== "string"
-    ) {
-      return null;
-    }
-
-    return value.value;
-  }, [attributes]);
-
-  const elementNameAttribute = useMemo(() => {
-    if (attributes === undefined) {
-      return null;
-    }
-
-    const value = attributes.find(
-      (attribute) => attribute.name === "Name"
-    )?.value;
-
-    if (
-      value === undefined ||
-      value.type !== "value" ||
-      typeof value.value !== "string" ||
-      value.value.length === 0
-    ) {
-      return null;
-    }
-
-    return value.value;
-  }, [attributes]);
 
   return (
     <PanelHead title={t("title")}>
-      {elementTypeAttribute !== null ? (
-        <Typography
-          variant="caption"
-          color="textSecondary"
-          sx={{ userSelect: "none" }}
-          noWrap
-        >
-          {elementTypeAttribute}#{element.id}
-          {elementNameAttribute !== null ? ` - ${elementNameAttribute}` : null}
-        </Typography>
-      ) : null}
-      <Box flexGrow={1} />
-      <Tooltip title={t("details")}>
-        <IconButton size="small" onClick={() => pushDetailsElement(element.id)}>
-          <MenuIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
+      {signature !== undefined ? (
+        <>
+          <Typography
+            variant="caption"
+            color="textSecondary"
+            sx={{ userSelect: "none" }}
+            noWrap
+          >
+            {signature.type}#{signature.id}
+            {signature.name !== null ? ` - ${signature.name}` : null}
+          </Typography>
+          <Box flexGrow={1} />
+          <Tooltip title={t("details")}>
+            <IconButton
+              size="small"
+              onClick={() => pushDetailsElement(elementId)}
+            >
+              <MenuIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </>
+      ) : (
+        <LinearProgress sx={{ flexGrow: 1, marginRight: 1 }} />
+      )}
     </PanelHead>
   );
 };

@@ -5,12 +5,12 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
-import type { IfcSummary } from "../../../types/ifc";
 import { useTranslation } from "react-i18next";
 import { ButtonLink } from "../../../components/ButtonLink";
+import type { FileSummary } from "../../../api/types/file/summary";
 
 type Props = {
-  summary: IfcSummary;
+  summary: FileSummary;
   onPreviewClick: () => void;
 };
 

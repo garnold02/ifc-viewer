@@ -1,7 +1,7 @@
-import type { IfcGeometry } from "../../../types/ifc";
+import type { ElementGeometry } from "../../../api/types/file/element";
 
 type Props = {
-  geometry: IfcGeometry;
+  geometry: ElementGeometry;
 };
 
 export const PreviewGeometry = ({ geometry }: Props) => {
