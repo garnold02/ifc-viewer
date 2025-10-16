@@ -114,6 +114,7 @@ type PropertyBase = {
 
 type LeafPropertyValue =
   | LeafPropertyValueBoolean
+  | LeafPropertyValueBounded
   | LeafPropertyValueElement
   | LeafPropertyValueMeasure
   | LeafPropertyValueNull
@@ -123,6 +124,14 @@ type LeafPropertyValue =
 type LeafPropertyValueBoolean = {
   semantics: "boolean";
   value: boolean;
+};
+
+type LeafPropertyValueBounded = {
+  semantics: "bounded";
+  measure: MeasureType;
+  lower: boolean | null | number | string;
+  upper: boolean | null | number | string;
+  point: boolean | null | number | string;
 };
 
 type LeafPropertyValueElement = {

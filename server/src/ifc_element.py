@@ -142,20 +142,126 @@ class IfcElement:
         # handle subtypes of `IfcSimpleProperty`
 
         elif value.is_a("IfcPropertyBoundedValue"):
-            # TODO: handle `IfcPropertyBoundedValue`
-            raise Exception()
+            lower = None
+            upper = None
+            point = None
+            measure: str | None = None
+
+            if value.LowerBoundValue != None:
+                lower = value.LowerBoundValue.wrappedValue
+                measure = value.LowerBoundValue.is_a()
+            
+            if value.UpperBoundValue != None:
+                upper = value.UpperBoundValue.wrappedValue
+                measure = value.UpperBoundValue.is_a()
+            
+            if value.SetPointValue != None:
+                point = value.SetPointValue.wrappedValue
+                measure = value.SetPointValueValue.is_a()
+            
+            unit = IfcElement(value.Unit, self._global_units).resolve_unit(measure)
+
+            return {
+                "name": name,
+                "description": description,
+                "type": "leaf",
+                "semantics": "bounded",
+                "measure": measure,
+                "unit": unit,
+                "lower": lower,
+                "upper": upper,
+                "point": point,
+            }
         
         elif value.is_a("IfcPropertyEnumeratedValue"):
-            # TODO: handle `IfcPropertyEnumeratedValue`
-            raise Exception()
+            unit: ios.entity_instance | None = None
+            measure: str | None = None
+            values: list = []
+
+            if value.EnumerationReference != None:
+                unit = value.EnumerationReference.Unit
+            
+            for e_val in value.EnumerationValues:
+                measure = e_val.is_a()
+                values.append(e_val.wrappedValue)
+            
+            resolved_unit = IfcElement(unit, self._global_units).resolve_unit(
+                measure,
+            )
+            
+            return {
+                "name": name,
+                "description": description,
+                "type": "node",
+                "children": [
+                    {
+                        "name": f"{i + 1}.",
+                        "description": None,
+                        "type": "leaf",
+                        "semantics": measure,
+                        "unit": resolved_unit,
+                        "value": e_val,
+                    }
+                    for i, e_val
+                    in enumerate(values)
+                ]
+            }
         
         elif value.is_a("IfcPropertyListValue"):
-            # TODO: handle `IfcPropertyListValue`
-            raise Exception()
+            unit: ios.entity_instance | None = value.Unit
+            measure: str | None = None
+            values: list = []
+
+            for l_val in value.ListValues:
+                measure = l_val.is_a()
+                values.append(l_val.wrappedValue)
+            
+            resolved_unit = IfcElement(unit, self._global_units).resolve_unit(
+                measure,
+            )
+            
+            return {
+                "name": name,
+                "description": description,
+                "type": "node",
+                "children": [
+                    {
+                        "name": f"{i + 1}.",
+                        "description": None,
+                        "type": "leaf",
+                        "semantics": measure,
+                        "unit": resolved_unit,
+                        "value": l_val,
+                    }
+                    for i, l_val
+                    in enumerate(values)
+                ],
+            }
         
         elif value.is_a("IfcPropertyReferenceValue"):
-            # TODO: handle `IfcPropertyReferenceValue`
-            raise Exception()
+            return {
+                "name": name,
+                "description": description,
+                "type": "node",
+                "children": [
+                    {
+                        "name": "UsageName",
+                        "description": None,
+                        "type": "leaf",
+                        "semantics": "string" if value.UsageName != None else "null",
+                        "unit": None,
+                        "value": value.UsageName,
+                    },
+                    {
+                        "name": "PropertyReference",
+                        "description": None,
+                        "type": "leaf",
+                        "semantics": "element" if value.PropertyReference != None else "null",
+                        "unit": None,
+                        "value": value.PropertyReference.id() if value.PropertyReferencec != None else "null",
+                    },
+                ],
+            }
         
         elif value.is_a("IfcPropertySingleValue"):
             wrapped = None
@@ -179,8 +285,14 @@ class IfcElement:
             return transformed
         
         elif value.is_a("IfcPropertyTableValue"):
-            # TODO: handle `IfcPropertyTableValue`
-            raise Exception()
+            return {
+                "name": name,
+                "description": description,
+                "type": "leaf",
+                "semantics": "element",
+                "unit": None,
+                "value": value.id(),
+            }
         
         else:
             # NOTE: this shouldn't happen
@@ -192,8 +304,46 @@ class IfcElement:
         description: str = value.Description
 
         if value.is_a("IfcPhysicalComplexQuantity"):
-            # TODO: handle `IfcPhysicalComplexQuantity`
-            raise Exception()
+            return {
+                "name": name,
+                "description": description,
+                "type": "node",
+                "children": [
+                    {
+                        "name": "Discrimination",
+                        "description": None,
+                        "type": "leaf",
+                        "semantics": "string",
+                        "unit": None,
+                        "value": value.Discrimination,
+                    },
+                    {
+                        "name": "Quality",
+                        "description": None,
+                        "type": "leaf",
+                        "semantics": "string" if value.Quality != None else "null",
+                        "unit": None,
+                        "value": value.Quality,
+                    },
+                    {
+                        "name": "Usage",
+                        "description": None,
+                        "type": "leaf",
+                        "semantics": "string" if value.Usage != None else "null",
+                        "unit": None,
+                        "value": value.Usage,
+                    },
+                    {
+                        "name": "HasQuantities",
+                        "description": None,
+                        "type": "node",
+                        "children": [
+                            self._transform_quantity(q)
+                            for q in value.HasQuantities
+                        ],
+                    },
+                ],
+            }
         
         # handle subtypes of `IfcPhysicalSimpleQuantity`
         
@@ -875,11 +1025,11 @@ class IfcElement:
             raise Exception()
     
 
-    def resolve_unit(self, measure: str) -> str | None:
+    def resolve_unit(self, measure: str | None) -> str | None:
         if self._entity != None:
             return self.transform_unit()["name"]
 
-        if self._global_units == None:
+        if self._global_units == None or measure == None:
             return None
         
         resolved_unit = unit_utils.get_unit_from_measure(

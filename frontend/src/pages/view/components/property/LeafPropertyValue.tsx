@@ -21,6 +21,14 @@ export const LeafPropertyValue = ({ leafProperty }: Props) => {
       );
     }
 
+    case "bounded": {
+      return (
+        <TableCell>
+          {`[${leafProperty.lower ?? ""} - ${leafProperty.upper ?? ""}] (${leafProperty.point ?? ""}) ${leafProperty.unit ?? ""}`}
+        </TableCell>
+      );
+    }
+
     case "element": {
       return (
         <TableCell>
