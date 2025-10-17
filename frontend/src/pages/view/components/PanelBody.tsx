@@ -3,11 +3,7 @@ import type { PropsWithChildren } from "react";
 
 export const PanelBody = ({ children }: PropsWithChildren) => {
   return (
-    <Stack
-      padding={1}
-      gap={1}
-      sx={{ overflowX: "hidden", overflowY: "scroll" }}
-    >
+    <Stack padding={1} gap={1} sx={{ overflowX: "hidden", overflowY: "auto " }}>
       {children}
     </Stack>
   );
