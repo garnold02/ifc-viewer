@@ -1,8 +1,8 @@
-import { IconButton, Tooltip } from "@mui/material";
+import { LanguageMenu } from "@components/LanguageMenu";
 import LanguageIcon from "@mui/icons-material/Language";
-import { useTranslation } from "react-i18next";
-import { LanguageMenu } from "./LanguageMenu";
+import { IconButton, Tooltip } from "@mui/material";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const LanguageButton = () => {
   const { t } = useTranslation(undefined, {

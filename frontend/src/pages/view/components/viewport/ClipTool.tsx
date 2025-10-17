@@ -1,6 +1,6 @@
 import { PivotControls } from "@react-three/drei";
+import { useIfcStore } from "@stores/ifc/store";
 import { Color } from "three";
-import { useIfcStore } from "../../../../stores/ifc/store";
 
 export const ClipTool = () => {
   const currentTool = useIfcStore((state) => state.tool.current);

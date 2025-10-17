@@ -1,11 +1,11 @@
+import type { NodeProperty as NodePropertyType } from "@api/types/file/element/property";
 import { Stack, TableCell, TableRow } from "@mui/material";
-import type { NodeProperty as NodePropertyType } from "../../../../api/types/file/element/property";
-import { useTranslation } from "react-i18next";
-import { Property } from "./Property";
-import { ExpandButton } from "./ExpandButton";
-import { usePropertyStore } from "../../../../stores/property/store";
+import { DescriptionTooltip } from "@pages/view/components/property/DescriptionTooltip";
+import { ExpandButton } from "@pages/view/components/property/ExpandButton";
+import { Property } from "@pages/view/components/property/Property";
+import { usePropertyStore } from "@stores/property/store";
 import { useMemo } from "react";
-import { DescriptionTooltip } from "./DescriptionTooltip";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   nodeProperty: NodePropertyType;

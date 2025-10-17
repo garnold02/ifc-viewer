@@ -1,6 +1,6 @@
-import type { Property as PropertyType } from "../../../../api/types/file/element/property";
-import { LeafProperty } from "./LeafProperty";
-import { NodeProperty } from "./NodeProperty";
+import type { Property as PropertyType } from "@api/types/file/element/property";
+import { LeafProperty } from "@pages/view/components/property/LeafProperty";
+import { NodeProperty } from "@pages/view/components/property/NodeProperty";
 
 type Props = {
   property: PropertyType;

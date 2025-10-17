@@ -1,10 +1,10 @@
 import { Button, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
-import { Panel } from "./Panel";
-import { PanelHead } from "./PanelHead";
-import { PanelBody } from "./PanelBody";
-import { Matrix4 } from "three";
+import { Panel } from "@pages/view/components/Panel";
+import { PanelBody } from "@pages/view/components/PanelBody";
+import { PanelHead } from "@pages/view/components/PanelHead";
+import { useIfcStore } from "@stores/ifc/store";
 import { useTranslation } from "react-i18next";
-import { useIfcStore } from "../../../stores/ifc/store";
+import { Matrix4 } from "three";
 
 export const ClipSettings = () => {
   const { t } = useTranslation(undefined, {

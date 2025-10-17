@@ -1,6 +1,11 @@
-import { useMemo, type PropsWithChildren } from "react";
-import { createIfcStore, IfcStoreContext } from "./store";
-import type { Element } from "../../api/types/file/element";
+import type { Element } from "@api/types/file/element";
+import {
+  createIfcStore,
+  type IfcState,
+  IfcStoreContext,
+} from "@stores/ifc/store";
+import { type PropsWithChildren, useState } from "react";
+import type { StoreApi, UseBoundStore } from "zustand";
 
 type Props = PropsWithChildren<{
   fileId: number;
@@ -8,7 +13,10 @@ type Props = PropsWithChildren<{
 }>;
 
 export const IfcStoreProvider = ({ fileId, elements, children }: Props) => {
-  const store = useMemo(() => createIfcStore(fileId, elements), []);
+  const [store] = useState<UseBoundStore<StoreApi<IfcState>>>(() =>
+    createIfcStore(fileId, elements)
+  );
+
   return (
     <IfcStoreContext.Provider value={store}>
       {children}

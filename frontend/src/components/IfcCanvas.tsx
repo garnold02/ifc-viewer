@@ -1,5 +1,5 @@
 import { Canvas, type CanvasProps } from "@react-three/fiber";
-import { useMemo, type CSSProperties } from "react";
+import { type CSSProperties, useMemo } from "react";
 
 export const IfcCanvas = ({ children, style, ...props }: CanvasProps) => {
   const calculatedStyle: CSSProperties = useMemo(

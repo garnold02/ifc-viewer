@@ -1,13 +1,10 @@
-import { IconButton } from "@mui/material";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import type { Element } from "@api/types/file/element";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { useCallback, useMemo } from "react";
-import {
-  createDefaultOutlinerNodeState,
-  useIfcStore,
-} from "../../../../stores/ifc/store";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import { IconButton } from "@mui/material";
+import { createDefaultOutlinerNodeState, useIfcStore } from "@stores/ifc/store";
 import { produce } from "immer";
-import type { Element } from "../../../../api/types/file/element";
+import { useCallback, useMemo } from "react";
 
 type Props = {
   element: Element;

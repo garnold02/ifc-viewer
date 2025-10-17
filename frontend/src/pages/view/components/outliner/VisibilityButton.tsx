@@ -1,14 +1,11 @@
-import { IconButton, Tooltip } from "@mui/material";
+import type { Element } from "@api/types/file/element";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { IconButton, Tooltip } from "@mui/material";
+import { createDefaultOutlinerNodeState, useIfcStore } from "@stores/ifc/store";
+import { produce } from "immer";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  createDefaultOutlinerNodeState,
-  useIfcStore,
-} from "../../../../stores/ifc/store";
-import { produce } from "immer";
-import type { Element } from "../../../../api/types/file/element";
 
 type Props = {
   variant: "self" | "children";
@@ -50,7 +47,7 @@ export const VisibilityButton = ({ variant, element }: Props) => {
       t(
         `${value && !disabled ? "hide" : "show"}_${variant === "self" ? "self" : "children"}`
       ),
-    [disabled, value, variant]
+    [disabled, t, value, variant]
   );
 
   const onClick = useCallback(
@@ -68,7 +65,7 @@ export const VisibilityButton = ({ variant, element }: Props) => {
           }
         })
       ),
-    [setNodeState, element, nodeState]
+    [setNodeState, element, nodeState, variant]
   );
 
   return (

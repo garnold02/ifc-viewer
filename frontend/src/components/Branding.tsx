@@ -1,7 +1,7 @@
-import { useTranslation } from "react-i18next";
-import { Stack, Typography } from "@mui/material";
-import { IconButtonLink } from "./IconButtonLink";
+import { IconButtonLink } from "@components/IconButtonLink";
 import HomeIcon from "@mui/icons-material/Home";
+import { Stack, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 export const Branding = () => {
   const { t } = useTranslation(undefined, { keyPrefix: "components.Branding" });

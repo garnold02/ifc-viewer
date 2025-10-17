@@ -1,6 +1,6 @@
 import { produce } from "immer";
 import { createContext, useContext } from "react";
-import { create, useStore, type StoreApi } from "zustand";
+import { create, type StoreApi, useStore } from "zustand";
 
 export type PropertyState = {
   expansionStates: Record<string, boolean>;

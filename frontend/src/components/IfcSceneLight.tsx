@@ -1,6 +1,6 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { useRef } from "react";
-import { Vector3, type DirectionalLight } from "three";
+import { type DirectionalLight, Vector3 } from "three";
 
 export const IfcSceneLight = () => {
   const lightRef = useRef<DirectionalLight | null>(null);

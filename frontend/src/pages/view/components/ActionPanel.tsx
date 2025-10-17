@@ -1,7 +1,7 @@
-import { useIfcStore } from "../../../stores/ifc/store";
-import { ClipSettings } from "./ClipSettings";
-import { FileInfo } from "./FileInfo";
-import { Inspector } from "./inspector/Inspector";
+import { ClipSettings } from "@pages/view/components/ClipSettings";
+import { FileInfo } from "@pages/view/components/FileInfo";
+import { Inspector } from "@pages/view/components/inspector/Inspector";
+import { useIfcStore } from "@stores/ifc/store";
 
 export const ActionPanel = () => {
   const currentTool = useIfcStore((state) => state.tool.current);

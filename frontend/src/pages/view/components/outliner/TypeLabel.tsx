@@ -1,8 +1,8 @@
-import { useCallback, useMemo } from "react";
+import type { Element } from "@api/types/file/element";
 import { Typography } from "@mui/material";
-import { useIfcStore } from "../../../../stores/ifc/store";
-import { pascalToSentenceCase } from "../../../../utils/casing";
-import type { Element } from "../../../../api/types/file/element";
+import { useIfcStore } from "@stores/ifc/store";
+import { pascalToSentenceCase } from "@utils/casing";
+import { useCallback, useMemo } from "react";
 
 type Props = {
   element: Element;

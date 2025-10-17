@@ -1,8 +1,8 @@
-import en_US from "../locales/en_US.json";
-import hu_HU from "../locales/hu_HU.json";
+import en_US from "@locales/en_US.json";
+import hu_HU from "@locales/hu_HU.json";
 import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
+import { initReactI18next } from "react-i18next";
 
 declare module "i18next" {
   interface CustomTypeOptions {

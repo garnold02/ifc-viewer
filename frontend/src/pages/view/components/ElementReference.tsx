@@ -1,8 +1,8 @@
-import { Chip, LinearProgress } from "@mui/material";
+import { useGetFileElementSignature } from "@api/hooks/file/element/signature";
 import LinkIcon from "@mui/icons-material/Link";
-import { useIfcStore } from "../../../stores/ifc/store";
+import { Chip, LinearProgress } from "@mui/material";
+import { useIfcStore } from "@stores/ifc/store";
 import { useCallback } from "react";
-import { useGetFileElementSignature } from "../../../api/hooks/file/element/signature";
 
 type Props = {
   id: number;

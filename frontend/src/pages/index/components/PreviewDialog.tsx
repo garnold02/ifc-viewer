@@ -1,3 +1,11 @@
+import { useGetFilePreview } from "@api/hooks/file/preview";
+import type { FileSummary } from "@api/types/file/summary";
+import { ButtonLink } from "@components/ButtonLink";
+import { IfcCanvas } from "@components/IfcCanvas";
+import { IfcSceneCamera } from "@components/IfcSceneCamera";
+import { IfcSceneLight } from "@components/IfcSceneLight";
+import { IfcTransformGroup } from "@components/IfcTransformGroup";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Button,
@@ -8,16 +16,9 @@ import {
   IconButton,
   Stack,
 } from "@mui/material";
-import { IfcCanvas } from "../../../components/IfcCanvas";
 import { useTranslation } from "react-i18next";
-import { useGetFilePreview } from "../../../api/hooks/file/preview";
-import { IfcSceneLight } from "../../../components/IfcSceneLight";
-import { IfcTransformGroup } from "../../../components/IfcTransformGroup";
-import { IfcSceneCamera } from "../../../components/IfcSceneCamera";
-import { ButtonLink } from "../../../components/ButtonLink";
+
 import { PreviewGeometry } from "./PreviewGeometry";
-import type { FileSummary } from "../../../api/types/file/summary";
-import CloseIcon from "@mui/icons-material/Close";
 
 type Props = {
   open: boolean;

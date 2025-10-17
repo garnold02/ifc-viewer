@@ -1,7 +1,7 @@
+import { Branding } from "@components/Branding";
+import { LanguageButton } from "@components/LanguageButton";
+import { ThemeToggle } from "@components/ThemeToggle";
 import { Box, Divider, Stack } from "@mui/material";
-import { LanguageButton } from "../../../components/LanguageButton";
-import { ThemeToggle } from "../../../components/ThemeToggle";
-import { Branding } from "../../../components/Branding";
 
 export const AppBar = () => {
   return (

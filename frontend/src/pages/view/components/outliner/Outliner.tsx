@@ -1,10 +1,10 @@
-import { useTranslation } from "react-i18next";
-import { Panel } from "../Panel";
-import { PanelHead } from "../PanelHead";
-import { PanelBody } from "../PanelBody";
-import { useIfcStore } from "../../../../stores/ifc/store";
+import { Element } from "@pages/view/components/outliner/Element";
+import { PanelBody } from "@pages/view/components/PanelBody";
+import { PanelHead } from "@pages/view/components/PanelHead";
+import { useIfcStore } from "@stores/ifc/store";
 import { useMemo } from "react";
-import { Element } from "./Element";
+import { useTranslation } from "react-i18next";
+import { Panel } from "react-resizable-panels";
 
 export const Outliner = () => {
   const { t } = useTranslation(undefined, {
