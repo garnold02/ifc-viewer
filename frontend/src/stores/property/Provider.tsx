@@ -7,7 +7,7 @@ import { type PropsWithChildren, useState } from "react";
 import type { StoreApi, UseBoundStore } from "zustand";
 
 export const PropertyStoreProvider = ({ children }: PropsWithChildren) => {
-  const [store] = useState<UseBoundStore<StoreApi<PropertyState>>>(
+  const [store] = useState<UseBoundStore<StoreApi<PropertyState>>>(() =>
     createPropertyStore()
   );
   return (

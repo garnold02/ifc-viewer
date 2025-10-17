@@ -13,7 +13,7 @@ type Props = PropsWithChildren<{
 }>;
 
 export const IfcStoreProvider = ({ fileId, elements, children }: Props) => {
-  const [store] = useState<UseBoundStore<StoreApi<IfcState>>>(
+  const [store] = useState<UseBoundStore<StoreApi<IfcState>>>(() =>
     createIfcStore(fileId, elements)
   );
 
