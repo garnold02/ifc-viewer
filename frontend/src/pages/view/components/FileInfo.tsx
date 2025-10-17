@@ -1,8 +1,4 @@
-import { useTranslation } from "react-i18next";
-import { Panel } from "./Panel";
-import { PanelHead } from "./PanelHead";
-import { PanelBody } from "./PanelBody";
-import { useGetFileSummary } from "../../../api/hooks/file/summary";
+import { useGetFileSummary } from "@api/hooks/file/summary";
 import {
   LinearProgress,
   Table,
@@ -12,7 +8,11 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useIfcStore } from "../../../stores/ifc/store";
+import { Panel } from "@pages/view/components/Panel";
+import { PanelBody } from "@pages/view/components/PanelBody";
+import { PanelHead } from "@pages/view/components/PanelHead";
+import { useIfcStore } from "@stores/ifc/store";
+import { useTranslation } from "react-i18next";
 
 export const FileInfo = () => {
   const { t } = useTranslation(undefined, {

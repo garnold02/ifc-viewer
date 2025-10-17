@@ -1,14 +1,11 @@
-import { useMemo } from "react";
+import type { Element as ElementType } from "@api/types/file/element";
 import { Box, Stack } from "@mui/material";
-import { ExpandButton } from "./ExpandButton";
-import { TypeLabel } from "./TypeLabel";
-import { NameLabel } from "./NameLabel";
-import { VisibilityButton } from "./VisibilityButton";
-import {
-  createDefaultOutlinerNodeState,
-  useIfcStore,
-} from "../../../../stores/ifc/store";
-import type { Element as ElementType } from "../../../../api/types/file/element";
+import { ExpandButton } from "@pages/view/components/outliner/ExpandButton";
+import { NameLabel } from "@pages/view/components/outliner/NameLabel";
+import { TypeLabel } from "@pages/view/components/outliner/TypeLabel";
+import { VisibilityButton } from "@pages/view/components/outliner/VisibilityButton";
+import { createDefaultOutlinerNodeState, useIfcStore } from "@stores/ifc/store";
+import { useMemo } from "react";
 
 type Props = {
   element: ElementType;

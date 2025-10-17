@@ -1,7 +1,7 @@
 import { IconButton, Tooltip } from "@mui/material";
-import { useCallback, useMemo, type ReactNode } from "react";
+import { type ToolName, useIfcStore } from "@stores/ifc/store";
+import { type ReactNode, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useIfcStore, type ToolName } from "../../../../stores/ifc/store";
 
 type Props = {
   type: ToolName;

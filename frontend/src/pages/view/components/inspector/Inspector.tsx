@@ -1,7 +1,7 @@
-import { Panel } from "../Panel";
-import { PanelBody } from "../PanelBody";
-import { PropertyTree } from "../property/PropertyTree";
-import { InspectorHead } from "./InspectorHead";
+import { InspectorHead } from "@pages/view/components/inspector/InspectorHead";
+import { Panel } from "@pages/view/components/Panel";
+import { PanelBody } from "@pages/view/components/PanelBody";
+import { PropertyTree } from "@pages/view/components/property/PropertyTree";
 
 type Props = {
   elementId: number;

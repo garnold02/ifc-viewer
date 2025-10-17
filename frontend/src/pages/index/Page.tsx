@@ -1,10 +1,9 @@
-import { Container, Stack } from "@mui/material";
-import { useGetSummaries } from "../../api/hooks/summaries";
-import { SummaryCard } from "./components/SummaryCard";
-import { PreviewDialog } from "./components/PreviewDialog";
+import { useGetSummaries } from "@api/hooks/summaries";
+import type { FileSummary } from "@api/types/file/summary";
+import { AppBar, Container, Stack } from "@mui/material";
+import { PreviewDialog } from "@pages/index/components/PreviewDialog";
+import { SummaryCard } from "@pages/index/components/SummaryCard";
 import { useState } from "react";
-import { AppBar } from "./components/AppBar";
-import type { FileSummary } from "../../api/types/file/summary";
 
 export const Page = () => {
   const { data: summaries } = useGetSummaries();

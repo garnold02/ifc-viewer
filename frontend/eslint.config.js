@@ -18,6 +18,10 @@ export default defineConfig([
     rules: {
       "simple-input-sort/imports": "error",
       "simple-input-sort/exports": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_" },
+      ],
     },
     settings: {
       react: {

@@ -1,3 +1,5 @@
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Dialog,
@@ -7,13 +9,11 @@ import {
   IconButton,
   Stack,
 } from "@mui/material";
-import { useIfcStore } from "../../../stores/ifc/store";
-import { useTranslation } from "react-i18next";
-import { ElementReference } from "./ElementReference";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { ElementReference } from "@pages/view/components/ElementReference";
+import { PropertyTree } from "@pages/view/components/property/PropertyTree";
+import { useIfcStore } from "@stores/ifc/store";
 import { Fragment } from "react/jsx-runtime";
-import { PropertyTree } from "./property/PropertyTree";
-import CloseIcon from "@mui/icons-material/Close";
+import { useTranslation } from "react-i18next";
 
 export const Details = () => {
   const { t } = useTranslation(undefined, {

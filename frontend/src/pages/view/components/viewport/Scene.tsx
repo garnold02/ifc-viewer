@@ -1,24 +1,21 @@
+import type { Element } from "@api/types/file/element";
+import { getCameraMoving } from "@global/camera";
 import { useThree } from "@react-three/fiber";
+import { createDefaultOutlinerNodeState, useIfcStore } from "@stores/ifc/store";
+import { defaultVisibilityOf } from "@utils/visibility";
 import { useEffect, useMemo } from "react";
-import {
-  createDefaultOutlinerNodeState,
-  useIfcStore,
-} from "../../../../stores/ifc/store";
 import {
   BufferAttribute,
   BufferGeometry,
-  MeshLambertMaterial,
-  Mesh,
+  Color,
   Group,
   Matrix4,
-  Color,
-  Vector3,
-  Quaternion,
+  Mesh,
+  MeshLambertMaterial,
   Plane,
+  Quaternion,
+  Vector3,
 } from "three";
-import { defaultVisibilityOf } from "../../../../utils/visibility";
-import { getCameraMoving } from "../../../../global/camera";
-import type { Element } from "../../../../api/types/file/element";
 
 export const Scene = () => {
   const { gl, scene, raycaster } = useThree();
@@ -154,7 +151,7 @@ export const Scene = () => {
 
       mesh.visible = visible;
     });
-  }, [meshes, nodeStates]);
+  }, [elements, meshes, nodeStates]);
 
   // hack: the only way I can think of to access the three.js canvas. this means
   // there can only be one per page!
@@ -163,7 +160,10 @@ export const Scene = () => {
   const currentTool = useIfcStore((state) => state.tool.current);
 
   // not an arrow function because EventListener hates me
-  function clickListener(this: HTMLCanvasElement, _event: MouseEvent) {
+  const clickListener = function clickListener(
+    this: HTMLCanvasElement,
+    _event: MouseEvent
+  ) {
     if (currentTool !== "select") {
       return;
     }
@@ -193,7 +193,7 @@ export const Scene = () => {
 
     const element: Element = object.userData["element"];
     setSelectedElement(selectedElement === element ? null : element);
-  }
+  };
 
   useEffect(() => {
     canvas.addEventListener("click", clickListener);
@@ -214,7 +214,7 @@ export const Scene = () => {
     clipMatrix.extractBasis(new Vector3(), new Vector3(), zAxis);
     clipMatrix.decompose(position, new Quaternion(), new Vector3());
     return [new Plane(zAxis.negate(), 0).translate(position)];
-  }, [clipAlwaysVisible, clipMatrix, currentTool, meshes]);
+  }, [clipAlwaysVisible, clipMatrix, currentTool]);
 
   useEffect(() => {
     meshes.forEach((mesh) => {

@@ -1,8 +1,8 @@
+import { type LeafProperty as LeafPropertyType } from "@api/types/file/element/property";
 import { Stack, TableCell, TableRow } from "@mui/material";
-import type { LeafProperty as LeafPropertyType } from "../../../../api/types/file/element/property";
-import { LeafPropertyValue } from "./LeafPropertyValue";
-import { ExpandButton } from "./ExpandButton";
-import { DescriptionTooltip } from "./DescriptionTooltip";
+import { DescriptionTooltip } from "@pages/view/components/property/DescriptionTooltip";
+import { ExpandButton } from "@pages/view/components/property/ExpandButton";
+import { LeafPropertyValue } from "@pages/view/components/property/LeafPropertyValue";
 
 type Props = {
   leafProperty: LeafPropertyType;

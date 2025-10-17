@@ -1,6 +1,6 @@
+import { API_BASE_URL } from "@api/constants";
 import { useQuery } from "@tanstack/react-query";
-import { API_BASE_URL } from "../../constants";
-import { BinaryParser } from "../../../utils/BinaryParser";
+import { BinaryParser } from "@utils/BinaryParser";
 
 export const useGetFilePreview = (fileId: number) =>
   useQuery({

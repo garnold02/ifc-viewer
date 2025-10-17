@@ -1,4 +1,4 @@
-import { useMemo, type PropsWithChildren } from "react";
+import { type PropsWithChildren, useMemo } from "react";
 import { Matrix4 } from "three";
 
 export const IfcTransformGroup = ({ children }: PropsWithChildren) => {

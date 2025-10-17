@@ -1,6 +1,6 @@
+import { API_BASE_URL } from "@api/constants";
+import type { ElementSignature } from "@api/types/file/element/signature";
 import { useQuery } from "@tanstack/react-query";
-import { API_BASE_URL } from "../../../constants";
-import type { ElementSignature } from "../../../types/file/element/signature";
 
 export const useGetFileElementSignature = (fileId: number, elementId: number) =>
   useQuery({

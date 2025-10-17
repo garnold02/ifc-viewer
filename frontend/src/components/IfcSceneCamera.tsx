@@ -1,6 +1,6 @@
+import { setCameraMoving } from "@global/camera";
 import { OrbitControls } from "@react-three/drei";
 import { useCallback } from "react";
-import { setCameraMoving } from "../global/camera";
 
 export const IfcSceneCamera = () => {
   const onStart = useCallback(

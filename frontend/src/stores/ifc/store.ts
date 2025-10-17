@@ -1,9 +1,9 @@
-import { create, useStore, type StoreApi } from "zustand";
-import { createContext, useContext } from "react";
+import type { Element } from "@api/types/file/element";
+import { defaultVisibilityOf } from "@utils/visibility";
 import { produce } from "immer";
-import { defaultVisibilityOf } from "../../utils/visibility";
+import { createContext, useContext } from "react";
 import { Matrix4 } from "three";
-import type { Element } from "../../api/types/file/element";
+import { create, type StoreApi, useStore } from "zustand";
 
 export type IfcState = {
   fileId: number;

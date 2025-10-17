@@ -1,6 +1,6 @@
+import { API_BASE_URL } from "@api/constants";
+import type { Property } from "@api/types/file/element/property";
 import { useQuery } from "@tanstack/react-query";
-import { API_BASE_URL } from "../../../constants";
-import type { Property } from "../../../types/file/element/property";
 
 export const useGetFileElementPropertyTree = (
   fileId: number,

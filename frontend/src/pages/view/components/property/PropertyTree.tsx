@@ -1,13 +1,13 @@
+import { useGetFileElementPropertyTree } from "@api/hooks/file/element/propertyTree";
 import {
   LinearProgress,
   Table,
   TableBody,
   TableContainer,
 } from "@mui/material";
-import { useGetFileElementPropertyTree } from "../../../../api/hooks/file/element/propertyTree";
-import { useIfcStore } from "../../../../stores/ifc/store";
-import { Property } from "./Property";
-import { PropertyStoreProvider } from "../../../../stores/property/Provider";
+import { Property } from "@pages/view/components/property/Property";
+import { useIfcStore } from "@stores/ifc/store";
+import { PropertyStoreProvider } from "@stores/property/Provider";
 import { useMemo } from "react";
 
 type Props = {

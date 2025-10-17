@@ -1,5 +1,5 @@
+import type { Element } from "@api/types/file/element";
 import { Typography } from "@mui/material";
-import type { Element } from "../../../../api/types/file/element";
 
 type Props = {
   element: Element;

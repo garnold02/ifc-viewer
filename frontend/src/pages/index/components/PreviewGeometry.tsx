@@ -1,4 +1,4 @@
-import type { ElementGeometry } from "../../../api/types/file/element";
+import type { ElementGeometry } from "@api/types/file/element";
 
 type Props = {
   geometry: ElementGeometry;

@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
 import { Divider } from "@mui/material";
+import { ActionPanel } from "@pages/view/components/ActionPanel";
+import { Outliner } from "@pages/view/components/outliner/Outliner";
+import { ToolBar } from "@pages/view/components/toolbar/ToolBar";
+import { Viewport } from "@pages/view/components/viewport/Viewport";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { Outliner } from "./outliner/Outliner";
-import { ToolBar } from "./toolbar/ToolBar";
-import { ActionPanel } from "./ActionPanel";
-import { Viewport } from "./viewport/Viewport";
 
 export const Content = () => {
   return (

@@ -1,5 +1,5 @@
-import { useTranslation } from "react-i18next";
-import { PanelHead } from "../PanelHead";
+import { useGetFileElementSignature } from "@api/hooks/file/element/signature";
+import MenuIcon from "@mui/icons-material/Menu";
 import {
   Box,
   IconButton,
@@ -7,9 +7,9 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useIfcStore } from "../../../../stores/ifc/store";
-import { useGetFileElementSignature } from "../../../../api/hooks/file/element/signature";
-import MenuIcon from "@mui/icons-material/Menu";
+import { PanelHead } from "@pages/view/components/PanelHead";
+import { useIfcStore } from "@stores/ifc/store";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   elementId: number;

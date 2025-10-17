@@ -1,5 +1,5 @@
-import { IconButton, Tooltip, useColorScheme } from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { IconButton, Tooltip, useColorScheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 export const ThemeToggle = () => {

@@ -1,11 +1,11 @@
-import { Stack } from "@mui/material";
-import { ToolButton } from "./ToolButton";
-import PanToolAltIcon from "@mui/icons-material/PanToolAlt";
+import { Branding } from "@components/Branding";
+import { LanguageButton } from "@components/LanguageButton";
+import { ThemeToggle } from "@components/ThemeToggle";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
-import { LanguageButton } from "../../../../components/LanguageButton";
-import { ThemeToggle } from "../../../../components/ThemeToggle";
-import { Branding } from "../../../../components/Branding";
-import { useIfcStore } from "../../../../stores/ifc/store";
+import PanToolAltIcon from "@mui/icons-material/PanToolAlt";
+import { Stack } from "@mui/material";
+import { ToolButton } from "@pages/view/components/toolbar/ToolButton";
+import { useIfcStore } from "@stores/ifc/store";
 
 export const ToolBar = () => {
   const clipAlwaysVisible = useIfcStore(

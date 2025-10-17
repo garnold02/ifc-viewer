@@ -1,3 +1,5 @@
+import type { FileSummary } from "@api/types/file/summary";
+import { ButtonLink } from "@components/ButtonLink";
 import {
   Button,
   Card,
@@ -6,8 +8,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { ButtonLink } from "../../../components/ButtonLink";
-import type { FileSummary } from "../../../api/types/file/summary";
 
 type Props = {
   summary: FileSummary;

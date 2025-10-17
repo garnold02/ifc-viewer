@@ -1,5 +1,8 @@
-import { useMemo, type PropsWithChildren } from "react";
-import { createPropertyStore, PropertyStoreContext } from "./store";
+import {
+  createPropertyStore,
+  PropertyStoreContext,
+} from "@stores/property/store";
+import { type PropsWithChildren, useMemo } from "react";
 
 export const PropertyStoreProvider = ({ children }: PropsWithChildren) => {
   const store = useMemo(() => createPropertyStore(), []);

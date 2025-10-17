@@ -1,8 +1,8 @@
+import { useGetFileElements } from "@api/hooks/file/elements";
+import { Content } from "@pages/view/components/Content";
+import { Details } from "@pages/view/components/Details";
+import { IfcStoreProvider } from "@stores/ifc/Provider";
 import { getRouteApi, Navigate } from "@tanstack/react-router";
-import { Content } from "./components/Content";
-import { useGetFileElements } from "../../api/hooks/file/elements";
-import { IfcStoreProvider } from "../../stores/ifc/Provider";
-import { Details } from "./components/Details";
 
 const route = getRouteApi("/view/$fileId");
 
