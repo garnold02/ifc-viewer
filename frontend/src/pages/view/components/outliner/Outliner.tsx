@@ -1,29 +1,38 @@
-import { Element } from "@pages/view/components/outliner/Element";
+import { Row } from "@pages/view/components/outliner/Row";
+import { useFlatList } from "@pages/view/components/outliner/useFlatList";
+import { Panel } from "@pages/view/components/Panel";
 import { PanelBody } from "@pages/view/components/PanelBody";
 import { PanelHead } from "@pages/view/components/PanelHead";
-import { useIfcStore } from "@stores/ifc/store";
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Panel } from "react-resizable-panels";
+import { List } from "react-window";
 
 export const Outliner = () => {
   const { t } = useTranslation(undefined, {
     keyPrefix: "pages.view.components.outliner.Outliner",
   });
 
-  const elements = useIfcStore((state) => state.elements);
-  const rootElement = useMemo(
-    () =>
-      Object.values(elements).find((element) => element.parent_id === null)!,
-    [elements]
-  );
-
   return (
     <Panel>
       <PanelHead title={t("title")} />
       <PanelBody>
-        <Element element={rootElement} />
+        <Inner />
       </PanelBody>
     </Panel>
+  );
+};
+
+const Inner = () => {
+  const items = useFlatList();
+  if (items === null) {
+    return null;
+  }
+
+  return (
+    <List
+      rowComponent={Row}
+      rowCount={items.length}
+      rowHeight={30}
+      rowProps={{ items }}
+    />
   );
 };

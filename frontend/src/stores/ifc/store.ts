@@ -8,22 +8,40 @@ import { create, type StoreApi, useStore } from "zustand";
 export type IfcState = {
   fileId: number;
   elements: Record<number, Element>;
+
   selectedElement: Element | null;
   setSelectedElement: (value: Element | null) => void;
+
   outlinerNodeStates: Record<number, OutlinerNodeState>;
   setOutlinerNodeState: (element: Element, state: OutlinerNodeState) => void;
+
+  outliner: {
+    selfVisibility: Record<number, boolean>;
+    setSelfVisible: (id: number, value: boolean) => void;
+
+    childrenVisibility: Record<number, boolean>;
+    setChildrenVisible: (id: number, value: boolean) => void;
+
+    expansion: Record<number, boolean>;
+    setExpanded: (id: number, value: boolean) => void;
+  };
+
   tool: {
     current: ToolName | null;
     setCurrent: (value: ToolName | null) => void;
+
     clip: {
       alwaysVisible: boolean;
       setAlwaysVisible: (value: boolean) => void;
+
       matrix: Matrix4;
       setMatrix: (value: Matrix4) => void;
     };
   };
+
   details: {
     elementStack: number[];
+
     pushElement: (value: number) => void;
     popElement: () => void;
     clearElementStack: () => void;
@@ -46,6 +64,7 @@ export const createIfcStore = (
   create<IfcState>((set) => ({
     fileId,
     elements,
+
     selectedElement: null,
     setSelectedElement: (value) =>
       set((prev) =>
@@ -53,6 +72,7 @@ export const createIfcStore = (
           draft.selectedElement = value;
         })
       ),
+
     outlinerNodeStates: {},
     setOutlinerNodeState: (element, state) =>
       set((prev) =>
@@ -60,6 +80,33 @@ export const createIfcStore = (
           draft.outlinerNodeStates[element.id] = state;
         })
       ),
+
+    outliner: {
+      selfVisibility: {},
+      setSelfVisible: (id, value) =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            draft.outliner.selfVisibility[id] = value;
+          })
+        ),
+
+      childrenVisibility: {},
+      setChildrenVisible: (id, value) =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            draft.outliner.childrenVisibility[id] = value;
+          })
+        ),
+
+      expansion: {},
+      setExpanded: (id, value) =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            draft.outliner.expansion[id] = value;
+          })
+        ),
+    },
+
     tool: {
       current: null,
       setCurrent: (value) =>
@@ -68,6 +115,7 @@ export const createIfcStore = (
             draft.tool.current = value;
           })
         ),
+
       clip: {
         alwaysVisible: false,
         setAlwaysVisible: (value) =>
@@ -76,6 +124,7 @@ export const createIfcStore = (
               draft.tool.clip.alwaysVisible = value;
             })
           ),
+
         matrix: new Matrix4(),
         setMatrix: (value) =>
           set((prev) =>
@@ -85,26 +134,31 @@ export const createIfcStore = (
           ),
       },
     },
+
     details: {
       elementStack: [],
+
       pushElement: (value) =>
         set((prev) =>
           produce(prev, (draft) => {
             draft.details.elementStack.push(value);
           })
         ),
+
       popElement: () =>
         set((prev) =>
           produce(prev, (draft) => {
             draft.details.elementStack.pop();
           })
         ),
+
       clearElementStack: () =>
         set((prev) =>
           produce(prev, (draft) => {
             draft.details.elementStack = [];
           })
         ),
+
       revertElementStack: (position) =>
         set((prev) =>
           produce(prev, (draft) => {

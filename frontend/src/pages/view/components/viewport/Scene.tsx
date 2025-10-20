@@ -1,7 +1,7 @@
 import type { Element } from "@api/types/file/element";
 import { getCameraMoving } from "@global/camera";
 import { useThree } from "@react-three/fiber";
-import { createDefaultOutlinerNodeState, useIfcStore } from "@stores/ifc/store";
+import { useIfcStore } from "@stores/ifc/store";
 import { defaultVisibilityOf } from "@utils/visibility";
 import { useEffect, useMemo } from "react";
 import {
@@ -110,19 +110,22 @@ export const Scene = () => {
     });
   }, [elements, meshes, selectedElement]);
 
-  const nodeStates = useIfcStore((state) => state.outlinerNodeStates);
+  const selfVisibility = useIfcStore((state) => state.outliner.selfVisibility);
+  const childrenVisibility = useIfcStore(
+    (state) => state.outliner.childrenVisibility
+  );
 
   useEffect(() => {
     meshes.forEach((mesh) => {
       let visible = true;
-
       let currentElement: Element = mesh.userData["element"];
-      let nodeState =
-        currentElement.id in nodeStates
-          ? nodeStates[currentElement.id]
-          : createDefaultOutlinerNodeState(currentElement);
 
-      if (!nodeState.selfVisible) {
+      const selfVisible =
+        currentElement.id in selfVisibility
+          ? selfVisibility[currentElement.id]
+          : defaultVisibilityOf(currentElement.type);
+
+      if (!selfVisible) {
         visible = false;
       } else {
         while (true) {
@@ -131,12 +134,12 @@ export const Scene = () => {
           }
 
           currentElement = elements[currentElement.parent_id];
-          nodeState =
-            currentElement.id in nodeStates
-              ? nodeStates[currentElement.id]
-              : createDefaultOutlinerNodeState(currentElement);
+          const childrenVisible =
+            currentElement.id in childrenVisibility
+              ? childrenVisibility[currentElement.id]
+              : true;
 
-          if (!nodeState.childrenVisible) {
+          if (!childrenVisible) {
             visible = false;
             break;
           }
@@ -151,7 +154,7 @@ export const Scene = () => {
 
       mesh.visible = visible;
     });
-  }, [elements, meshes, nodeStates]);
+  }, [childrenVisibility, elements, meshes, selfVisibility]);
 
   // hack: the only way I can think of to access the three.js canvas. this means
   // there can only be one per page!

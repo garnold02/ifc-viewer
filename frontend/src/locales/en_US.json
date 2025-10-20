@@ -77,12 +77,6 @@
         "outliner": {
           "Outliner": {
             "title": "Spatial structure"
-          },
-          "VisibilityButton": {
-            "hide_children": "Hide children",
-            "hide_self": "Hide self",
-            "show_children": "Show children",
-            "show_self": "Show self"
           }
         },
         "property": {

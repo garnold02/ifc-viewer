@@ -77,12 +77,6 @@
         "outliner": {
           "Outliner": {
             "title": "Térbeli struktúra"
-          },
-          "VisibilityButton": {
-            "hide_children": "Gyerekek elrejtése",
-            "hide_self": "Saját geometria elrejtése",
-            "show_children": "Gyerekek megjelenítése",
-            "show_self": "Saját geometria megjelenítése"
           }
         },
         "property": {
