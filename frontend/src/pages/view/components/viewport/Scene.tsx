@@ -98,6 +98,10 @@ export const Scene = () => {
     (state) => state.selection.setElementIds
   );
 
+  const toggleElementSelection = useIfcStore(
+    (state) => state.selection.toggleElementSelection
+  );
+
   useEffect(() => {
     meshes.forEach((mesh) => {
       let highlight = false;
@@ -209,10 +213,7 @@ export const Scene = () => {
     }
 
     const element: Element = object.userData["element"];
-
-    setSelectedElementIds(
-      selectedElementIds.includes(element.id) ? [] : [element.id]
-    );
+    toggleElementSelection(element.id, true);
   };
 
   useEffect(() => {

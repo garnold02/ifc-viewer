@@ -40,7 +40,7 @@ const Item = ({ item, style }: ItemProps) => {
   );
 
   const onClick = useCallback(
-    () => toggleSelectElement(item.element.id),
+    () => toggleSelectElement(item.element.id, true),
     [item.element.id, toggleSelectElement]
   );
 

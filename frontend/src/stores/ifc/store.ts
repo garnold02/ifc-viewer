@@ -22,9 +22,9 @@ export type IfcState = {
   selection: {
     elementIds: number[];
     setElementIds: (value: number[]) => void;
-    selectElement: (id: number) => void;
+    selectElement: (id: number, exclusive?: boolean) => void;
     deselectElement: (id: number) => void;
-    toggleElementSelection: (id: number) => void;
+    toggleElementSelection: (id: number, exclusive?: boolean) => void;
   };
 
   outliner: {
@@ -110,10 +110,13 @@ export const createIfcStore = (
           })
         ),
 
-      selectElement: (id) =>
+      selectElement: (id, exclusive) =>
         set((prev) =>
           produce(prev, (draft) => {
             if (!prev.selection.elementIds.includes(id)) {
+              if (exclusive) {
+                draft.selection.elementIds = [];
+              }
               draft.selection.elementIds.push(id);
             }
           })
@@ -128,7 +131,7 @@ export const createIfcStore = (
           })
         ),
 
-      toggleElementSelection: (id) => {
+      toggleElementSelection: (id, exclusive) => {
         set((prev) =>
           produce(prev, (draft) => {
             if (prev.selection.elementIds.includes(id)) {
@@ -136,6 +139,9 @@ export const createIfcStore = (
                 (eId) => eId !== id
               );
             } else {
+              if (exclusive) {
+                draft.selection.elementIds = [];
+              }
               draft.selection.elementIds.push(id);
             }
           })
