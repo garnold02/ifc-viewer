@@ -77,6 +77,14 @@
         "outliner": {
           "Outliner": {
             "title": "Térbeli struktúra"
+          },
+          "Search": {
+            "element_type": "Elemtípus",
+            "show_in_viewport": "Mutasd a 3D nézegetőben"
+          },
+          "SearchToggle": {
+            "hide": "Kereső elrejtése",
+            "show": "Kereső megjelenítése"
           }
         },
         "property": {

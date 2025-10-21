@@ -77,6 +77,14 @@
         "outliner": {
           "Outliner": {
             "title": "Spatial structure"
+          },
+          "Search": {
+            "element_type": "Element type",
+            "show_in_viewport": "Show in viewport"
+          },
+          "SearchToggle": {
+            "hide": "Hide search",
+            "show": "Show search"
           }
         },
         "property": {

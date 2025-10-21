@@ -8,16 +8,16 @@ export type FlatListItem = {
 };
 
 export const useFlatList = () => {
-  const elements = useIfcStore((state) => state.elements);
+  const filteredElements = useIfcStore((state) => state.filter.elements);
   const expansion = useIfcStore((state) => state.outliner.expansion);
 
   const list = useMemo(() => {
-    const rootElement = Object.values(elements).find(
+    const rootElement = Object.values(filteredElements).find(
       (element) => element.parent_id === null
     );
 
     if (rootElement === undefined) {
-      return null;
+      return [];
     }
 
     const innerList: FlatListItem[] = [];
@@ -32,12 +32,16 @@ export const useFlatList = () => {
         return;
       }
 
-      el.child_ids.forEach((childId) => expand(elements[childId], level + 1));
+      el.child_ids.forEach((childId) => {
+        if (childId in filteredElements) {
+          expand(filteredElements[childId], level + 1);
+        }
+      });
     };
 
     expand(rootElement, 0);
     return innerList;
-  }, [elements, expansion]);
+  }, [filteredElements, expansion]);
 
   return list;
 };

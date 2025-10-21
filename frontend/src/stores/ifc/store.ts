@@ -9,6 +9,16 @@ export type IfcState = {
   fileId: number;
   elements: Record<number, Element>;
 
+  filter: {
+    elementType: string;
+    setElementType: (value: string) => void;
+
+    showInViewport: boolean;
+    setShowInViewport: (value: boolean) => void;
+
+    elements: Record<number, Element>;
+  };
+
   selectedElement: Element | null;
   setSelectedElement: (value: Element | null) => void;
 
@@ -61,6 +71,30 @@ export const createIfcStore = (
   create<IfcState>((set) => ({
     fileId,
     elements,
+
+    filter: {
+      elementType: "",
+      setElementType: (value) =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            draft.filter.elementType = value;
+            draft.filter.elements = recalculateFilteredElements(
+              prev.elements,
+              value
+            );
+          })
+        ),
+
+      showInViewport: true,
+      setShowInViewport: (value) =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            draft.filter.showInViewport = value;
+          })
+        ),
+
+      elements,
+    },
 
     selectedElement: null,
     setSelectedElement: (value) =>
@@ -170,4 +204,49 @@ export const IfcStoreContext = createContext<StoreApi<IfcState> | null>(null);
 export const useIfcStore = <T>(selector: (state: IfcState) => T): T => {
   const store = useContext(IfcStoreContext)!;
   return useStore(store, selector);
+};
+
+const recalculateFilteredElements = (
+  original: Record<number, Element>,
+  elementType: string
+): Record<number, Element> => {
+  const rootElement = Object.values(original).find(
+    (el) => el.parent_id === null
+  );
+
+  if (rootElement === undefined) {
+    return {};
+  }
+
+  let newFilteredElements: Record<number, Element> = {};
+  const searchString = elementType.toLowerCase();
+
+  const collect = (el: Element): boolean => {
+    let result = false;
+
+    if (el.type.toLowerCase().includes(searchString)) {
+      result = true;
+    }
+
+    for (const childId of el.child_ids) {
+      const childEl = original[childId];
+      if (collect(childEl)) {
+        result = true;
+      }
+    }
+
+    if (result) {
+      newFilteredElements[el.id] = el;
+    }
+
+    return result;
+  };
+
+  if (elementType.length > 0) {
+    collect(rootElement);
+  } else {
+    newFilteredElements = original;
+  }
+
+  return newFilteredElements;
 };

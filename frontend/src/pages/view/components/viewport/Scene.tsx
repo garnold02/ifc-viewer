@@ -24,7 +24,17 @@ export const Scene = () => {
     gl.localClippingEnabled = true;
   }, [gl]);
 
-  const elements = useIfcStore((state) => state.elements);
+  const allElements = useIfcStore((state) => state.elements);
+  const filteredElements = useIfcStore((state) => state.filter.elements);
+  const showFilterInViewport = useIfcStore(
+    (state) => state.filter.showInViewport
+  );
+
+  const elements = useMemo(
+    () => (showFilterInViewport ? filteredElements : allElements),
+    [allElements, filteredElements, showFilterInViewport]
+  );
+
   const meshes = useMemo(() => {
     const array: Mesh<BufferGeometry, MeshLambertMaterial>[] = [];
 
@@ -74,7 +84,9 @@ export const Scene = () => {
     const group = new Group();
     group.matrixAutoUpdate = false;
     group.matrix = new Matrix4().makeRotationX(-Math.PI / 2);
-    group.add(...meshes);
+    if (meshes.length > 0) {
+      group.add(...meshes);
+    }
     scene.add(group);
     return () => {
       scene.remove(group);

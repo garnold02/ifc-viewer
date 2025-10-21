@@ -1,38 +1,29 @@
-import { Row } from "@pages/view/components/outliner/Row";
-import { useFlatList } from "@pages/view/components/outliner/useFlatList";
+import { Box } from "@mui/material";
+import { Items } from "@pages/view/components/outliner/Items";
+import { Search } from "@pages/view/components/outliner/Search";
+import { SearchToggle } from "@pages/view/components/outliner/SearchToggle";
 import { Panel } from "@pages/view/components/Panel";
 import { PanelBody } from "@pages/view/components/PanelBody";
 import { PanelHead } from "@pages/view/components/PanelHead";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { List } from "react-window";
 
 export const Outliner = () => {
+  const [searchEnabled, setSearchEnabled] = useState(false);
   const { t } = useTranslation(undefined, {
     keyPrefix: "pages.view.components.outliner.Outliner",
   });
 
   return (
     <Panel>
-      <PanelHead title={t("title")} />
+      <PanelHead title={t("title")}>
+        <Box flexGrow={1} />
+        <SearchToggle value={searchEnabled} onChange={setSearchEnabled} />
+      </PanelHead>
       <PanelBody>
-        <Inner />
+        {searchEnabled ? <Search /> : null}
+        <Items />
       </PanelBody>
     </Panel>
-  );
-};
-
-const Inner = () => {
-  const items = useFlatList();
-  if (items === null) {
-    return null;
-  }
-
-  return (
-    <List
-      rowComponent={Row}
-      rowCount={items.length}
-      rowHeight={30}
-      rowProps={{ items }}
-    />
   );
 };

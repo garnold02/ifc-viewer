@@ -2,6 +2,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { ExpandButton } from "@pages/view/components/outliner/ExpandButton";
 import type { FlatListItem } from "@pages/view/components/outliner/useFlatList";
 import { VisibilityToggle } from "@pages/view/components/outliner/VisibilityToggle";
+import { useIfcStore } from "@stores/ifc/store";
 import { useElementChildrenVisible } from "@stores/ifc/useElementChildrenVisible";
 import { useElementExpanded } from "@stores/ifc/useElementExpanded";
 import { useElementSelected } from "@stores/ifc/useElementSelected";
@@ -26,6 +27,7 @@ type ItemProps = {
 };
 
 const Item = ({ item, style }: ItemProps) => {
+  const filteredElements = useIfcStore((state) => state.filter.elements);
   const selected = useElementSelected(item.element.id);
   const toggleSelectElement = useToggleSelectElement(item.element.id);
   const expanded = useElementExpanded(item.element.id);
@@ -34,6 +36,13 @@ const Item = ({ item, style }: ItemProps) => {
   const setSelfVisible = useElementSetSelfVisible(item.element.id);
   const childrenVisible = useElementChildrenVisible(item.element.id);
   const setChildrenVisible = useElementSetChildrenVisible(item.element.id);
+
+  const expandButtonVisible = useMemo(
+    () =>
+      item.element.child_ids.length > 0 &&
+      item.element.child_ids.some((childId) => childId in filteredElements),
+    [filteredElements, item.element.child_ids]
+  );
 
   return (
     <Stack
@@ -45,7 +54,7 @@ const Item = ({ item, style }: ItemProps) => {
       <ExpandButton
         value={expanded}
         onChange={setExpanded}
-        visible={item.element.child_ids.length > 0}
+        visible={expandButtonVisible}
       />
       <Typography
         onClick={toggleSelectElement}
