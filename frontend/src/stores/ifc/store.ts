@@ -12,9 +12,6 @@ export type IfcState = {
   selectedElement: Element | null;
   setSelectedElement: (value: Element | null) => void;
 
-  outlinerNodeStates: Record<number, OutlinerNodeState>;
-  setOutlinerNodeState: (element: Element, state: OutlinerNodeState) => void;
-
   outliner: {
     selfVisibility: Record<number, boolean>;
     setSelfVisible: (id: number, value: boolean) => void;
@@ -70,14 +67,6 @@ export const createIfcStore = (
       set((prev) =>
         produce(prev, (draft) => {
           draft.selectedElement = value;
-        })
-      ),
-
-    outlinerNodeStates: {},
-    setOutlinerNodeState: (element, state) =>
-      set((prev) =>
-        produce(prev, (draft) => {
-          draft.outlinerNodeStates[element.id] = state;
         })
       ),
 
