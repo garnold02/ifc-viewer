@@ -93,8 +93,10 @@ export const Scene = () => {
     };
   }, [meshes, scene]);
 
-  const selectedElement = useIfcStore((state) => state.selectedElement);
-  const setSelectedElement = useIfcStore((state) => state.setSelectedElement);
+  const selectedElementIds = useIfcStore((state) => state.selection.elementIds);
+  const setSelectedElementIds = useIfcStore(
+    (state) => state.selection.setElementIds
+  );
 
   useEffect(() => {
     meshes.forEach((mesh) => {
@@ -102,7 +104,7 @@ export const Scene = () => {
       let currentElement: Element = mesh.userData["element"];
 
       while (true) {
-        if (currentElement === selectedElement) {
+        if (selectedElementIds.includes(currentElement.id)) {
           highlight = true;
           break;
         }
@@ -120,7 +122,7 @@ export const Scene = () => {
         mesh.material.emissive = new Color(0, 0, 0);
       }
     });
-  }, [elements, meshes, selectedElement]);
+  }, [elements, meshes, selectedElementIds]);
 
   const selfVisibility = useIfcStore((state) => state.outliner.selfVisibility);
   const childrenVisibility = useIfcStore(
@@ -193,7 +195,7 @@ export const Scene = () => {
     raycaster.layers.enableAll();
 
     if (intersected.length === 0) {
-      setSelectedElement(null);
+      setSelectedElementIds([]);
       return;
     }
 
@@ -207,7 +209,10 @@ export const Scene = () => {
     }
 
     const element: Element = object.userData["element"];
-    setSelectedElement(selectedElement === element ? null : element);
+
+    setSelectedElementIds(
+      selectedElementIds.includes(element.id) ? [] : [element.id]
+    );
   };
 
   useEffect(() => {

@@ -5,13 +5,13 @@ import { useIfcStore } from "@stores/ifc/store";
 
 export const ActionPanel = () => {
   const currentTool = useIfcStore((state) => state.tool.current);
-  const selectedElement = useIfcStore((state) => state.selectedElement);
+  const selectedElementIds = useIfcStore((state) => state.selection.elementIds);
 
   switch (currentTool) {
     case null:
     case "select":
-      if (selectedElement !== null) {
-        return <Inspector elementId={selectedElement.id} />;
+      if (selectedElementIds.length === 1) {
+        return <Inspector elementId={selectedElementIds[0]} />;
       } else {
         return <FileInfo />;
       }

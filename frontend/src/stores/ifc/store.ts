@@ -19,8 +19,13 @@ export type IfcState = {
     elements: Record<number, Element>;
   };
 
-  selectedElement: Element | null;
-  setSelectedElement: (value: Element | null) => void;
+  selection: {
+    elementIds: number[];
+    setElementIds: (value: number[]) => void;
+    selectElement: (id: number) => void;
+    deselectElement: (id: number) => void;
+    toggleElementSelection: (id: number) => void;
+  };
 
   outliner: {
     selfVisibility: Record<number, boolean>;
@@ -96,13 +101,47 @@ export const createIfcStore = (
       elements,
     },
 
-    selectedElement: null,
-    setSelectedElement: (value) =>
-      set((prev) =>
-        produce(prev, (draft) => {
-          draft.selectedElement = value;
-        })
-      ),
+    selection: {
+      elementIds: [],
+      setElementIds: (value) =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            draft.selection.elementIds = value;
+          })
+        ),
+
+      selectElement: (id) =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            if (!prev.selection.elementIds.includes(id)) {
+              draft.selection.elementIds.push(id);
+            }
+          })
+        ),
+
+      deselectElement: (id) =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            draft.selection.elementIds = prev.selection.elementIds.filter(
+              (eId) => eId !== id
+            );
+          })
+        ),
+
+      toggleElementSelection: (id) => {
+        set((prev) =>
+          produce(prev, (draft) => {
+            if (prev.selection.elementIds.includes(id)) {
+              draft.selection.elementIds = prev.selection.elementIds.filter(
+                (eId) => eId !== id
+              );
+            } else {
+              draft.selection.elementIds.push(id);
+            }
+          })
+        );
+      },
+    },
 
     outliner: {
       selfVisibility: {},

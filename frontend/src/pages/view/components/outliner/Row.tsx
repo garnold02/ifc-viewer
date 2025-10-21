@@ -10,8 +10,7 @@ import { useElementSelfVisible } from "@stores/ifc/useElementSelfVisible";
 import { useElementSetChildrenVisible } from "@stores/ifc/useElementSetChildrenVisible";
 import { useElementSetExpanded } from "@stores/ifc/useElementSetExpanded";
 import { useElementSetSelfVisible } from "@stores/ifc/useElementSetSelfVisible";
-import { useToggleSelectElement } from "@stores/ifc/useToggleSelectElement";
-import { type CSSProperties, useMemo } from "react";
+import { type CSSProperties, useCallback, useMemo } from "react";
 import type { RowComponentProps } from "react-window";
 
 type Props = RowComponentProps<{ items: FlatListItem[] }>;
@@ -29,13 +28,21 @@ type ItemProps = {
 const Item = ({ item, style }: ItemProps) => {
   const filteredElements = useIfcStore((state) => state.filter.elements);
   const selected = useElementSelected(item.element.id);
-  const toggleSelectElement = useToggleSelectElement(item.element.id);
   const expanded = useElementExpanded(item.element.id);
   const setExpanded = useElementSetExpanded(item.element.id);
   const selfVisible = useElementSelfVisible(item.element.id);
   const setSelfVisible = useElementSetSelfVisible(item.element.id);
   const childrenVisible = useElementChildrenVisible(item.element.id);
   const setChildrenVisible = useElementSetChildrenVisible(item.element.id);
+
+  const toggleSelectElement = useIfcStore(
+    (state) => state.selection.toggleElementSelection
+  );
+
+  const onClick = useCallback(
+    () => toggleSelectElement(item.element.id),
+    [item.element.id, toggleSelectElement]
+  );
 
   const expandButtonVisible = useMemo(
     () =>
@@ -57,7 +64,7 @@ const Item = ({ item, style }: ItemProps) => {
         visible={expandButtonVisible}
       />
       <Typography
-        onClick={toggleSelectElement}
+        onClick={onClick}
         color={selected ? "primary" : undefined}
         sx={{ userSelect: "none" }}
         noWrap
@@ -67,7 +74,7 @@ const Item = ({ item, style }: ItemProps) => {
       {item.element.name !== null ? (
         <Typography
           variant="caption"
-          onClick={toggleSelectElement}
+          onClick={onClick}
           color={selected ? "primary" : "textSecondary"}
           marginLeft={1}
           sx={{ userSelect: "none" }}
