@@ -1,52 +1,27 @@
-import type { Element } from "@api/types/file/element";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { IconButton } from "@mui/material";
-import { createDefaultOutlinerNodeState, useIfcStore } from "@stores/ifc/store";
-import { produce } from "immer";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 
 type Props = {
-  element: Element;
+  value: boolean;
+  onChange: (value: boolean) => void;
+  visible: boolean;
 };
 
-export const ExpandButton = ({ element }: Props) => {
-  const nodeStates = useIfcStore((state) => state.outlinerNodeStates);
-  const setNodeState = useIfcStore((state) => state.setOutlinerNodeState);
-
-  const nodeState = useMemo(() => {
-    if (element.id in nodeStates) {
-      return nodeStates[element.id];
-    } else {
-      return createDefaultOutlinerNodeState(element);
-    }
-  }, [element, nodeStates]);
-
-  const onClick = useCallback(
-    () =>
-      setNodeState(
-        element,
-        produce(nodeState, (draft) => {
-          draft.expanded = !nodeState.expanded;
-        })
-      ),
-    [setNodeState, element, nodeState]
-  );
-
-  const disabled = useMemo(
-    () => element.child_ids.length === 0,
-    [element.child_ids.length]
-  );
-
+export const ExpandButton = ({ value, onChange, visible }: Props) => {
+  const onClick = useCallback(() => onChange(!value), [onChange, value]);
   return (
     <IconButton
       size="small"
       onClick={onClick}
-      disabled={disabled}
-      sx={{ visibility: disabled ? "hidden" : undefined }}
+      sx={{ visibility: visible ? "visible" : "hidden" }}
     >
-      {nodeState.expanded ? <KeyboardArrowDownIcon fontSize="small" /> : null}
-      {!nodeState.expanded ? <KeyboardArrowRightIcon fontSize="small" /> : null}
+      {value ? (
+        <KeyboardArrowDownIcon fontSize="small" />
+      ) : (
+        <KeyboardArrowRightIcon fontSize="small" />
+      )}
     </IconButton>
   );
 };

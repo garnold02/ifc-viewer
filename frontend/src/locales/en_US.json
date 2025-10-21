@@ -78,11 +78,13 @@
           "Outliner": {
             "title": "Spatial structure"
           },
-          "VisibilityButton": {
-            "hide_children": "Hide children",
-            "hide_self": "Hide self",
-            "show_children": "Show children",
-            "show_self": "Show self"
+          "Search": {
+            "element_type": "Element type",
+            "show_in_viewport": "Show in viewport"
+          },
+          "SearchToggle": {
+            "hide": "Hide search",
+            "show": "Show search"
           }
         },
         "property": {

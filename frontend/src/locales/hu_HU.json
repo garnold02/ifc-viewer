@@ -78,11 +78,13 @@
           "Outliner": {
             "title": "Térbeli struktúra"
           },
-          "VisibilityButton": {
-            "hide_children": "Gyerekek elrejtése",
-            "hide_self": "Saját geometria elrejtése",
-            "show_children": "Gyerekek megjelenítése",
-            "show_self": "Saját geometria megjelenítése"
+          "Search": {
+            "element_type": "Elemtípus",
+            "show_in_viewport": "Mutasd a 3D nézegetőben"
+          },
+          "SearchToggle": {
+            "hide": "Kereső elrejtése",
+            "show": "Kereső megjelenítése"
           }
         },
         "property": {
