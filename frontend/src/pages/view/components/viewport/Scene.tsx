@@ -9,9 +9,12 @@ import {
   BufferGeometry,
   Color,
   Group,
+  type Intersection,
   Matrix4,
   Mesh,
   MeshLambertMaterial,
+  Object3D,
+  type Object3DEventMap,
   Plane,
   Quaternion,
   Vector3,
@@ -180,6 +183,23 @@ export const Scene = () => {
 
   const currentTool = useIfcStore((state) => state.tool.current);
 
+  const clipAlwaysVisible = useIfcStore(
+    (state) => state.tool.clip.alwaysVisible
+  );
+
+  const clipMatrix = useIfcStore((state) => state.tool.clip.matrix);
+
+  const clippingPlanes = useMemo(() => {
+    if (currentTool !== "clip" && !clipAlwaysVisible) {
+      return [];
+    }
+    const zAxis = new Vector3();
+    const position = new Vector3();
+    clipMatrix.extractBasis(new Vector3(), new Vector3(), zAxis);
+    clipMatrix.decompose(position, new Quaternion(), new Vector3());
+    return [new Plane(zAxis.negate(), 0).translate(position)];
+  }, [clipAlwaysVisible, clipMatrix, currentTool]);
+
   // not an arrow function because EventListener hates me
   const clickListener = function clickListener(
     this: HTMLCanvasElement,
@@ -198,12 +218,24 @@ export const Scene = () => {
     const intersected = raycaster.intersectObjects(meshes);
     raycaster.layers.enableAll();
 
-    if (intersected.length === 0) {
+    const notClipped: Intersection<Object3D<Object3DEventMap>>[] = [];
+
+    intersected.forEach((intersection) => {
+      if (clippingPlanes.length > 0) {
+        const plane = clippingPlanes[0];
+        if (plane.distanceToPoint(intersection.point) < 0) {
+          return;
+        }
+      }
+      notClipped.push(intersection);
+    });
+
+    if (notClipped.length === 0) {
       setSelectedElementIds([]);
       return;
     }
 
-    const object = intersected[0].object;
+    const object = notClipped[0].object;
 
     if (
       object.userData === undefined ||
@@ -220,22 +252,6 @@ export const Scene = () => {
     canvas.addEventListener("click", clickListener);
     return () => canvas.removeEventListener("click", clickListener);
   }, [canvas, clickListener]);
-
-  const clipAlwaysVisible = useIfcStore(
-    (state) => state.tool.clip.alwaysVisible
-  );
-  const clipMatrix = useIfcStore((state) => state.tool.clip.matrix);
-
-  const clippingPlanes = useMemo(() => {
-    if (currentTool !== "clip" && !clipAlwaysVisible) {
-      return [];
-    }
-    const zAxis = new Vector3();
-    const position = new Vector3();
-    clipMatrix.extractBasis(new Vector3(), new Vector3(), zAxis);
-    clipMatrix.decompose(position, new Quaternion(), new Vector3());
-    return [new Plane(zAxis.negate(), 0).translate(position)];
-  }, [clipAlwaysVisible, clipMatrix, currentTool]);
 
   useEffect(() => {
     meshes.forEach((mesh) => {
