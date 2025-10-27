@@ -201,6 +201,7 @@ export const Scene = () => {
   }, [clipAlwaysVisible, clipMatrix, currentTool]);
 
   // not an arrow function because EventListener hates me
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const clickListener = function clickListener(
     this: HTMLCanvasElement,
     _event: MouseEvent
