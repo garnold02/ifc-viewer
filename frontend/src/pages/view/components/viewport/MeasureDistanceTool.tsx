@@ -1,4 +1,5 @@
-import { Typography, useTheme } from "@mui/material";
+import { Typography } from "@mui/material";
+import { MEASUREMENT_COLOR } from "@pages/view/components/viewport/constants";
 import { Html, Line } from "@react-three/drei";
 import { useIfcStore } from "@stores/ifc/store";
 import { Vector3 } from "three";
@@ -6,12 +7,6 @@ import { Vector3 } from "three";
 export const MeasureDistanceTool = () => {
   const currentTool = useIfcStore((state) => state.tool.current);
   const state = useIfcStore((state) => state.tool.measure_distance.state);
-
-  const {
-    palette: {
-      primary: { main: color },
-    },
-  } = useTheme();
 
   if (currentTool !== "measure_length") {
     return null;
@@ -22,7 +17,7 @@ export const MeasureDistanceTool = () => {
       {state.firstPoint !== null ? (
         <sprite position={state.firstPoint} scale={0.02}>
           <spriteMaterial
-            color={color}
+            color={MEASUREMENT_COLOR}
             depthTest={false}
             sizeAttenuation={false}
           />
@@ -31,7 +26,7 @@ export const MeasureDistanceTool = () => {
       {state.secondPoint !== null ? (
         <sprite position={state.secondPoint} scale={0.02}>
           <spriteMaterial
-            color={color}
+            color={MEASUREMENT_COLOR}
             depthTest={false}
             sizeAttenuation={false}
           />
@@ -41,7 +36,7 @@ export const MeasureDistanceTool = () => {
         <>
           <Line
             points={[state.firstPoint, state.secondPoint]}
-            color={color}
+            color={MEASUREMENT_COLOR}
             lineWidth={4}
             depthTest={false}
           />
