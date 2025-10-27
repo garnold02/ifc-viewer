@@ -102,6 +102,7 @@
         "toolbar": {
           "ToolButton": {
             "clip": "Clip geometry",
+            "measure_length": "Measure length",
             "select": "Select"
           }
         }

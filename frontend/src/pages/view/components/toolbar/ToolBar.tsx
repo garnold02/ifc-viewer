@@ -3,6 +3,7 @@ import { LanguageButton } from "@components/LanguageButton";
 import { ThemeToggle } from "@components/ThemeToggle";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import PanToolAltIcon from "@mui/icons-material/PanToolAlt";
+import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import { Stack } from "@mui/material";
 import { ToolButton } from "@pages/view/components/toolbar/ToolButton";
 
@@ -22,6 +23,10 @@ export const ToolBar = () => {
       >
         <ToolButton type="select" icon={<PanToolAltIcon fontSize="small" />} />
         <ToolButton type="clip" icon={<ContentCutIcon fontSize="small" />} />
+        <ToolButton
+          type="measure_length"
+          icon={<SquareFootIcon fontSize="small" />}
+        />
       </Stack>
       <Stack
         direction="row"

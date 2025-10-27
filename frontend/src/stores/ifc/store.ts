@@ -1,8 +1,7 @@
 import type { Element } from "@api/types/file/element";
-import { defaultVisibilityOf } from "@utils/visibility";
 import { produce } from "immer";
 import { createContext, useContext } from "react";
-import { Matrix4 } from "three";
+import { Matrix4, Vector3 } from "three";
 import { create, type StoreApi, useStore } from "zustand";
 
 export type IfcState = {
@@ -49,6 +48,11 @@ export type IfcState = {
       matrix: Matrix4;
       setMatrix: (value: Matrix4) => void;
     };
+
+    measure_distance: {
+      state: MeasureDistanceState;
+      setState: (value: MeasureDistanceState) => void;
+    };
   };
 
   details: {
@@ -61,13 +65,21 @@ export type IfcState = {
   };
 };
 
-export type OutlinerNodeState = {
-  expanded: boolean;
-  selfVisible: boolean;
-  childrenVisible: boolean;
-};
+export type MeasureDistanceState =
+  | {
+      firstPoint: null;
+      secondPoint: null;
+    }
+  | {
+      firstPoint: Vector3;
+      secondPoint: null;
+    }
+  | {
+      firstPoint: Vector3;
+      secondPoint: Vector3;
+    };
 
-export type ToolName = "select" | "clip";
+export type ToolName = "select" | "clip" | "measure_length";
 
 export const createIfcStore = (
   fileId: number,
@@ -201,6 +213,16 @@ export const createIfcStore = (
             })
           ),
       },
+
+      measure_distance: {
+        state: { firstPoint: null, secondPoint: null },
+        setState: (value) =>
+          set((prev) =>
+            produce(prev, (draft) => {
+              draft.tool.measure_distance.state = value;
+            })
+          ),
+      },
     },
 
     details: {
@@ -235,14 +257,6 @@ export const createIfcStore = (
         ),
     },
   }));
-
-export const createDefaultOutlinerNodeState = (
-  element: Element
-): OutlinerNodeState => ({
-  expanded: false,
-  selfVisible: defaultVisibilityOf(element.type),
-  childrenVisible: true,
-});
 
 export const IfcStoreContext = createContext<StoreApi<IfcState> | null>(null);
 

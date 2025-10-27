@@ -102,6 +102,7 @@
         "toolbar": {
           "ToolButton": {
             "clip": "Geometria vágása",
+            "measure_length": "Hosszúság mérése",
             "select": "Kiválasztás"
           }
         }

@@ -3,7 +3,7 @@ import { getCameraMoving } from "@global/camera";
 import { useThree } from "@react-three/fiber";
 import { useIfcStore } from "@stores/ifc/store";
 import { defaultVisibilityOf } from "@utils/visibility";
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import {
   BufferAttribute,
   BufferGeometry,
@@ -200,16 +200,91 @@ export const Scene = () => {
     return [new Plane(zAxis.negate(), 0).translate(position)];
   }, [clipAlwaysVisible, clipMatrix, currentTool]);
 
+  const selectBehavior = useCallback(
+    (intersections: Intersection<Object3D<Object3DEventMap>>[]) => {
+      if (intersections.length === 0) {
+        setSelectedElementIds([]);
+        return;
+      }
+
+      const object = intersections[0].object;
+
+      if (
+        object.userData === undefined ||
+        object.userData["element"] === undefined
+      ) {
+        return;
+      }
+
+      const element: Element = object.userData["element"];
+      toggleElementSelection(element.id, true);
+    },
+    [setSelectedElementIds, toggleElementSelection]
+  );
+
+  const measureDistanceState = useIfcStore(
+    (state) => state.tool.measure_distance.state
+  );
+
+  const setMeasureDistanceState = useIfcStore(
+    (state) => state.tool.measure_distance.setState
+  );
+
+  const measureDistanceBehavior = useCallback(
+    (intersections: Intersection<Object3D<Object3DEventMap>>[]) => {
+      if (intersections.length === 0) {
+        return;
+      }
+
+      const object = intersections[0].object;
+
+      if (
+        object.userData === undefined ||
+        object.userData["element"] === undefined
+      ) {
+        return;
+      }
+
+      const point = intersections[0].point;
+
+      // no points selected
+      if (measureDistanceState.firstPoint === null) {
+        setMeasureDistanceState({
+          firstPoint: point,
+          secondPoint: null,
+        });
+        return;
+      }
+
+      // first point already selected
+      if (measureDistanceState.secondPoint === null) {
+        setMeasureDistanceState({
+          firstPoint: measureDistanceState.firstPoint,
+          secondPoint: point,
+        });
+        return;
+      }
+
+      // both points already selected; start over
+      setMeasureDistanceState({
+        firstPoint: point,
+        secondPoint: null,
+      });
+      return;
+    },
+    [
+      measureDistanceState.firstPoint,
+      measureDistanceState.secondPoint,
+      setMeasureDistanceState,
+    ]
+  );
+
   // not an arrow function because EventListener hates me
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const clickListener = function clickListener(
     this: HTMLCanvasElement,
     _event: MouseEvent
   ) {
-    if (currentTool !== "select") {
-      return;
-    }
-
     if (getCameraMoving()) {
       return;
     }
@@ -231,22 +306,18 @@ export const Scene = () => {
       notClipped.push(intersection);
     });
 
-    if (notClipped.length === 0) {
-      setSelectedElementIds([]);
-      return;
+    switch (currentTool) {
+      case "select":
+        selectBehavior(notClipped);
+        break;
+
+      case "measure_length":
+        measureDistanceBehavior(notClipped);
+        break;
+
+      default:
+        break;
     }
-
-    const object = notClipped[0].object;
-
-    if (
-      object.userData === undefined ||
-      object.userData["element"] === undefined
-    ) {
-      return;
-    }
-
-    const element: Element = object.userData["element"];
-    toggleElementSelection(element.id, true);
   };
 
   useEffect(() => {
