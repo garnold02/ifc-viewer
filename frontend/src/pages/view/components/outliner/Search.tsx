@@ -132,6 +132,7 @@ export const Search = () => {
                 size="small"
                 checked={invert}
                 onChange={onInvertChange}
+                disabled={filterElementTypes.length === 0}
               />
             }
           />
@@ -142,6 +143,7 @@ export const Search = () => {
                 size="small"
                 checked={showInViewport}
                 onChange={onShowInViewportChange}
+                disabled={filterElementTypes.length === 0}
               />
             }
           />
