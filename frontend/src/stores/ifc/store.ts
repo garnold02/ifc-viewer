@@ -9,8 +9,11 @@ export type IfcState = {
   elements: Record<number, Element>;
 
   filter: {
-    elementType: string;
-    setElementType: (value: string) => void;
+    elementTypes: string[];
+    setElementTypes: (value: string[]) => void;
+
+    invert: boolean;
+    setInvert: (value: boolean) => void;
 
     showInViewport: boolean;
     setShowInViewport: (value: boolean) => void;
@@ -90,14 +93,28 @@ export const createIfcStore = (
     elements,
 
     filter: {
-      elementType: "",
-      setElementType: (value) =>
+      elementTypes: [],
+      setElementTypes: (value) =>
         set((prev) =>
           produce(prev, (draft) => {
-            draft.filter.elementType = value;
+            draft.filter.elementTypes = value;
             draft.filter.elements = recalculateFilteredElements(
               prev.elements,
-              value
+              draft.filter.elementTypes,
+              prev.filter.invert
+            );
+          })
+        ),
+
+      invert: false,
+      setInvert: (value) =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            draft.filter.invert = value;
+            draft.filter.elements = recalculateFilteredElements(
+              prev.elements,
+              prev.filter.elementTypes,
+              draft.filter.invert
             );
           })
         ),
@@ -267,7 +284,8 @@ export const useIfcStore = <T>(selector: (state: IfcState) => T): T => {
 
 const recalculateFilteredElements = (
   original: Record<number, Element>,
-  elementType: string
+  elementTypes: string[],
+  invert: boolean
 ): Record<number, Element> => {
   const rootElement = Object.values(original).find(
     (el) => el.parent_id === null
@@ -278,13 +296,33 @@ const recalculateFilteredElements = (
   }
 
   let newFilteredElements: Record<number, Element> = {};
-  const searchString = elementType.toLowerCase();
+  const searchStrings = elementTypes.map((searchString) =>
+    searchString.toLowerCase()
+  );
 
   const collect = (el: Element): boolean => {
     let result = false;
 
-    if (el.type.toLowerCase().includes(searchString)) {
+    if (invert) {
       result = true;
+
+      searchStrings.forEach((searchString) => {
+        if (!result) {
+          return;
+        }
+        if (el.type.toLowerCase().includes(searchString)) {
+          result = false;
+        }
+      });
+    } else {
+      searchStrings.forEach((searchString) => {
+        if (result) {
+          return;
+        }
+        if (el.type.toLowerCase().includes(searchString)) {
+          result = true;
+        }
+      });
     }
 
     for (const childId of el.child_ids) {
@@ -301,7 +339,7 @@ const recalculateFilteredElements = (
     return result;
   };
 
-  if (elementType.length > 0) {
+  if (elementTypes.length > 0) {
     collect(rootElement);
   } else {
     newFilteredElements = original;

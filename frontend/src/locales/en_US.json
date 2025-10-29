@@ -80,6 +80,7 @@
           },
           "Search": {
             "element_type": "Element type",
+            "invert": "Invert",
             "show_in_viewport": "Show in viewport"
           },
           "SearchToggle": {

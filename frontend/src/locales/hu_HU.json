@@ -80,6 +80,7 @@
           },
           "Search": {
             "element_type": "Elemtípus",
+            "invert": "Invertálás",
             "show_in_viewport": "Mutasd a 3D nézegetőben"
           },
           "SearchToggle": {
