@@ -279,7 +279,7 @@ class IfcElement:
 
             transformed["description"] = description
             transformed["unit"] = IfcElement(value.Unit, self._global_units).resolve_unit(
-                value.NominalValue.is_a(),
+                value.NominalValue.is_a() if value.NominalValue != None else None,
             )
 
             return transformed
