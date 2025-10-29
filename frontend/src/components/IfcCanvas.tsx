@@ -1,3 +1,4 @@
+import { GizmoHelper, GizmoViewport } from "@react-three/drei";
 import { Canvas, type CanvasProps } from "@react-three/fiber";
 import { type CSSProperties, useMemo } from "react";
 
@@ -12,6 +13,9 @@ export const IfcCanvas = ({ children, style, ...props }: CanvasProps) => {
 
   return (
     <Canvas style={calculatedStyle} {...props}>
+      <GizmoHelper alignment="top-right">
+        <GizmoViewport />
+      </GizmoHelper>
       {children}
     </Canvas>
   );
