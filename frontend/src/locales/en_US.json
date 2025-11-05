@@ -21,6 +21,16 @@
         "SummaryCard": {
           "open": "Open",
           "preview": "Preview"
+        },
+        "UploadButton": {
+          "close": "Close",
+          "file_too_large": "File too large",
+          "file_too_large_detail": "Files larger than 100MB are not supported.",
+          "text": "Upload",
+          "uploaded_file_error": "The file could not be uploaded.",
+          "uploaded_file_success": "The file was uploaded successfully.",
+          "uploading_file": "Uploading file",
+          "uploading_file_detail": "Please wait while the file is being uploaded..."
         }
       }
     },

@@ -21,6 +21,16 @@
         "SummaryCard": {
           "open": "Mengyitás",
           "preview": "Előnézet"
+        },
+        "UploadButton": {
+          "close": "Bezárás",
+          "file_too_large": "A fájl túl nagy",
+          "file_too_large_detail": "A 100MB-nál nagyobb fájlok nem támogatottak.",
+          "text": "Feltöltés",
+          "uploaded_file_error": "A fájlt nem lehetett feltölteni.",
+          "uploaded_file_success": "A fájl sikeresen feltöltve.",
+          "uploading_file": "Fájl feltöltése",
+          "uploading_file_detail": "Kérem várjon, amíg a fájl feltöltés alatt áll..."
         }
       }
     },

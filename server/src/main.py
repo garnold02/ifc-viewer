@@ -1,9 +1,11 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, HTTPException, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from ifc_repo import IfcRepo
 import os
+from os import SEEK_SET
+import ifcopenshell
 
 
 repo = IfcRepo()
@@ -11,12 +13,18 @@ repo = IfcRepo()
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    files_path = os.fsencode("files")
+    file_names: list[str] = []
 
-    for file_path in os.listdir(files_path):
-        file_name = os.fsdecode(file_path)
-        if file_name.endswith(".ifc"):
-            repo.add_file(file_name)
+    with open("cache/files.txt", "a+") as files:
+        files.seek(0, SEEK_SET)
+        content = files.read()
+        
+        for line in content.splitlines():
+            tokens = line.split()
+            file_names.append(tokens[0])
+
+    for file_path in file_names:
+        repo.add_file(file_path)
 
     yield
 
@@ -41,6 +49,43 @@ app.add_middleware(
 @app.get("/api/summaries")
 def get_summaries():
     return repo.get_file_summaries()
+
+
+@app.post("/api/file")
+async def post_file(file: UploadFile, response: Response):
+    if file.size > 1073741824:
+        response.status_code = 422
+        return { "status": "error" }
+
+    if not file.filename.endswith(".ifc"):
+        response.status_code = 422
+        return { "status": "error" }
+
+    try:
+        with open(f"cache/files.txt", "a+") as files:
+            files.seek(0, SEEK_SET)
+            content = files.read()
+
+            for line in content.splitlines():
+                tokens = line.split()
+                if tokens[0] == file.filename:
+                    response.status_code = 422
+                    return { "status": "error" }
+            
+            with open(f"cache/{file.filename}", "wb") as out:
+                out.write(await file.read())
+            
+            ifc_file = ifcopenshell.open(f"cache/{file.filename}")
+            schema = ifc_file.schema
+
+            files.write(f"{file.filename} {schema}\n")
+            repo.add_file(file.filename)
+        
+        return { "status": "success" }
+
+    except:
+        response.status_code = 500
+        return { "status": "error" }
 
 
 @app.get("/api/file/{file_id}/summary")
