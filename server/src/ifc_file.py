@@ -2,7 +2,8 @@ from ifc_element import IfcElement
 from ifc_process import IfcProcessElement, collect_geometries
 import ifcopenshell as ios
 import os
-from threading import Lock, Timer
+from os import SEEK_SET
+from threading import Lock
 
 
 class IfcFileSummary:
@@ -13,7 +14,6 @@ class IfcFileSummary:
 
 class IfcFile:
     name: str
-    _schema: str | None
     _file: ios.file | None
     _lock: Lock
     _units: list[dict] | None
@@ -21,7 +21,6 @@ class IfcFile:
 
     def __init__(self, name: str):
         self.name = name
-        self._schema = None
         self._file = None
         self._lock = Lock()
         self._units = None
@@ -29,7 +28,7 @@ class IfcFile:
 
     def _load(self):
         if self._file == None:
-            self._file = ios.open(f"files/{self.name}")
+            self._file = ios.open(f"cache/{self.name}")
     
 
     def _unload(self):
@@ -38,8 +37,8 @@ class IfcFile:
 
     def process(self):
         with self._lock:
-            elements_exists = os.path.isfile(f"files/{self.name}.elements.bin")
-            preview_exists = os.path.isfile(f"files/{self.name}.preview.bin")
+            elements_exists = os.path.isfile(f"cache/{self.name}.elements.bin")
+            preview_exists = os.path.isfile(f"cache/{self.name}.preview.bin")
 
             if elements_exists and preview_exists:
                 print(f"File `{self.name}` already processed. Skipping...")
@@ -65,8 +64,8 @@ class IfcFile:
             print(f"    DONE")
 
             print(f"Dumping output for `{self.name}`...")
-            root_element.pack_elements().dump(f"files/{self.name}.elements.bin")
-            root_element.pack_preview().dump(f"files/{self.name}.preview.bin")
+            root_element.pack_elements().dump(f"cache/{self.name}.elements.bin")
+            root_element.pack_preview().dump(f"cache/{self.name}.preview.bin")
             print("    DONE")
 
             self._unload()
@@ -77,22 +76,26 @@ class IfcFile:
         summary.id = id
         summary.name = self.name
 
-        if self._schema == None:
-            with self._lock:
-                self._load()
-                self._schema = self._file.schema
-        
-        summary.schema = self._schema
+        with open("cache/files.txt", "a+") as files:
+            files.seek(0, SEEK_SET)
+            content = files.read()
+
+            for line in content.splitlines():
+                tokens = line.split()
+                if tokens[0] == self.name:
+                    summary.schema = tokens[1]
+                    break
+
         return summary
     
 
     def get_elements(self) -> bytes:
-        with open(f"files/{self.name}.elements.bin", "rb") as file:
+        with open(f"cache/{self.name}.elements.bin", "rb") as file:
             return file.read()
     
 
     def get_preview(self) -> bytes:
-        with open(f"files/{self.name}.preview.bin", "rb") as file:
+        with open(f"cache/{self.name}.preview.bin", "rb") as file:
             return file.read()
     
 
