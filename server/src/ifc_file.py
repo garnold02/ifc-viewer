@@ -2,8 +2,8 @@ from ifc_element import IfcElement
 from ifc_process import IfcProcessElement, collect_geometries
 import ifcopenshell as ios
 import os
-from os import SEEK_SET
 from threading import Lock
+from lookup_table import LookupTable
 
 
 class IfcFileSummary:
@@ -14,6 +14,7 @@ class IfcFileSummary:
 
 class IfcFile:
     name: str
+    schema: str | None
     _file: ios.file | None
     _lock: Lock
     _units: list[dict] | None
@@ -21,6 +22,7 @@ class IfcFile:
 
     def __init__(self, name: str):
         self.name = name
+        self.schema = None
         self._file = None
         self._lock = Lock()
         self._units = None
@@ -29,6 +31,7 @@ class IfcFile:
     def _load(self):
         if self._file == None:
             self._file = ios.open(f"cache/{self.name}")
+            self.schema = self._file.schema
     
 
     def _unload(self):
@@ -71,20 +74,18 @@ class IfcFile:
             self._unload()
     
 
-    def get_summary(self, id: int) -> IfcFileSummary:
+    def get_summary(self) -> IfcFileSummary:
+        lookup_table = LookupTable()
+        entry = lookup_table.get_entry(self.name)
+        id = lookup_table.get_entry_id(self.name)
+
+        if entry == None or id == None:
+            raise Exception()
+
         summary = IfcFileSummary()
         summary.id = id
         summary.name = self.name
-
-        with open("cache/files.txt", "a+") as files:
-            files.seek(0, SEEK_SET)
-            content = files.read()
-
-            for line in content.splitlines():
-                tokens = line.split()
-                if tokens[0] == self.name:
-                    summary.schema = tokens[1]
-                    break
+        summary.schema = entry.ifc_schema
 
         return summary
     
