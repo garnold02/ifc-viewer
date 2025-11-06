@@ -1,4 +1,4 @@
-import { useGetFileElementPropertyTree } from "@api/hooks/file/element/propertyTree";
+import { useGetFileElementPropertyTree } from "@api/hooks/useGetFileElementPropertyTree";
 import {
   LinearProgress,
   Table,

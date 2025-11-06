@@ -2,7 +2,7 @@ import type {
   Element,
   ElementGeometry,
   ElementGeometryMesh,
-} from "@api/types/file/element";
+} from "@api/types/element";
 import { Color, Matrix4 } from "three";
 
 export class BinaryParser {

@@ -1,5 +1,5 @@
-import { useGetSummaries } from "@api/hooks/summaries";
-import type { FileSummary } from "@api/types/file/summary";
+import { useGetSummaries } from "@api/hooks/useGetSummaries";
+import type { FileSummary } from "@api/types/fileSummary";
 import { Container, Stack } from "@mui/material";
 import { AppBar } from "@pages/index/components/AppBar";
 import { PreviewDialog } from "@pages/index/components/PreviewDialog";

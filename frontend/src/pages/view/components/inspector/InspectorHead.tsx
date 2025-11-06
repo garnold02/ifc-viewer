@@ -1,4 +1,4 @@
-import { useGetFileElementSignature } from "@api/hooks/file/element/signature";
+import { useGetFileElementSignature } from "@api/hooks/useGetFileElementSignature";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   Box,

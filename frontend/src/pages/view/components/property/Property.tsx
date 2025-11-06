@@ -1,4 +1,4 @@
-import type { Property as PropertyType } from "@api/types/file/element/property";
+import type { Property as PropertyType } from "@api/types/property";
 import { LeafProperty } from "@pages/view/components/property/LeafProperty";
 import { NodeProperty } from "@pages/view/components/property/NodeProperty";
 

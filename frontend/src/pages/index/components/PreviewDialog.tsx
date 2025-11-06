@@ -1,5 +1,5 @@
-import { useGetFilePreview } from "@api/hooks/file/preview";
-import type { FileSummary } from "@api/types/file/summary";
+import { useGetFilePreview } from "@api/hooks/useGetFilePreview";
+import type { FileSummary } from "@api/types/fileSummary";
 import { ButtonLink } from "@components/ButtonLink";
 import { IfcCanvas } from "@components/IfcCanvas";
 import { IfcSceneCamera } from "@components/IfcSceneCamera";

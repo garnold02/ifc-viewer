@@ -1,4 +1,4 @@
-import { useGetFileElements } from "@api/hooks/file/elements";
+import { useGetFileElements } from "@api/hooks/useGetFileElements";
 import { Content } from "@pages/view/components/Content";
 import { Details } from "@pages/view/components/Details";
 import { IfcStoreProvider } from "@stores/ifc/Provider";

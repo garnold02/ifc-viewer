@@ -1,4 +1,4 @@
-import type { Element } from "@api/types/file/element";
+import type { Element } from "@api/types/element";
 import {
   createIfcStore,
   type IfcState,

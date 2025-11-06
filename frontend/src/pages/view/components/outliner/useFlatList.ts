@@ -1,4 +1,4 @@
-import type { Element } from "@api/types/file/element";
+import type { Element } from "@api/types/element";
 import { useIfcStore } from "@stores/ifc/store";
 import { useMemo } from "react";
 

@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "@api/constants";
-import type { Property } from "@api/types/file/element/property";
+import type { Property } from "@api/types/property";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetFileElementPropertyTree = (

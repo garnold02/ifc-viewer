@@ -1,4 +1,4 @@
-import type { FileSummary } from "@api/types/file/summary";
+import type { FileSummary } from "@api/types/fileSummary";
 import { ButtonLink } from "@components/ButtonLink";
 import {
   Button,

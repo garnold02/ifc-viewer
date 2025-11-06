@@ -1,4 +1,4 @@
-import type { Element } from "@api/types/file/element";
+import type { Element } from "@api/types/element";
 import { produce } from "immer";
 import { createContext, useContext } from "react";
 import { Matrix4, Vector3 } from "three";

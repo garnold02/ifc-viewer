@@ -1,4 +1,4 @@
-import { useGetFileSummary } from "@api/hooks/file/summary";
+import { useGetFileSummary } from "@api/hooks/useGetFileSummary";
 import {
   LinearProgress,
   Table,

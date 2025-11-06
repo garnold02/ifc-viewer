@@ -1,4 +1,4 @@
-import { useGetFileElementSignature } from "@api/hooks/file/element/signature";
+import { useGetFileElementSignature } from "@api/hooks/useGetFileElementSignature";
 import LinkIcon from "@mui/icons-material/Link";
 import { Chip, LinearProgress } from "@mui/material";
 import { useIfcStore } from "@stores/ifc/store";

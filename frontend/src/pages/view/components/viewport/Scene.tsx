@@ -1,4 +1,4 @@
-import type { Element } from "@api/types/file/element";
+import type { Element } from "@api/types/element";
 import { getCameraMoving } from "@global/camera";
 import { useThree } from "@react-three/fiber";
 import { useIfcStore } from "@stores/ifc/store";

@@ -1,4 +1,4 @@
-import type { LeafProperty } from "@api/types/file/element/property";
+import type { LeafProperty } from "@api/types/property";
 import { TableCell, Tooltip } from "@mui/material";
 import { ElementReference } from "@pages/view/components/ElementReference";
 import { useTranslation } from "react-i18next";

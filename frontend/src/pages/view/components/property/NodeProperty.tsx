@@ -1,4 +1,4 @@
-import type { NodeProperty as NodePropertyType } from "@api/types/file/element/property";
+import type { NodeProperty as NodePropertyType } from "@api/types/property";
 import { Stack, TableCell, TableRow } from "@mui/material";
 import { DescriptionTooltip } from "@pages/view/components/property/DescriptionTooltip";
 import { ExpandButton } from "@pages/view/components/property/ExpandButton";

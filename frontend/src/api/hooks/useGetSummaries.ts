@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "@api/constants";
-import type { FileSummary } from "@api/types/file/summary";
+import type { FileSummary } from "@api/types/fileSummary";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetSummaries = () =>
