@@ -38,6 +38,8 @@ export type IfcState = {
 
     expansion: Record<number, boolean>;
     setExpanded: (id: number, value: boolean) => void;
+
+    unhideAll: () => void;
   };
 
   tool: {
@@ -200,6 +202,14 @@ export const createIfcStore = (
         set((prev) =>
           produce(prev, (draft) => {
             draft.outliner.expansion[id] = value;
+          })
+        ),
+
+      unhideAll: () =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            draft.outliner.selfVisibility = {};
+            draft.outliner.childrenVisibility = {};
           })
         ),
     },

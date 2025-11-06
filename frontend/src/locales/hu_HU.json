@@ -93,7 +93,8 @@
         },
         "outliner": {
           "Outliner": {
-            "title": "Térbeli struktúra"
+            "title": "Térbeli struktúra",
+            "unhide_all": "Elrejtett elemek megjelenítése"
           },
           "Search": {
             "element_type": "Elemtípus",

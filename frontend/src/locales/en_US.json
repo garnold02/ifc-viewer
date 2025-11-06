@@ -93,7 +93,8 @@
         },
         "outliner": {
           "Outliner": {
-            "title": "Spatial structure"
+            "title": "Spatial structure",
+            "unhide_all": "Unhide all"
           },
           "Search": {
             "element_type": "Element type",
