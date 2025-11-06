@@ -50,7 +50,9 @@ export const UploadButton = () => {
       setProcessDialogOpen(true);
 
       uploadFile(file, {
-        onSuccess: (data) => setProcessState(data.status),
+        onSuccess: (data) => {
+          setProcessState(data.status);
+        },
       });
     },
     [uploadFile]
@@ -106,7 +108,6 @@ export const UploadButton = () => {
                 <Button
                   onClick={() => {
                     setProcessDialogOpen(false);
-                    window.location.reload();
                   }}
                 >
                   {t("close")}

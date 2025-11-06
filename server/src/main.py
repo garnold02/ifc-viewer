@@ -4,7 +4,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from file_repo import FileRepo
 
 
-repo2 = FileRepo()
+repo = FileRepo()
 app = FastAPI()
 allowed_origins = ["http://localhost:4173", "http://localhost:5173"]
 
@@ -24,23 +24,29 @@ app.add_middleware(
 
 @app.get("/api/summaries")
 def get_summaries():
-    return repo2.get_summaries()
+    return repo.get_summaries()
 
 
 @app.post("/api/file")
 async def post_file(file: UploadFile, response: Response):
     content = await file.read()
 
-    if not repo2.add(file.filename, content):
+    if not repo.add(file.filename, content):
         response.status_code = 422
         return { "status": "error" }
     
     return { "status": "success" }
 
 
+@app.delete("/api/file/{file_id}")
+async def delete_file(file_id: int):
+    if not repo.delete(file_id):
+        raise HTTPException(status_code=404)
+
+
 @app.get("/api/file/{file_id}/summary")
 def get_file_summary(file_id: int):
-    summary = repo2.get_summary(file_id)
+    summary = repo.get_summary(file_id)
 
     if summary == None:
         raise HTTPException(status_code=404)
@@ -50,7 +56,7 @@ def get_file_summary(file_id: int):
 
 @app.get("/api/file/{file_id}/elements")
 def get_file_elements(file_id: int):
-    elements = repo2.get_elements(file_id)
+    elements = repo.get_elements(file_id)
 
     if elements == None:
         raise HTTPException(status_code=404)
@@ -60,7 +66,7 @@ def get_file_elements(file_id: int):
 
 @app.get("/api/file/{file_id}/preview")
 def get_file_preview(file_id: int):
-    preview = repo2.get_preview(file_id)
+    preview = repo.get_preview(file_id)
 
     if preview == None:
         raise HTTPException(status_code=404)
@@ -70,7 +76,7 @@ def get_file_preview(file_id: int):
 
 @app.get("/api/file/{file_id}/element/{element_id}/signature")
 def get_file_element_signature(file_id: int, element_id: int):
-    file = repo2.open(file_id)
+    file = repo.open(file_id)
 
     if file == None:
         raise HTTPException(status_code=404)
@@ -85,7 +91,7 @@ def get_file_element_signature(file_id: int, element_id: int):
 
 @app.get("/api/file/{file_id}/element/{element_id}/property_tree")
 def get_file_element_property_tree(file_id: int, element_id: int):
-    file = repo2.open(file_id)
+    file = repo.open(file_id)
 
     if file == None:
         raise HTTPException(status_code=404)

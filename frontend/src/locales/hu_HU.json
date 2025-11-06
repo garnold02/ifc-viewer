@@ -14,11 +14,18 @@
   "pages": {
     "index": {
       "components": {
+        "DeleteDialog": {
+          "cancel": "Mégse",
+          "confirm": "Megerősítés",
+          "delete_file": "Fájl törlése",
+          "dialog_text": "Biztosan törölni szeretné a(z) `{{name}}` fájlt?"
+        },
         "PreviewDialog": {
           "close": "Bezárás",
           "open": "Megnyitás"
         },
         "SummaryCard": {
+          "delete": "Törlés",
           "open": "Mengyitás",
           "preview": "Előnézet"
         },

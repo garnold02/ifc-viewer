@@ -90,6 +90,39 @@ class FileRepo:
         return True
 
 
+    def delete(self, id: int) -> bool:
+        connection = sqlite3.connect("cache/file_repo.db")
+        cursor = connection.cursor()
+
+        res = cursor.execute(
+            """
+            SELECT name FROM file
+                WHERE id = ?;
+            """,
+            (id,),
+        )
+
+        row = res.fetchone()
+
+        if row == None:
+            return False
+        
+        name = row[0]
+        
+        cursor.execute(
+            """
+            DELETE FROM file
+                WHERE id = ?;
+            """,
+            (id,),
+        )
+
+        os.remove(f"cache/{name}")
+        connection.commit()
+        
+        return True
+
+
     def get_summaries(self) -> list[FileSummary]:
         connection = sqlite3.connect("cache/file_repo.db")
         cursor = connection.cursor()

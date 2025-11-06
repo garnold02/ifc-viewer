@@ -14,11 +14,18 @@
   "pages": {
     "index": {
       "components": {
+        "DeleteDialog": {
+          "cancel": "Cancel",
+          "confirm": "Confirm",
+          "delete_file": "Delete file",
+          "dialog_text": "Are you sure you want to delete the file `{{name}}`?"
+        },
         "PreviewDialog": {
           "close": "Close",
           "open": "Open"
         },
         "SummaryCard": {
+          "delete": "Delete",
           "open": "Open",
           "preview": "Preview"
         },
