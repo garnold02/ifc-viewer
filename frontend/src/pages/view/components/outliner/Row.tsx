@@ -1,7 +1,7 @@
+import { VisibilityToggle } from "@components/VisibilityToggle";
 import { Box, Stack, Typography } from "@mui/material";
 import { ExpandButton } from "@pages/view/components/outliner/ExpandButton";
 import type { FlatListItem } from "@pages/view/components/outliner/useFlatList";
-import { VisibilityToggle } from "@pages/view/components/outliner/VisibilityToggle";
 import { useIfcStore } from "@stores/ifc/store";
 import { useElementChildrenVisible } from "@stores/ifc/useElementChildrenVisible";
 import { useElementExpanded } from "@stores/ifc/useElementExpanded";
