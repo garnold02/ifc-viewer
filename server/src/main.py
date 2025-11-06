@@ -1,21 +1,11 @@
-from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from ifc_repo import IfcRepo
-from lookup_table import LookupTable
+from file_repo import FileRepo
 
 
-repo = IfcRepo()
-
-
-@asynccontextmanager
-async def lifespan(_: FastAPI):
-    repo.load_files()
-    yield
-
-
-app = FastAPI(lifespan=lifespan)
+repo2 = FileRepo()
+app = FastAPI()
 allowed_origins = ["http://localhost:4173", "http://localhost:5173"]
 
 app.add_middleware(
@@ -34,70 +24,53 @@ app.add_middleware(
 
 @app.get("/api/summaries")
 def get_summaries():
-    return repo.get_file_summaries()
+    return repo2.get_summaries()
 
 
 @app.post("/api/file")
 async def post_file(file: UploadFile, response: Response):
-    if file.size > 1073741824:
-        response.status_code = 422
-        return { "status": "error" }
+    content = await file.read()
 
-    if not file.filename.endswith(".ifc"):
+    if not repo2.add(file.filename, content):
         response.status_code = 422
         return { "status": "error" }
     
-    lookup_table = LookupTable()
-
-    if lookup_table.get_entry(file.filename) != None:
-        response.status_code = 422
-        return { "status": "error" }
-    
-    with open(f"cache/{file.filename}", "wb") as out_file:
-        out_file.write(await file.read())
-    
-    if repo.add_file(file.filename):
-        return { "status": "success" }
-    else:
-        response.status_code = 422
-        return { "status": "error" }
+    return { "status": "success" }
 
 
 @app.get("/api/file/{file_id}/summary")
 def get_file_summary(file_id: int):
-    file = repo.get_file(file_id)
+    summary = repo2.get_summary(file_id)
 
-    if file == None:
+    if summary == None:
         raise HTTPException(status_code=404)
-
-    return file.get_summary()
+    
+    return summary
 
 
 @app.get("/api/file/{file_id}/elements")
 def get_file_elements(file_id: int):
-    file = repo.get_file(file_id)
+    elements = repo2.get_elements(file_id)
 
-    if file == None:
+    if elements == None:
         raise HTTPException(status_code=404)
-    
-    content = file.get_elements()
-    return Response(content=content, media_type="application/octet-stream")
+
+    return Response(content=elements, media_type="application/octet-stream")
 
 
 @app.get("/api/file/{file_id}/preview")
 def get_file_preview(file_id: int):
-    file = repo.get_file(file_id)
+    preview = repo2.get_preview(file_id)
 
-    if file == None:
+    if preview == None:
         raise HTTPException(status_code=404)
-    
-    content = file.get_preview()
-    return Response(content=content, media_type="application/octet-stream")
+
+    return Response(content=preview, media_type="application/octet-stream")
 
 
 @app.get("/api/file/{file_id}/element/{element_id}/signature")
 def get_file_element_signature(file_id: int, element_id: int):
-    file = repo.get_file(file_id)
+    file = repo2.open(file_id)
 
     if file == None:
         raise HTTPException(status_code=404)
@@ -112,7 +85,7 @@ def get_file_element_signature(file_id: int, element_id: int):
 
 @app.get("/api/file/{file_id}/element/{element_id}/property_tree")
 def get_file_element_property_tree(file_id: int, element_id: int):
-    file = repo.get_file(file_id)
+    file = repo2.open(file_id)
 
     if file == None:
         raise HTTPException(status_code=404)
