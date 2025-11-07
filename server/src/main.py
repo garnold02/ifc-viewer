@@ -1,5 +1,4 @@
 from fastapi import FastAPI, HTTPException, Response, UploadFile
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -8,14 +7,19 @@ from file_repo import FileRepo
 
 repo = FileRepo()
 app = FastAPI()
-allowed_origins = ["http://localhost:4173", "http://localhost:5173"]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+def development_mode():
+    from fastapi.middleware.cors import CORSMiddleware
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:5173"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+# Comment out for production mode
+development_mode()
 
 app.add_middleware(
     GZipMiddleware,
