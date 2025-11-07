@@ -1,19 +1,25 @@
 from fastapi import FastAPI, HTTPException, Response, UploadFile
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from file_repo import FileRepo
 
 
 repo = FileRepo()
 app = FastAPI()
-allowed_origins = ["http://localhost:4173", "http://localhost:5173"]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+def development_mode():
+    from fastapi.middleware.cors import CORSMiddleware
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:5173"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+# Comment out for production mode
+development_mode()
 
 app.add_middleware(
     GZipMiddleware,
@@ -103,3 +109,10 @@ def get_file_element_property_tree(file_id: int, element_id: int):
     
     element.set_global_units(file.get_global_units())
     return element.get_property_tree()
+
+
+app.mount("/static", StaticFiles(directory="dist"), name="static")
+
+@app.route("/{_remaining:path}")
+def serve_index_html(_remaining: str):
+    return FileResponse(path="dist/index.html")
