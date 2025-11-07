@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from file_repo import FileRepo
 
 
@@ -103,3 +105,10 @@ def get_file_element_property_tree(file_id: int, element_id: int):
     
     element.set_global_units(file.get_global_units())
     return element.get_property_tree()
+
+
+app.mount("/static", StaticFiles(directory="dist"), name="static")
+
+@app.route("/{_remaining:path}")
+def serve_index_html(_remaining: str):
+    return FileResponse(path="dist/index.html")

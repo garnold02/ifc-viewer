@@ -14,5 +14,5 @@ RUN apt-get update && apt-get install build-essential -y
 RUN pip install --no-cache-dir -r requirements.txt
 COPY server/ /server/
 COPY --from=0 /frontend/dist /server/dist
-EXPOSE 8000
+EXPOSE 8000                              
 CMD ["fastapi", "run", "./src/main.py"]
