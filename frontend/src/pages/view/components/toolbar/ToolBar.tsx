@@ -6,8 +6,13 @@ import PanToolAltIcon from "@mui/icons-material/PanToolAlt";
 import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import { Stack } from "@mui/material";
 import { ToolButton } from "@pages/view/components/toolbar/ToolButton";
+import { useIfcStore } from "@stores/ifc/store";
 
 export const ToolBar = () => {
+  const setMeasureDistanceState = useIfcStore(
+    (state) => state.tool.measure_distance.setState
+  );
+
   return (
     <Stack direction="row" padding={1} gap={1}>
       <Stack direction="row" alignItems="center" flexBasis={0} flexGrow={1}>
@@ -26,6 +31,9 @@ export const ToolBar = () => {
         <ToolButton
           type="measure_length"
           icon={<SquareFootIcon fontSize="small" />}
+          onClick={() =>
+            setMeasureDistanceState({ stage: "1", firstPointCandidate: null })
+          }
         />
       </Stack>
       <Stack

@@ -230,9 +230,64 @@ export const Scene = () => {
     (state) => state.tool.measure_distance.setState
   );
 
-  const measureDistanceBehavior = useCallback(
+  const measureDistanceClickBehavior = useCallback(
+    (_intersections: Intersection<Object3D<Object3DEventMap>>[]) => {
+      // no points selected
+      if (
+        measureDistanceState.stage === "1" &&
+        measureDistanceState.firstPointCandidate !== null
+      ) {
+        setMeasureDistanceState({
+          stage: "2",
+          firstPoint: measureDistanceState.firstPointCandidate,
+          secondPointCandidate: null,
+        });
+        return;
+      }
+
+      // first point already selected
+      if (
+        measureDistanceState.stage === "2" &&
+        measureDistanceState.secondPointCandidate !== null
+      ) {
+        setMeasureDistanceState({
+          stage: "3",
+          firstPoint: measureDistanceState.firstPoint,
+          secondPoint: measureDistanceState.secondPointCandidate,
+        });
+        return;
+      }
+
+      // both points already selected; start over
+      setMeasureDistanceState({
+        stage: "1",
+        firstPointCandidate: null,
+      });
+
+      return;
+    },
+    [measureDistanceState, setMeasureDistanceState]
+  );
+
+  const measureDistanceMoveBehavior = useCallback(
     (intersections: Intersection<Object3D<Object3DEventMap>>[]) => {
       if (intersections.length === 0) {
+        switch (measureDistanceState.stage) {
+          case "1":
+            setMeasureDistanceState({
+              stage: "1",
+              firstPointCandidate: null,
+            });
+            break;
+
+          case "2":
+            setMeasureDistanceState({
+              stage: "2",
+              firstPoint: measureDistanceState.firstPoint,
+              secondPointCandidate: null,
+            });
+            break;
+        }
         return;
       }
 
@@ -242,41 +297,45 @@ export const Scene = () => {
         object.userData === undefined ||
         object.userData["element"] === undefined
       ) {
+        switch (measureDistanceState.stage) {
+          case "1":
+            setMeasureDistanceState({
+              stage: "1",
+              firstPointCandidate: null,
+            });
+            break;
+
+          case "2":
+            setMeasureDistanceState({
+              stage: "2",
+              firstPoint: measureDistanceState.firstPoint,
+              secondPointCandidate: null,
+            });
+            break;
+        }
         return;
       }
 
       const point = intersections[0].point;
 
-      // no points selected
-      if (measureDistanceState.firstPoint === null) {
-        setMeasureDistanceState({
-          firstPoint: point,
-          secondPoint: null,
-        });
-        return;
-      }
+      switch (measureDistanceState.stage) {
+        case "1":
+          setMeasureDistanceState({
+            stage: "1",
+            firstPointCandidate: point,
+          });
+          break;
 
-      // first point already selected
-      if (measureDistanceState.secondPoint === null) {
-        setMeasureDistanceState({
-          firstPoint: measureDistanceState.firstPoint,
-          secondPoint: point,
-        });
-        return;
+        case "2":
+          setMeasureDistanceState({
+            stage: "2",
+            firstPoint: measureDistanceState.firstPoint,
+            secondPointCandidate: point,
+          });
+          break;
       }
-
-      // both points already selected; start over
-      setMeasureDistanceState({
-        firstPoint: point,
-        secondPoint: null,
-      });
-      return;
     },
-    [
-      measureDistanceState.firstPoint,
-      measureDistanceState.secondPoint,
-      setMeasureDistanceState,
-    ]
+    [measureDistanceState, setMeasureDistanceState]
   );
 
   // not an arrow function because EventListener hates me
@@ -312,7 +371,43 @@ export const Scene = () => {
         break;
 
       case "measure_length":
-        measureDistanceBehavior(notClipped);
+        measureDistanceClickBehavior(notClipped);
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  // not an arrow function because EventListener hates me
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const mouseMoveListener = function clickListener(
+    this: HTMLCanvasElement,
+    _event: MouseEvent
+  ) {
+    raycaster.layers.disableAll();
+    raycaster.layers.enable(1);
+    const intersected = raycaster.intersectObjects(meshes);
+    raycaster.layers.enableAll();
+
+    const notClipped: Intersection<Object3D<Object3DEventMap>>[] = [];
+
+    intersected.forEach((intersection) => {
+      if (clippingPlanes.length > 0) {
+        const plane = clippingPlanes[0];
+        if (plane.distanceToPoint(intersection.point) < 0) {
+          return;
+        }
+      }
+      notClipped.push(intersection);
+    });
+
+    switch (currentTool) {
+      case "select":
+        break;
+
+      case "measure_length":
+        measureDistanceMoveBehavior(notClipped);
         break;
 
       default:
@@ -322,8 +417,13 @@ export const Scene = () => {
 
   useEffect(() => {
     canvas.addEventListener("click", clickListener);
-    return () => canvas.removeEventListener("click", clickListener);
-  }, [canvas, clickListener]);
+    canvas.addEventListener("mousemove", mouseMoveListener);
+
+    return () => {
+      canvas.removeEventListener("click", clickListener);
+      canvas.removeEventListener("mousemove", mouseMoveListener);
+    };
+  }, [canvas, clickListener, mouseMoveListener]);
 
   useEffect(() => {
     meshes.forEach((mesh) => {

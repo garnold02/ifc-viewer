@@ -72,14 +72,16 @@ export type IfcState = {
 
 export type MeasureDistanceState =
   | {
-      firstPoint: null;
-      secondPoint: null;
+      stage: "1";
+      firstPointCandidate: Vector3 | null;
     }
   | {
+      stage: "2";
       firstPoint: Vector3;
-      secondPoint: null;
+      secondPointCandidate: Vector3 | null;
     }
   | {
+      stage: "3";
       firstPoint: Vector3;
       secondPoint: Vector3;
     };
@@ -242,7 +244,7 @@ export const createIfcStore = (
       },
 
       measure_distance: {
-        state: { firstPoint: null, secondPoint: null },
+        state: { stage: "1", firstPointCandidate: null },
         setState: (value) =>
           set((prev) =>
             produce(prev, (draft) => {

@@ -6,10 +6,16 @@ import { useTranslation } from "react-i18next";
 type Props = {
   type: ToolName;
   icon: ReactNode;
+  onClick?: () => void;
   disabled?: boolean;
 };
 
-export const ToolButton = ({ type, icon, disabled }: Props) => {
+export const ToolButton = ({
+  type,
+  icon,
+  onClick: customOnClick,
+  disabled,
+}: Props) => {
   const { t } = useTranslation(undefined, {
     keyPrefix: "pages.view.components.toolbar.ToolButton",
   });
@@ -24,7 +30,10 @@ export const ToolButton = ({ type, icon, disabled }: Props) => {
 
   const onClick = useCallback(() => {
     setCurrentTool(currentTool === type ? null : type);
-  }, [currentTool, setCurrentTool, type]);
+    if (customOnClick) {
+      customOnClick();
+    }
+  }, [currentTool, customOnClick, setCurrentTool, type]);
 
   return (
     <Tooltip title={t(type)}>
