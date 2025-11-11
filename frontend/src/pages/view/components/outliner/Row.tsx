@@ -39,9 +39,11 @@ const Item = ({ item, style }: ItemProps) => {
     (state) => state.selection.toggleElementSelection
   );
 
+  const multiSelect = useIfcStore((state) => state.selection.multi);
+
   const onClick = useCallback(
-    () => toggleSelectElement(item.element.id, true),
-    [item.element.id, toggleSelectElement]
+    () => toggleSelectElement(item.element.id, !multiSelect),
+    [item.element.id, multiSelect, toggleSelectElement]
   );
 
   const expandButtonVisible = useMemo(

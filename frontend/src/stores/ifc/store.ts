@@ -22,6 +22,8 @@ export type IfcState = {
   };
 
   selection: {
+    multi: boolean;
+    setMulti: (value: boolean) => void;
     elementIds: number[];
     setElementIds: (value: number[]) => void;
     selectElement: (id: number, exclusive?: boolean) => void;
@@ -135,6 +137,14 @@ export const createIfcStore = (
     },
 
     selection: {
+      multi: false,
+      setMulti: (value) =>
+        set((prev) =>
+          produce(prev, (draft) => {
+            draft.selection.multi = value;
+          })
+        ),
+
       elementIds: [],
       setElementIds: (value) =>
         set((prev) =>
@@ -168,9 +178,17 @@ export const createIfcStore = (
         set((prev) =>
           produce(prev, (draft) => {
             if (prev.selection.elementIds.includes(id)) {
-              draft.selection.elementIds = prev.selection.elementIds.filter(
-                (eId) => eId !== id
-              );
+              if (exclusive) {
+                if (prev.selection.elementIds.length > 1) {
+                  draft.selection.elementIds = [id];
+                } else {
+                  draft.selection.elementIds = [];
+                }
+              } else {
+                draft.selection.elementIds = prev.selection.elementIds.filter(
+                  (eId) => eId !== id
+                );
+              }
             } else {
               if (exclusive) {
                 draft.selection.elementIds = [];

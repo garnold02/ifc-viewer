@@ -72,6 +72,12 @@
           "title": "File information"
         },
         "inspector": {
+          "BatchInspectorHead": {
+            "hide_all": "Hide all",
+            "n_items_selected": "{{n}} items selected",
+            "show_all": "Show all",
+            "title": "Element inspector"
+          },
           "InspectorHead": {
             "details": "Details",
             "title": "Element inspector"

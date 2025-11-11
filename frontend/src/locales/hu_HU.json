@@ -72,6 +72,12 @@
           "title": "Fájl információk"
         },
         "inspector": {
+          "BatchInspectorHead": {
+            "hide_all": "Összes elrejtése",
+            "n_items_selected": "{{n}} elem kijelölve",
+            "show_all": "Összes megjelenítése",
+            "title": "Elemnézegető"
+          },
           "InspectorHead": {
             "details": "Részletek",
             "title": "Elemnézegető"

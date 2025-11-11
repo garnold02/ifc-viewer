@@ -200,6 +200,9 @@ export const Scene = () => {
     return [new Plane(zAxis.negate(), 0).translate(position)];
   }, [clipAlwaysVisible, clipMatrix, currentTool]);
 
+  const multiSelect = useIfcStore((state) => state.selection.multi);
+  const setMultiSelect = useIfcStore((state) => state.selection.setMulti);
+
   const selectBehavior = useCallback(
     (intersections: Intersection<Object3D<Object3DEventMap>>[]) => {
       if (intersections.length === 0) {
@@ -217,9 +220,9 @@ export const Scene = () => {
       }
 
       const element: Element = object.userData["element"];
-      toggleElementSelection(element.id, true);
+      toggleElementSelection(element.id, !multiSelect);
     },
-    [setSelectedElementIds, toggleElementSelection]
+    [multiSelect, setSelectedElementIds, toggleElementSelection]
   );
 
   const measureDistanceState = useIfcStore(
@@ -415,15 +418,47 @@ export const Scene = () => {
     }
   };
 
+  // not an arrow function because EventListener hates me
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const keyDownListener = function keyDownListener(
+    this: HTMLElement,
+    event: KeyboardEvent
+  ) {
+    if (event.key === "Shift") {
+      setMultiSelect(true);
+    }
+  };
+
+  // not an arrow function because EventListener hates me
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const keyUpListener = function keyUpListener(
+    this: HTMLElement,
+    event: KeyboardEvent
+  ) {
+    if (event.key === "Shift") {
+      setMultiSelect(false);
+    }
+  };
+
   useEffect(() => {
     canvas.addEventListener("click", clickListener);
     canvas.addEventListener("mousemove", mouseMoveListener);
+    document.body.addEventListener("keydown", keyDownListener);
+    document.body.addEventListener("keyup", keyUpListener);
 
     return () => {
       canvas.removeEventListener("click", clickListener);
       canvas.removeEventListener("mousemove", mouseMoveListener);
+      document.body.removeEventListener("keydown", keyDownListener);
+      document.body.removeEventListener("keyup", keyUpListener);
     };
-  }, [canvas, clickListener, mouseMoveListener]);
+  }, [
+    canvas,
+    clickListener,
+    keyDownListener,
+    keyUpListener,
+    mouseMoveListener,
+  ]);
 
   useEffect(() => {
     meshes.forEach((mesh) => {
