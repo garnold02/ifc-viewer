@@ -1,6 +1,8 @@
 frontend/.tanstack
 frontend/dist
 frontend/node_modules
-server/.tanstack
+server/__pycache__
+server/.venv
+server/cache/file_repo.db
+server/cache/*.ifc
 server/dist
-server/node_modules
