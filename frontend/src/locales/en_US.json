@@ -39,7 +39,8 @@
           "uploading_file": "Uploading file",
           "uploading_file_detail": "Please wait while the file is being uploaded..."
         }
-      }
+      },
+      "no_files": "Upload an IFC file to get started!"
     },
     "view": {
       "components": {

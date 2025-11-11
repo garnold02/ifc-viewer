@@ -1,12 +1,13 @@
 import { useDeleteFile } from "@api/hooks/useDeleteFile";
 import { useGetSummaries } from "@api/hooks/useGetSummaries";
 import type { FileSummary } from "@api/types/fileSummary";
-import { Container, Stack } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
 import { AppBar } from "@pages/index/components/AppBar";
 import { DeleteDialog } from "@pages/index/components/DeleteDialog";
 import { PreviewDialog } from "@pages/index/components/PreviewDialog";
 import { SummaryCard } from "@pages/index/components/SummaryCard";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const Page = () => {
   const { data: summaries } = useGetSummaries();
@@ -22,6 +23,8 @@ export const Page = () => {
     null
   );
 
+  const { t } = useTranslation(undefined, { keyPrefix: "pages.index" });
+
   if (summaries === undefined) {
     return null;
   }
@@ -32,20 +35,30 @@ export const Page = () => {
         <AppBar />
         <Container>
           <Stack gap={1} padding={1}>
-            {summaries.map((summary) => (
-              <SummaryCard
-                key={summary.id}
-                summary={summary}
-                onPreviewClick={() => {
-                  setPreviewSelected(summary);
-                  setPreviewOpen(true);
-                }}
-                onDeleteClick={() => {
-                  setDeleteSelected(summary);
-                  setDeleteOpen(true);
-                }}
-              />
-            ))}
+            {summaries.length > 0 ? (
+              summaries.map((summary) => (
+                <SummaryCard
+                  key={summary.id}
+                  summary={summary}
+                  onPreviewClick={() => {
+                    setPreviewSelected(summary);
+                    setPreviewOpen(true);
+                  }}
+                  onDeleteClick={() => {
+                    setDeleteSelected(summary);
+                    setDeleteOpen(true);
+                  }}
+                />
+              ))
+            ) : (
+              <Typography
+                color="textDisabled"
+                textAlign="center"
+                sx={{ userSelect: "none" }}
+              >
+                {t("no_files")}
+              </Typography>
+            )}
           </Stack>
         </Container>
       </Stack>

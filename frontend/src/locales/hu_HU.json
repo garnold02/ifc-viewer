@@ -39,7 +39,8 @@
           "uploading_file": "Fájl feltöltése",
           "uploading_file_detail": "Kérem várjon, amíg a fájl feltöltés alatt áll..."
         }
-      }
+      },
+      "no_files": "Töltsön fel egy IFC fájlt a kezdéshez!"
     },
     "view": {
       "components": {
