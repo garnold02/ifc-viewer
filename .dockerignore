@@ -1,0 +1,6 @@
+frontend/.tanstack
+frontend/dist
+frontend/node_modules
+server/.tanstack
+server/dist
+server/node_modules
