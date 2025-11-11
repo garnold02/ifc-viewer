@@ -3,6 +3,7 @@ import type { FileSummary } from "@api/types/fileSummary";
 import { ButtonLink } from "@components/ButtonLink";
 import { IfcCanvas } from "@components/IfcCanvas";
 import { IfcSceneCamera } from "@components/IfcSceneCamera";
+import { IfcSceneGrid } from "@components/IfcSceneGrid";
 import { IfcSceneLight } from "@components/IfcSceneLight";
 import { IfcTransformGroup } from "@components/IfcTransformGroup";
 import CloseIcon from "@mui/icons-material/Close";
@@ -53,6 +54,7 @@ export const PreviewDialog = ({ open, summary, onClose }: Props) => {
                 ))
               : null}
           </IfcTransformGroup>
+          <IfcSceneGrid />
           <IfcSceneLight />
           <IfcSceneCamera />
         </IfcCanvas>
