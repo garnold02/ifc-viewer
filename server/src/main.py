@@ -19,7 +19,7 @@ def development_mode():
     )
 
 # Comment out for production mode
-development_mode()
+# development_mode()
 
 app.add_middleware(
     GZipMiddleware,
