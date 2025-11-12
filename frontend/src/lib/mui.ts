@@ -4,4 +4,7 @@ export const theme = createTheme({
   colorSchemes: {
     dark: true,
   },
+  palette: {
+    mode: "dark",
+  },
 });
