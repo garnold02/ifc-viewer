@@ -1,5 +1,4 @@
-// Development mode
-// export const API_BASE_URL = "http://localhost:8000";
+// Set to `false` for production mode
+const DEVELOPMENT = true;
 
-// Production mode
-export const API_BASE_URL = "";
+export const API_BASE_URL = DEVELOPMENT ? "http://localhost:8000" : "";

@@ -1,3 +1,7 @@
+# Set to `False` to run in production mode
+DEVELOPMENT = True
+
+
 from fastapi import FastAPI, HTTPException, Response, UploadFile
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import FileResponse
@@ -8,7 +12,8 @@ from file_repo import FileRepo
 repo = FileRepo()
 app = FastAPI()
 
-def development_mode():
+
+if DEVELOPMENT:
     from fastapi.middleware.cors import CORSMiddleware
 
     app.add_middleware(
@@ -18,8 +23,6 @@ def development_mode():
         allow_headers=["*"],
     )
 
-# Comment out for production mode
-# development_mode()
 
 app.add_middleware(
     GZipMiddleware,
@@ -111,8 +114,9 @@ def get_file_element_property_tree(file_id: int, element_id: int):
     return element.get_property_tree()
 
 
-app.mount("/static", StaticFiles(directory="dist"), name="static")
+if not DEVELOPMENT:
+    app.mount("/static", StaticFiles(directory="dist"), name="static")
 
-@app.route("/{_remaining:path}")
-def serve_index_html(_remaining: str):
-    return FileResponse(path="dist/index.html")
+    @app.route("/{_remaining:path}")
+    def serve_index_html(_remaining: str):
+        return FileResponse(path="dist/index.html")
