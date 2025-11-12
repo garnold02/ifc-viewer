@@ -25,4 +25,9 @@ export default defineConfig(({ command }) => ({
     },
   },
   base: command === "build" ? "/static" : undefined,
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: "./src/setupTests.ts",
+  },
 }));
