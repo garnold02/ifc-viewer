@@ -1,5 +1,5 @@
 # Set to `False` to run in production mode
-DEVELOPMENT = True
+DEVELOPMENT = False
 
 
 from fastapi import FastAPI, HTTPException, Response, UploadFile
@@ -40,8 +40,11 @@ def get_summaries():
 async def post_file(file: UploadFile, response: Response):
     content = await file.read()
 
-    if not repo.add(file.filename, content):
-        response.status_code = 422
+    try:
+        if not repo.add(file.filename, content):
+            response.status_code = 422
+            return { "status": "error" }
+    except:
         return { "status": "error" }
     
     return { "status": "success" }
