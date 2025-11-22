@@ -1,42 +1,65 @@
 import { ThemeToggle } from "@components/ThemeToggle";
-import { theme } from "@lib/mui";
-import { ThemeProvider, useColorScheme } from "@mui/material";
-import { act, renderHook } from "@testing-library/react";
-import { customRender } from "@utils/componentTesting";
+import {
+  createThemeStore,
+  ThemeStoreContext,
+  useThemeStore,
+} from "@stores/theme/store";
+import { act, render, renderHook } from "@testing-library/react";
 import { expect, test } from "vitest";
 
 test("ThemeToggle should toggle the site theme", () => {
-  const {
-    result: {
-      current: { mode: before },
-    },
-  } = renderHook(() => useColorScheme(), {
+  const themeStore = createThemeStore("dark");
+
+  const { getByRole } = render(<ThemeToggle />, {
     wrapper: (props) => (
-      <ThemeProvider theme={theme}>{props.children}</ThemeProvider>
+      <ThemeStoreContext.Provider value={themeStore}>
+        {props.children}
+      </ThemeStoreContext.Provider>
     ),
   });
 
-  const { getByRole } = customRender(<ThemeToggle />);
   const button = getByRole("button");
   expect(button).toBeInTheDocument();
+
+  const {
+    result: { current: mode1 },
+  } = renderHook(() => useThemeStore((state) => state.mode), {
+    wrapper: (props) => (
+      <ThemeStoreContext.Provider value={themeStore}>
+        {props.children}
+      </ThemeStoreContext.Provider>
+    ),
+  });
 
   act(() => {
     button.click();
   });
 
   const {
-    result: {
-      current: { mode: after },
-    },
-  } = renderHook(() => useColorScheme(), {
+    result: { current: mode2 },
+  } = renderHook(() => useThemeStore((state) => state.mode), {
     wrapper: (props) => (
-      <ThemeProvider theme={theme}>{props.children}</ThemeProvider>
+      <ThemeStoreContext.Provider value={themeStore}>
+        {props.children}
+      </ThemeStoreContext.Provider>
     ),
   });
 
-  const switch1 = before === "light" && after === "dark";
-  const switch2 = before === "dark" && after === "light";
-  const valid = switch1 || switch2;
+  act(() => {
+    button.click();
+  });
 
-  expect(valid).toBe(true);
+  const {
+    result: { current: mode3 },
+  } = renderHook(() => useThemeStore((state) => state.mode), {
+    wrapper: (props) => (
+      <ThemeStoreContext.Provider value={themeStore}>
+        {props.children}
+      </ThemeStoreContext.Provider>
+    ),
+  });
+
+  expect(mode1).toBe("dark");
+  expect(mode2).toBe("light");
+  expect(mode3).toBe("dark");
 });

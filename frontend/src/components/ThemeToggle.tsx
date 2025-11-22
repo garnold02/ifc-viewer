@@ -1,5 +1,6 @@
 import DarkModeIcon from "@mui/icons-material/DarkMode";
-import { IconButton, Tooltip, useColorScheme } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
+import { useThemeStore } from "@stores/theme/store";
 import { useTranslation } from "react-i18next";
 
 export const ThemeToggle = () => {
@@ -7,7 +8,8 @@ export const ThemeToggle = () => {
     keyPrefix: "components.ThemeToggle",
   });
 
-  const { mode, setMode } = useColorScheme();
+  const mode = useThemeStore((state) => state.mode);
+  const setMode = useThemeStore((state) => state.setMode);
 
   return (
     <Tooltip title={t(mode === "dark" ? "use_light" : "use_dark")}>
