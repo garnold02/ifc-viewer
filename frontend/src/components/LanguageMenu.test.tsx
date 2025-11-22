@@ -1,11 +1,11 @@
 import { LanguageMenu } from "@components/LanguageMenu";
-import { customRender } from "@utils/componentTesting";
+import { renderWithRouter } from "@utils/componentTesting";
 import { act } from "react";
 import { getI18n } from "react-i18next";
 import { expect, test } from "vitest";
 
 test("LanguageMenu should set the current language", () => {
-  const { getByText } = customRender(
+  const { getByText } = renderWithRouter(
     <LanguageMenu anchorEl={null} onClose={() => {}} open />
   );
 

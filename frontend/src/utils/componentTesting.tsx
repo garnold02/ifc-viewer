@@ -5,7 +5,7 @@ import { RouterContextProvider } from "@tanstack/react-router";
 import { render } from "@testing-library/react";
 import type { ReactNode } from "react";
 
-export const customRender = (node: ReactNode) => {
+export const renderWithRouter = (node: ReactNode) => {
   return render(node, {
     wrapper: (props) => (
       <RouterContextProvider router={router}>
