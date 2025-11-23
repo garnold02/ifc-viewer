@@ -3,7 +3,7 @@ import {
   PropertyStoreContext,
   usePropertyStore,
 } from "@stores/property/store";
-import { renderHook } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import { expect, test } from "vitest";
 
 test("PropertyStore expansion logic should work", () => {
@@ -31,7 +31,9 @@ test("PropertyStore expansion logic should work", () => {
 
   expect(expansionStates1).toStrictEqual({});
 
-  setExpanded("foo/bar/baz", true);
+  act(() => {
+    setExpanded("foo/bar/baz", true);
+  });
 
   const {
     result: { current: expansionStates2 },
@@ -45,7 +47,9 @@ test("PropertyStore expansion logic should work", () => {
 
   expect(expansionStates2).toStrictEqual({ "foo/bar/baz": true });
 
-  setExpanded("foo/bar/baz", false);
+  act(() => {
+    setExpanded("foo/bar/baz", false);
+  });
 
   const {
     result: { current: expansionStates3 },

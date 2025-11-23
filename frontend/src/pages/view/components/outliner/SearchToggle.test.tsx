@@ -1,3 +1,5 @@
+import "@lib/i18next";
+
 import { SearchToggle } from "@pages/view/components/outliner/SearchToggle";
 import { act, render } from "@testing-library/react";
 import { expect, test } from "vitest";

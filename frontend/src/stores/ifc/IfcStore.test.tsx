@@ -5,7 +5,7 @@ import {
   IfcStoreContext,
   useIfcStore,
 } from "@stores/ifc/store";
-import { renderHook } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import { expect, test } from "vitest";
 import type { StoreApi, UseBoundStore } from "zustand";
 
@@ -24,7 +24,9 @@ test("IfcStore filter.setElementTypes should work", () => {
     (state) => state.filter.setElementTypes
   );
 
-  setElementTypes(["IfcSomeRandomStuff"]);
+  act(() => {
+    setElementTypes(["IfcSomeRandomStuff"]);
+  });
 
   const elements2 = useCustomIfcStore(
     ifcStore,
@@ -49,14 +51,18 @@ test("IfcStore filter.setInvert should work", () => {
     (state) => state.filter.setElementTypes
   );
 
-  setElementTypes(["IfcSomeRandomStuff"]);
+  act(() => {
+    setElementTypes(["IfcSomeRandomStuff"]);
+  });
 
   const setInvert = useCustomIfcStore(
     ifcStore,
     (state) => state.filter.setInvert
   );
 
-  setInvert(true);
+  act(() => {
+    setInvert(true);
+  });
 
   const elements2 = useCustomIfcStore(
     ifcStore,
@@ -81,8 +87,10 @@ test("IfcStore selection.selectElement should work (non exclusive)", () => {
     (state) => state.selection.selectElement
   );
 
-  selectElement(456, false);
-  selectElement(457, false);
+  act(() => {
+    selectElement(456, false);
+    selectElement(457, false);
+  });
 
   const elementIds2 = useCustomIfcStore(
     ifcStore,
@@ -107,8 +115,10 @@ test("IfcStore selection.selectElement should work (exclusive)", () => {
     (state) => state.selection.selectElement
   );
 
-  selectElement(456, true);
-  selectElement(457, true);
+  act(() => {
+    selectElement(456, true);
+    selectElement(457, true);
+  });
 
   const elementIds2 = useCustomIfcStore(
     ifcStore,
@@ -126,14 +136,18 @@ test("IfcStore selection.deselectElement should work", () => {
     (state) => state.selection.setElementIds
   );
 
-  setElementIds([456, 457]);
+  act(() => {
+    setElementIds([456, 457]);
+  });
 
   const deselectElement = useCustomIfcStore(
     ifcStore,
     (state) => state.selection.deselectElement
   );
 
-  deselectElement(456);
+  act(() => {
+    deselectElement(456);
+  });
 
   const elementIds2 = useCustomIfcStore(
     ifcStore,
@@ -158,8 +172,10 @@ test("IfcStore selection.toggleElementSelection should work (non exclusive)", ()
     (state) => state.selection.toggleElementSelection
   );
 
-  toggleElementSelection(456, false);
-  toggleElementSelection(457, false);
+  act(() => {
+    toggleElementSelection(456, false);
+    toggleElementSelection(457, false);
+  });
 
   const elementIds2 = useCustomIfcStore(
     ifcStore,
@@ -168,7 +184,9 @@ test("IfcStore selection.toggleElementSelection should work (non exclusive)", ()
 
   expect(elementIds2).toStrictEqual([456, 457]);
 
-  toggleElementSelection(456, false);
+  act(() => {
+    toggleElementSelection(456, false);
+  });
 
   const elementIds3 = useCustomIfcStore(
     ifcStore,
@@ -193,8 +211,10 @@ test("IfcStore selection.toggleElementSelection should work (exclusive)", () => 
     (state) => state.selection.toggleElementSelection
   );
 
-  toggleElementSelection(456, true);
-  toggleElementSelection(457, true);
+  act(() => {
+    toggleElementSelection(456, true);
+    toggleElementSelection(457, true);
+  });
 
   const elementIds2 = useCustomIfcStore(
     ifcStore,
@@ -203,7 +223,9 @@ test("IfcStore selection.toggleElementSelection should work (exclusive)", () => 
 
   expect(elementIds2).toStrictEqual([457]);
 
-  toggleElementSelection(457, true);
+  act(() => {
+    toggleElementSelection(457, true);
+  });
 
   const elementIds3 = useCustomIfcStore(
     ifcStore,
@@ -220,20 +242,25 @@ test("IfcStore outliner.unhideAll should work", () => {
     ifcStore,
     (state) => state.outliner.setSelfVisible
   );
+
   const setChildrenVisibile = useCustomIfcStore(
     ifcStore,
     (state) => state.outliner.setChildrenVisible
   );
 
-  setSelfVisibile(456, false);
-  setChildrenVisibile(456, false);
+  act(() => {
+    setSelfVisibile(456, false);
+    setChildrenVisibile(456, false);
+  });
 
   const unhideAll = useCustomIfcStore(
     ifcStore,
     (state) => state.outliner.unhideAll
   );
 
-  unhideAll();
+  act(() => {
+    unhideAll();
+  });
 
   const selfVisibility = useCustomIfcStore(
     ifcStore,
@@ -257,8 +284,10 @@ test("IfcStore details.pushElement should work", () => {
     (state) => state.details.pushElement
   );
 
-  pushElements(456);
-  pushElements(457);
+  act(() => {
+    pushElements(456);
+    pushElements(457);
+  });
 
   const elementStack = useCustomIfcStore(
     ifcStore,
@@ -276,15 +305,19 @@ test("IfcStore details.popElement should work", () => {
     (state) => state.details.pushElement
   );
 
-  pushElements(456);
-  pushElements(457);
+  act(() => {
+    pushElements(456);
+    pushElements(457);
+  });
 
   const popElement = useCustomIfcStore(
     ifcStore,
     (state) => state.details.popElement
   );
 
-  popElement();
+  act(() => {
+    popElement();
+  });
 
   const elementStack = useCustomIfcStore(
     ifcStore,
@@ -302,15 +335,19 @@ test("IfcStore details.clearElementStack should work", () => {
     (state) => state.details.pushElement
   );
 
-  pushElements(456);
-  pushElements(457);
+  act(() => {
+    pushElements(456);
+    pushElements(457);
+  });
 
   const clearElementStack = useCustomIfcStore(
     ifcStore,
     (state) => state.details.clearElementStack
   );
 
-  clearElementStack();
+  act(() => {
+    clearElementStack();
+  });
 
   const elementStack = useCustomIfcStore(
     ifcStore,
@@ -328,15 +365,19 @@ test("IfcStore details.revertElementStack should work", () => {
     (state) => state.details.pushElement
   );
 
-  pushElements(456);
-  pushElements(457);
+  act(() => {
+    pushElements(456);
+    pushElements(457);
+  });
 
   const revertElementStack = useCustomIfcStore(
     ifcStore,
     (state) => state.details.revertElementStack
   );
 
-  revertElementStack(0);
+  act(() => {
+    revertElementStack(0);
+  });
 
   const elementStack = useCustomIfcStore(
     ifcStore,

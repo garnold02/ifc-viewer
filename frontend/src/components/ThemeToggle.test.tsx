@@ -1,3 +1,5 @@
+import "@lib/i18next";
+
 import { ThemeToggle } from "@components/ThemeToggle";
 import {
   createThemeStore,

@@ -3,7 +3,7 @@ import {
   ThemeStoreContext,
   useThemeStore,
 } from "@stores/theme/store";
-import { renderHook } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import { expect, test } from "vitest";
 
 test("ThemeStore theme switching logic should work", () => {
@@ -31,7 +31,9 @@ test("ThemeStore theme switching logic should work", () => {
 
   expect(mode1).toBe("dark");
 
-  setMode("light");
+  act(() => {
+    setMode("light");
+  });
 
   const {
     result: { current: mode2 },
@@ -45,7 +47,9 @@ test("ThemeStore theme switching logic should work", () => {
 
   expect(mode2).toBe("light");
 
-  setMode("dark");
+  act(() => {
+    setMode("dark");
+  });
 
   const {
     result: { current: mode3 },
