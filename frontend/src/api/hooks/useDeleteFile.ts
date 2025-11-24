@@ -9,6 +9,8 @@ export const useDeleteFile = () =>
         method: "DELETE",
       });
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["api", "summaries"] }),
+    onSuccess: (_, fileId) => {
+      queryClient.invalidateQueries({ queryKey: ["api", "summaries"] });
+      queryClient.invalidateQueries({ queryKey: ["api", "file", fileId] });
+    },
   });

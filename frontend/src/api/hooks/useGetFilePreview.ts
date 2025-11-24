@@ -2,8 +2,9 @@ import { API_BASE_URL } from "@api/constants";
 import { useQuery } from "@tanstack/react-query";
 import { BinaryParser } from "@utils/BinaryParser";
 
-export const useGetFilePreview = (fileId: number) =>
+export const useGetFilePreview = (fileId: number, enabled: boolean) =>
   useQuery({
+    enabled,
     queryKey: ["api", "file", fileId, "preview"],
     queryFn: async () => {
       const response = await fetch(

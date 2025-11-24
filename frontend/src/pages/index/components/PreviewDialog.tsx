@@ -32,7 +32,7 @@ export const PreviewDialog = ({ open, summary, onClose }: Props) => {
     keyPrefix: "pages.index.components.PreviewDialog",
   });
 
-  const { data: geometries } = useGetFilePreview(summary.id);
+  const { data: geometries } = useGetFilePreview(summary.id, open);
 
   return (
     <Dialog open={open} fullScreen>
