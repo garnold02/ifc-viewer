@@ -75,6 +75,7 @@ export const UploadButton = () => {
       </Button>
       <input
         type="file"
+        accept=".ifc,.ifcZIP,.ifcXML,.json,.hdf,.sqlite"
         ref={inputRef}
         onChange={onChange}
         style={{ display: "none" }}
